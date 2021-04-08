@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/content_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/wares_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/wares_img"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/gray_text333_color"
+            android:layout_marginTop="5dp"
+            android:text="芝面吃醋"
+            android:textSize="16sp" />
+        <LinearLayout
+            android:id="@+id/unit_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:id="@+id/unit_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/gray_text333_color"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/wares_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_text333_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/price"
+            android:layout_below="@+id/wares_name"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/wares_img"
+            android:layout_marginLeft="15dp"
+            android:text="$1.00/个"
+            android:layout_marginTop="10dp"
+            />
+        <com.ilesson.ppim.view.RoundImageView
+            android:id="@+id/wares_img"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:scaleType="centerCrop"
+            />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

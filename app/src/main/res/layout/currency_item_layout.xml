@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_white_corner10">
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/back_btn"
+            android:layout_width="@dimen/back_width"
+            android:layout_height="match_parent"
+            android:background="@drawable/general_tran_gray_btn_selector">
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/back_icon" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/select_currency"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <ListView
+        android:id="@+id/country_list"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:dividerHeight="0.5dp"
+        android:divider="@color/gray_bg_color"
+        android:scrollbars="none"
+        android:layout_marginBottom="10dp"
+        />
+</LinearLayout>

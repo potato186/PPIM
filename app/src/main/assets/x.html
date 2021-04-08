@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="http://www.bbx2018.com/css/bbxcss.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.2, user-scalable=no">
+    <script type="text/javascript">
+            function hideDesc(){
+                 document.getElementById("desc").style.visibility="hidden";
+            }
+        </script>
+    <title></title>
+    <style>
+.udot {
+			border-bottom:dotted red;
+		}
+        .textContainer {
+            top: 5em;
+            left: 0;
+            bottom: 0em;
+            right: 0;
+            margin-bottom: 3em;
+        }
+        .modify_specialwords_num { width: 20px; height: 20px; line-height: 20px; font-size: 12px; text-align: center; -moz-border-radius: 20px; -webkit-border-radius: 20px; border-radius: 20px; background: #ae1616; color: #fff; position: absolute; top: -10px; left: -10px; cursor: pointer;
+        }
+		.modify_specialwords { Border:2px solid #1e1616; text-indent: 0; position: relative; }
+		.modify_specialwords.cur { color: #86868; }
+		.modify_specialwords.cur .modify_specialwords_num { background: #e1c900; }
+
+		.modify_num { font-size: 10px; width: 16px; height: 16px; line-height: 16px; top: -10px; left: -11px; -moz-box-shadow: #dbd9da -2px 2px 2px; -webkit-box-shadow: #dbd9da -2px 2px 2px; box-shadow: #dbd9da -2px 2px 2px; cursor: pointer; }
+
+		.modify-wave .modify-wave .modify_num{left: 5px;}
+
+		.modify-wave { background: url(../images/modify_wave_03_03.png) repeat-x 0 20px; padding-bottom: 8px; text-indent: 0; position: relative;}
+		.modify-wave.cur { color: #686868; }
+		.modify-wave.cur .modify_num { background: #71c900; }
+		.modify-wave.choose{ color: #e41616; }
+
+        textarea {
+            overflow:hidden;
+        }
+        #word
+		{
+  			border:1px dotted red;
+  			margin:5px 1px;
+  			padding:2px 2px;
+  			font-size:1.8em;
+		}
+		#line
+		{
+  			margin:12px 1px;
+		}
+		#del
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.4em;
+			color:#FF0000;
+			margin-left:-0.8em;
+		}
+		#dl2
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.4em;
+			color:#00FF00;
+			margin-left:-0.8em;
+		}
+		#qes
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.4em;
+			color:#FF0000;
+			margin-left:-1.0em;
+		}
+		#bigqes
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.4em;
+			margin-left:-0.0em;
+		}
+		#qesmob
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.4em;
+			color:#FF0000;
+			margin-left:-0.5em;
+		}
+		#rep
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.2em;
+			color:#FF0000;
+			margin-left:-1.0em;
+		}
+		#rp2
+		{
+  			margin:5px 1px;
+  			padding:2px 0px;
+  			font-size:2.2em;
+			color:#00FF00;
+			margin-top:-2.0em;
+			margin-left:-1.0em;
+		}
+
+/*************************** custom ***************************/
+* {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+body {
+    font-size: 14px;
+}
+
+li {
+    list-style: none
+}
+
+img {
+    vertical-align: top;
+    border: none
+}
+
+.container {
+    padding-bottom: 40px;
+    width: 100%;
+}
+
+.custom-top {
+    background-color: #202125;
+    width: 100%;
+    text-align: center;
+}
+
+.custom-top a img {
+    height: 3.2em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+
+#custom-score {
+    font-size: 8em;
+    color: white;
+    font-weight: bolder;
+    line-height:120%;
+}
+
+#custom-score-tips {
+    font-size: 5em;
+    color: #0099CC;
+}
+
+#custom-txt {
+    color: white;
+    font-size: 1.2em;
+    padding-bottom: 10px;
+}
+
+.content {
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+.format font[color="#8100f2"] {
+    word-break: break-all;
+}
+
+.format {
+    text-align: left;
+    clear: both;
+    display: inline-block;
+    /*overflow-x: scroll;*/
+}
+
+.long-text {
+    margin-top: 30px;
+    word-break: break-all;
+    font-size: 1.2em;
+    text-align: left;
+    white-space:normal;
+}
+
+.sub-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bolder;
+}
+
+.sub-title span {
+    padding-left: 10px;
+    background-color: #FF900B;
+    margin-right: 5px;
+}
+
+#down {
+    background-color: #f8f8f8;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    text-decoration:none;
+    height: 32px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: block;
+}
+
+#down span {
+    color: #66CCCC;
+    font-size: 1.5em;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+#down img {
+    vertical-align: middle;
+    height: 100%;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Top 部分-->
+        <div class="custom-top">
+            <p><span id="custom-score">{score}</span><span id="custom-score-tips">分</span></p>
+<!--            <a href="https://www.baidu.com"><img src="http://d.lesson1234.com/images/collect.png" alt=""></a>-->
+            <p id="custom-txt">得分：{score}分，总字数：{number}</p>
+        </div>
+
+        <div class="content">
+            <div class="sub-title"><span></span>修改作文:</div>
+
+            <div style="text-align: center">
+                <div style="display: inline-block;">
+                    <div class="format">
+                        <!-- 修改格子及总评 -->
+                       {fmtext}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="long-text">
+                <!-- 修改后的文章 -->
+                <div class="sub-title"><span></span>修改后的作文:</div>
+                {pgtext}
+
+                <!-- 作文评语 -->
+                <div class="sub-title" id="desc" style="margin-top: 30px;"><span></span>批阅说明:</div>
+                {desctext}
+                <!-- 性格测试 -->
+                <div class="sub-title" style="margin-top: 30px;"><span></span>性格评测:</div>
+                {xgtext}
+
+            </div>
+        </div>
+    </div>
+<!--    <a id="down" href="http://www.lesson1234.com/bang.html"><img src="images/icon-bang.png" alt="" />-->
+<!--        <span>点击下载邦邦智能改作文</span>-->
+<!--    </a>-->
+</body>
+</html>
+

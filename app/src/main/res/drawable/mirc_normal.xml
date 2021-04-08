@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mirc_normal_animation"
+    android:oneshot="false" >
+
+    <item
+        android:drawable="@drawable/mirc1"
+        android:duration="500"/>
+    <item
+        android:drawable="@drawable/mirc2"
+        android:duration="500"/>
+    <item
+        android:drawable="@drawable/mirc3"
+        android:duration="500"/>
+    <item
+        android:drawable="@drawable/mirc4"
+        android:duration="500"/>
+    <item
+        android:drawable="@drawable/mirc5"
+        android:duration="500"/>
+    <item
+        android:drawable="@drawable/mirc6"
+        android:duration="500"/>
+
+</animation-list>

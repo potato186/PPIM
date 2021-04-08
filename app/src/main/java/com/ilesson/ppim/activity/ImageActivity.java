@@ -1,0 +1,382 @@
+package com.ilesson.ppim.activity;
+
+import android.Manifest;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.ilesson.ppim.R;
+import com.ilesson.ppim.crop.CropActivity;
+import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.PPUserInfo;
+import com.ilesson.ppim.utils.Constants;
+import com.ilesson.ppim.utils.SPUtils;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import org.devio.takephoto.model.CropOptions;
+import org.devio.takephoto.model.InvokeParam;
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
+
+import java.io.File;
+
+import io.reactivex.functions.Consumer;
+import io.rong.imageloader.core.DisplayImageOptions;
+import io.rong.imageloader.core.ImageLoader;
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.UserInfo;
+import io.rong.photoview.PhotoViewAttacher;
+
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.LoginActivity.USER_ICON;
+import static com.ilesson.ppim.activity.TakePhoto.RESULT_PATH;
+
+/**
+ * Created by potato on 2020/3/11.
+ */
+@ContentView(R.layout.activity_avatar)
+public class ImageActivity extends BaseActivity
+//        implements TakePhoto.TakeResultListener, InvokeListener
+{
+    @ViewInject(R.id.preview_image)
+    private ImageView imageView;
+    @ViewInject(R.id.menu)
+    private View menu;
+
+    @Event(R.id.back_btn)
+    private void back(View v) {
+        setInfo();
+    }
+
+    private static final String TAG = "ImageActivity";
+    public static final String PATH = "path";
+    private String token = "";
+    private PopupWindow popupWindow;
+    private View contentView;
+    private boolean hasModify;
+    private String userIcon;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        menu.setVisibility(View.GONE);
+        String path = getIntent().getStringExtra(PATH);
+        showImage(path);
+    }
+
+    private static final int ICON_CAMREA = 1023;
+    private static final int ICON_LOCAL_PIC = 1024;
+    public void requestSdcard() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+            public void accept(Boolean aBoolean) {
+            }
+        });
+    }
+    public void startCamrea() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.CAMERA).subscribe(new Consumer<Boolean>() {
+            public void accept(Boolean aBoolean) {
+                Intent intent = new Intent(ImageActivity.this, TakePhoto.class);
+                startActivityForResult(intent, ICON_CAMREA);
+            }
+        });
+    }
+    public void startPICK() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
+            public void accept(Boolean aBoolean) {
+                Intent intent = new Intent("android.intent.action.PICK");
+                intent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, ICON_LOCAL_PIC);
+            }
+        });
+    }
+    private void showImage(String path) {
+        final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imageView);
+        Glide.with(this).asBitmap().load(path).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                imageView.setImageBitmap(resource);
+                mAttacher.update();
+            }
+        });
+    }
+    public void modify(String icon) {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.USER_URL);
+        params.addQueryStringParameter("token", token);
+        params.addQueryStringParameter("action", "modify");
+        params.addQueryStringParameter("icon", "png");
+        params.addQueryStringParameter("name", "");
+        params.addBodyParameter("file", new File(icon), "image/jpg");
+        params.setMultipart(true);
+        showProgress();
+        Log.d(TAG, "loadData: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "onSuccess: " + result);
+                BaseCode<PPUserInfo> base = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode<PPUserInfo>>() {
+                        }.getType());
+                if(base.getCode()==0){
+                    PPUserInfo info = base.getData();
+                    DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+                    builder.cacheInMemory(true).cacheOnDisk(true);
+                    ImageLoader.getInstance().displayImage(info.getIcon(), imageView,
+                            builder.build());
+                    userIcon = info.getIcon();
+                    SPUtils.put(LoginActivity.USER_ICON,info.getIcon());
+                    UserInfo userInfo = new UserInfo(info.getPhone(), info.getName(), Uri.parse(info.getIcon()));
+                    RongIM.getInstance().refreshUserInfoCache(userInfo);
+                    showImage(info.getIcon());
+                    hasModify = true;
+                }
+            }
+
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+                hideProgress();
+            }
+        });
+    }
+    private InvokeParam invokeParam;
+    private TakePhoto takePhoto;
+    public static final int MODIFY_SUCCESS = 23;
+
+    private void setInfo() {
+//        if(hasModify){
+//            Intent intent = new Intent();
+//            intent.putExtra(USER_ICON, userIcon);
+//            setResult(MODIFY_SUCCESS, intent);
+//        }
+        finish();
+    }
+
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        getTakePhoto().onSaveInstanceState(outState);
+//        super.onSaveInstanceState(outState);
+//    }
+    public static final int RESULT_CODE=22;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ICON_CAMREA) {
+            String p = data.getStringExtra(RESULT_PATH);
+            Uri selectedUri = Uri.fromFile(new File(p));
+            if (selectedUri != null) {
+                Intent it = new Intent(ImageActivity.this, CropActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(CropActivity.CROP_IMG_URI, selectedUri);
+                it.putExtras(bundle);
+                startActivityForResult(it, 10);
+            }
+        } else if (requestCode == ICON_LOCAL_PIC) {
+            final Uri selectedUri = data.getData();
+            if (selectedUri != null) {
+                Intent it = new Intent(ImageActivity.this, CropActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(CropActivity.CROP_IMG_URI, selectedUri);
+                it.putExtras(bundle);
+                startActivityForResult(it, 10);
+            }
+        } else if (resultCode == CropActivity.REQUEST_CROP) {
+            String iconPath = data.getStringExtra(CropActivity.CROP_IMG_URI);
+            modify(iconPath);
+        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        //以下代码为处理Android6.0、7.0动态权限所需
+//        PermissionManager.TPermissionType type=PermissionManager.onRequestPermissionsResult(requestCode,permissions,grantResults);
+//        PermissionManager.handlePermissionsResult(this,type,invokeParam,this);
+//    }
+    /**
+     * 获取TakePhoto实例
+     *
+     * @return
+     */
+//    public TakePhoto getTakePhoto() {
+//        if (takePhoto == null) {
+//            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
+//        }
+//        return takePhoto;
+//    }
+//
+//    @Override
+//    public void takeSuccess(TResult result) {
+//        modify(result.getImage().getCompressPath());
+//        Log.i(TAG, "takeSuccess：" + result.getImage().getCompressPath());
+//
+//    }
+//
+//    @Override
+//    public void takeFail(TResult result, String msg) {
+//        modify(result.getImage().getCompressPath());
+//    }
+//
+//    @Override
+//    public void takeCancel() {
+////        Log.i(TAG, getResources().getString(org.devio.takephoto.R.string.msg_operation_canceled));
+//    }
+//    @Override
+//    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+//        PermissionManager.TPermissionType type=PermissionManager.checkPermission(TContextWrap.of(this),invokeParam.getMethod());
+//        if(PermissionManager.TPermissionType.WAIT.equals(type)){
+//            this.invokeParam=invokeParam;
+//        }
+//        return type;
+//    }
+//    private void fromCamera(boolean flag_camera) {
+//        dissPopWindow();
+//        File file = new File(Environment.getExternalStorageDirectory(), "/temp/" + System.currentTimeMillis() + ".jpg");
+//        if (!file.getParentFile().exists()) {
+//            //noinspection ResultOfMethodCallIgnored
+//            file.getParentFile().mkdirs();
+//        }
+//        Uri imageUri = Uri.fromFile(file);
+//        configCompress(takePhoto);
+//        configTakePhotoOption(takePhoto);
+//
+//        if (flag_camera) {
+//            takePhoto.onPickFromCapture(imageUri);
+////            takePhoto.onPickFromCaptureWithCrop(imageUri);
+//        } else {
+//            takePhoto.onPickFromGallery();
+////            takePhoto.onPickMultipleWithCrop(1, getCropOptions());
+//        }
+//    }
+
+//    private void configCompress(TakePhoto takePhoto) {
+//        CompressConfig config = new CompressConfig.Builder().setMaxSize(1024 * 1000 * 10)
+//                .setMaxPixel(300)
+//                .enableReserveRaw(false)
+//                .create();
+//        takePhoto.onEnableCompress(config, false);
+//    }
+//
+//    private void configTakePhotoOption(TakePhoto takePhoto) {
+//        TakePhotoOptions.Builder builder = new TakePhotoOptions.Builder();
+//        builder.setWithOwnGallery(true);
+//
+//        takePhoto.setTakePhotoOptions(builder.create());
+//    }
+
+    private CropOptions getCropOptions() {
+        int height = 300;
+        int width = 300;
+
+        CropOptions.Builder builder = new CropOptions.Builder();
+        builder.setAspectX(width).setAspectY(height);
+        builder.setWithOwnCrop(false);
+        return builder.create();
+    }
+
+    private void showPopwindow() {
+        //加载弹出框的布局
+        contentView = LayoutInflater.from(this).inflate(
+                R.layout.select_user_icon_pop, null);
+
+
+        popupWindow = new PopupWindow(contentView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);// 取得焦点
+        //注意  要是点击外部空白处弹框消息  那么必须给弹框设置一个背景色  不然是不起作用的
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //点击外部消失
+        popupWindow.setOutsideTouchable(true);
+        //设置可以点击
+        popupWindow.setTouchable(true);
+        //进入退出的动画，指定刚才定义的style
+        popupWindow.setAnimationStyle(R.style.mypopwindow_anim_style);
+        contentView.findViewById(R.id.camera).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                fromCamera(true);
+                startCamrea();
+                popupWindow.dismiss();
+            }
+        });
+        contentView.findViewById(R.id.album).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                fromCamera(false);
+                startPICK();
+                popupWindow.dismiss();
+            }
+        });
+        contentView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+        // 按下android回退物理键 PopipWindow消失解决
+
+    }
+//
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
+//            if(popupWindow!=null&&popupWindow.isShowing()){
+//                popupWindow.dismiss();
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+    private void dissPopWindow(){
+        if(null!=popupWindow){
+            popupWindow.dismiss();
+        }
+    }
+    public void openPopWindow() {
+        //从底部显示
+        popupWindow.showAtLocation(contentView, Gravity.BOTTOM, 0, 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setInfo();
+        super.onBackPressed();
+        Log.d(TAG, "onBackPressed: ");
+    }
+}

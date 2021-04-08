@@ -1,0 +1,50 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="key_pading">7.5dp</dimen>
+    <dimen name="percen">0.235</dimen>
+    <dimen name="registe_font_size">16dp</dimen>
+    <dimen name="unRead_width">18dp</dimen>
+    <dimen name="unRead_font_size">11dp</dimen>
+    <dimen name="pwd_size">40dp</dimen>
+    <dimen name="note_type_item_height">20dp</dimen>
+    <dimen name="setting_margintop">8dp</dimen>
+    <dimen name="contactcard_dimen_size_3">3dp</dimen>
+    <dimen name="text_size_m">20dp</dimen>
+    <dimen name="text_size_s">16dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+
+    <dimen name="text_size_16">16dp</dimen>
+    <dimen name="text_size_18">18dp</dimen>
+    <dimen name="registe_text_minwidth">85dp</dimen>
+    <dimen name="registe_text_size">16sp</dimen>
+    <dimen name="registe_text_hint_size">14sp</dimen>
+    <dimen name="registe_item_height">40dp</dimen>
+    <dimen name="outline_item_height">55dp</dimen>
+    <dimen name="userinfo_item_height">55dp</dimen>
+    <dimen name="outline_item_margin">20dp</dimen>
+    <dimen name="title_base_height">10dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="padding_15">15dp</dimen>
+    <dimen name="top_margin">5dp</dimen>
+    <dimen name="zoo_margin">7dp</dimen>
+    <dimen name="text_14">14sp</dimen>
+    <dimen name="text_18">15sp</dimen>
+    <dimen name="padding_5">5dp</dimen>
+    <dimen name="registe_item_margin_right">100dp</dimen>
+    <dimen name="bar_height">48dp</dimen>
+    <dimen name="btn_height">32dp</dimen>
+    <dimen name="margin_text">8dp</dimen>
+    <dimen name="margin_layout">16dp</dimen>
+    <dimen name="big_image_size">74dp</dimen>
+
+    <dimen name="middle_text_size">17sp</dimen>
+    <dimen name="small_text_size">15sp</dimen>
+    <dimen name="mini_text_size">13sp</dimen>
+    <dimen name="px_20">20dp</dimen>
+    <dimen name="px_8">8dp</dimen>
+    <dimen name="order_item_left_margin">10dp</dimen>
+    <dimen name="order_item_top_margin">8dp</dimen>
+    <dimen name="order_item_left_item_width">75dp</dimen>
+    <dimen name="back_width">40dp</dimen>
+</resources>

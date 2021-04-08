@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/activity_file_display"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@color/theme_color"
+        android:id="@+id/file_toolbar"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/file_album_name"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="14sp"
+            android:textColor="#FFF"
+            />
+    </android.support.v7.widget.Toolbar>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/file_toolbar"
+        >
+        <com.ilesson.ppim.view.SuperFileView2
+            android:id="@+id/mSuperFileView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="center|start"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:onClick="onClick"
+                android:id="@+id/back_icon"
+                android:drawableStart="@mipmap/back_icon"
+                android:layout_marginStart="10dp"
+                />
+        </RelativeLayout>
+        <!--<RadioButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:button="@null"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_gravity="end|bottom"-->
+        <!--android:onClick="saveLocal"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginEnd="10dp"-->
+        <!--android:drawableStart="@drawable/vector_drawable_down_load"-->
+        <!--android:layout_marginStart="10dp"-->
+        <!--/>-->
+    </FrameLayout>
+</RelativeLayout>

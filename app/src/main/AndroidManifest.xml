@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ilesson.ppim">
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <application
+        android:name=".IlessonApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/icon"
+        android:label="@string/app_label_name"
+        android:roundIcon="@mipmap/icon"
+        android:supportsRtl="true"
+        tools:replace="android:icon, android:theme , android:label"
+        android:theme="@style/AppTheme.APP">
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTask"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="com.ilesson.ppim"
+                    android:pathPrefix="/conversationlist/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+       <activity
+            android:name=".activity.BootActivity"
+            android:theme="@style/AppTheme.wel">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!--<activity
+            android:name=".activity.LoadActivity"
+            android:theme="@style/AppTheme.wel">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>-->
+        <activity
+            android:name=".activity.ConversationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.gary"
+            android:windowSoftInputMode="stateHidden">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="com.ilesson.ppim"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.SubConversationListActivtiy"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="com.ilesson.ppim"
+                    android:pathPrefix="/subconversationlist"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.ContactActivity"
+            android:theme="@style/AppTheme.white">
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.white" />
+        <activity android:name=".contactview.TestActivity" />
+        <activity android:name=".activity.SearchFriendActivity"
+            android:windowSoftInputMode="stateVisible"/>
+        <activity android:name=".activity.SearchActivity"
+            android:windowSoftInputMode="stateVisible"/>
+        <activity android:name=".activity.EditExchangeActivity" />
+        <activity android:name=".activity.WaresOrderDetailctivity" />
+        <activity android:name=".activity.WaresLogistcDetailctivity" />
+        <activity android:name=".activity.ExchangeInfoActivity" />
+        <activity android:name=".activity.CustomerActivity" />
+        <activity android:name=".activity.ModifyFontActivity" />
+        <activity android:name=".activity.SelectAddFriendActivity" />
+        <activity android:name=".activity.PayRedPacketActivity" />
+        <activity android:name=".activity.WareDetailActivity" />
+        <activity android:name=".activity.ExchangeActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity android:name=".activity.InvoiceActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden"
+            />
+        <activity android:name=".activity.UserDetailActivity" />
+        <activity android:name="com.google.zxing.activity.CaptureActivity"
+            android:theme="@style/AppTheme.white"/>
+        <activity android:name=".activity.NewFriendsListActivity" />
+        <activity
+            android:name=".activity.RegisteActivity"
+            />
+
+        <activity
+            android:name=".activity.VerifyActivity"/>
+
+        <activity android:name=".activity.PayResultActivity" />
+        <activity
+            android:name=".activity.RedpacketDetailActivity"
+            android:theme="@style/AppTheme.red" />
+        <activity
+            android:name=".activity.ScoreDetailActivity"
+            android:theme="@style/AppTheme.score" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.NoteActivity"
+            android:theme="@style/AppTheme.white"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".activity.MyCollectActivity" />
+        <activity android:name=".activity.FeedBackActivity" />
+        <activity android:name=".activity.OrderListActivity" />
+        <activity android:name=".activity.ScoreListActivity" />
+        <activity android:name=".activity.BuyActivity" />
+        <activity android:name=".activity.WareOrderListActivity" />
+        <activity android:name=".activity.WaresOrderManagerListActivity" />
+        <activity android:name=".activity.ModifyLogisticActivity" />
+        <activity android:name=".activity.ShopKeeperOrderListActivity" />
+        <activity android:name=".activity.PayPwdActivity" />
+        <activity android:name=".activity.PrivateActivity" />
+        <activity android:name=".activity.AddressListActivity" />
+        <activity android:name=".activity.AddressActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity android:name=".activity.ShopSearchActivity" />
+        <activity android:name=".activity.TakePhoto" />
+        <activity android:name=".activity.UserCodeActivity" />
+        <activity android:name=".activity.SecurityActivity" />
+        <activity android:name=".activity.ResetPwdActivity" />
+        <activity android:name=".activity.InputPhoneActivity" />
+        <activity android:name="io.rong.imkit.activity.FileManagerActivity"
+            android:theme="@style/AppTheme.rong"
+            />
+        <activity android:name="io.rong.imkit.activity.FileListActivity"
+            android:theme="@style/AppTheme.rong"
+            />
+        <activity android:name=".activity.ImageSelectorActivity"
+            android:theme="@style/AppTheme.pic" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="wx66a83c9866ffe41c" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity android:name=".activity.ImagePreviewActivity" />
+        <activity android:name=".activity.PhotoActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity android:name=".crop.CropActivity"
+            android:theme="@style/AppTheme.blk" />
+        <activity
+            android:name=".activity.AboutActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.FileReaderActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.MapLocationActivity"
+            android:theme="@style/AppTheme.trans" />
+        <activity
+            android:name=".activity.VoiceTxtActivity"
+            android:theme="@style/AppTheme.blk"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".activity.CollectActivity" />
+        <activity
+            android:name=".activity.ComposeActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.HistoryActivity" />
+        <activity
+            android:name=".activity.OutlineActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.WebActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.PWebActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.TbsFileActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity android:name=".activity.ChatInfoActivity" />
+        <activity
+            android:name=".activity.ScoreCodeActivity"
+            android:theme="@style/AppTheme.code" />
+        <activity
+            android:name="com.tencent.smtt.sdk.VideoActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.tencent.smtt.tbs.video.PLAY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.ModifyNameActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.AvatarActivity"
+            android:theme="@style/AppTheme.blk" />
+        <activity
+            android:name=".activity.ImageActivity"
+            android:theme="@style/AppTheme.blk" />
+        <activity android:name=".activity.PayScoreActivity" />
+        <activity android:name=".activity.PPicturePagerActivity"
+            android:theme="@style/AppTheme.blk"
+            />
+        <activity android:name=".activity.FriendDetailActivity"
+            android:theme="@style/AppTheme.white"/>
+        <activity
+            android:name="io.rong.imkit.tools.RongWebviewActivity"
+             />
+        <activity
+            android:name="io.rong.imkit.widget.provider.TakingPicturesActivity"
+            android:configChanges="orientation|keyboardHidden"
+            />
+        <activity
+            android:name=".contactcard.activities.ContactDetailActivity"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <activity
+            android:name=".contactcard.activities.ContactListActivity"
+            />
+        <service android:name=".service.RecordingService"/>
+
+
+        <activity
+            android:name=".activity.ForwadSelectActivity"
+            android:label="发送给好友">
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <!--常见MimeType-->
+
+                <!--音视频-->
+                <data android:mimeType="video/*" />
+                <data android:mimeType="audio/*" />
+                <!--图片-->
+                <data android:mimeType="image/*" />
+                <!--文本-->
+                <data android:mimeType="text/*" />
+                <!--*、bin、class dms、exe等-->
+                <!--<data android:mimeType="application/octet-stream" />-->
+                <!--pdf-->
+                <data android:mimeType="application/pdf" />
+                <!--prf-->
+                <data android:mimeType="application/pics-rules" />
+                <!--pot pos ppt-->
+                <data android:mimeType="application/vnd.ms-powerpoint" />
+                <!--js-->
+                <data android:mimeType="application/x-javascript" />
+                <!--zip-->
+                <data android:mimeType="application/zip" />
+                <!--rar-->
+                <data android:mimeType="application/rar" />
+                <!--rar-->
+                <data android:mimeType="application/x-rar-compressed" />
+                <!--jar-->
+                <data android:mimeType="application/ava-archive" />
+                <!--tar-->
+                <data android:mimeType="application/x-tar" />
+                <!--tgz-->
+                <data android:mimeType="application/x-compressed" />
+                <!--zip-->
+                <data android:mimeType="application/x-zip-compressed" />
+
+                <!--ppt-->
+                <data android:mimeType="application/vnd.ms-powerpoint" />
+                <!--xls-->
+                <data android:mimeType="application/vnd.ms-excel" />
+                <!--doc、dot-->
+                <data android:mimeType="application/msword" />
+                <!--docx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <!--potx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.presentationml.template" />
+                <!--pptx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+                <!--xlsx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                <!--xltx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.template" />
+                <!--ppsx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.presentationml.slideshow" />
+                <!--dotx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.template" />
+            </intent-filter>
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.SEND" />
+                <!--常见MimeType-->
+
+                <!--音视频-->
+                <data android:mimeType="video/*" />
+                <data android:mimeType="audio/*" />
+                <!--图片-->
+                <data android:mimeType="image/*" />
+                <!--文本-->
+                <data android:mimeType="text/*" />
+                <!--*、bin、class dms、exe等-->
+                <!--<data android:mimeType="application/octet-stream" />-->
+                <!--pdf-->
+                <data android:mimeType="application/pdf" />
+                <!--prf-->
+                <data android:mimeType="application/pics-rules" />
+                <!--pot pos ppt-->
+                <data android:mimeType="application/vnd.ms-powerpoint" />
+                <!--js-->
+                <data android:mimeType="application/x-javascript" />
+                <!--zip-->
+                <data android:mimeType="application/zip" />
+                <!--rar-->
+                <data android:mimeType="application/rar" />
+                <!--rar-->
+                <data android:mimeType="application/x-rar-compressed" />
+                <!--jar-->
+                <data android:mimeType="application/ava-archive" />
+                <!--tar-->
+                <data android:mimeType="application/x-tar" />
+                <!--tgz-->
+                <data android:mimeType="application/x-compressed" />
+                <!--zip-->
+                <data android:mimeType="application/x-zip-compressed" />
+
+                <!--ppt-->
+                <data android:mimeType="application/vnd.ms-powerpoint" />
+                <!--xls-->
+                <data android:mimeType="application/vnd.ms-excel" />
+                <!--doc、dot-->
+                <data android:mimeType="application/msword" />
+                <!--docx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <!--potx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.presentationml.template" />
+                <!--pptx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+                <!--xlsx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                <!--xltx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.template" />
+                <!--ppsx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.presentationml.slideshow" />
+                <!--dotx-->
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.template" />
+            </intent-filter>
+            <!--<intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>-->
+        </activity>
+        <meta-data
+            android:name="RONG_CLOUD_APP_KEY"
+            android:value="uwd1c0sxu5qu1" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="yFHga4vFbFKGVu23ggunpIG1SpXym9mu" />
+<!--
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="2abddef9769859bc23ef28eec20d9eba" />
+-->
+            <!--android:value="pvxdm17jpeopr" />-->
+        <!--<provider
+            android:name=".PPFileProvider"
+            android:authorities="${applicationId}.PPFileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"
+                />
+        </provider>-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <service android:name="com.tencent.cloud.qcloudasrsdk.recorder.service.QCloudAudioMp3RecoderService" />
+        <receiver android:name="io.rong.imlib.ConnectChangeReceiver" />
+
+        <receiver
+            android:name="io.rong.imlib.HeartbeatReceiver"
+            android:process=":ipc" />
+        <receiver
+            android:name=".receiver.NotificationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MI_MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MESSAGE_CLICKED" />
+                <action android:name="io.rong.push.intent.MI_MESSAGE_CLICKED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="io.rong.imlib.ipc.RongService"
+            android:process=":ipc" />
+
+        <!--<receiver
+            android:name=".receiPPNotificationReceiveriver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MESSAGE_CLICKED" />
+                <action android:name="io.rong.push.intent.THIRD_PARTY_PUSH_STATE" />
+            </intent-filter>
+        </receiver>-->
+        <service android:name="io.rong.imlib.ReConnectService" />
+
+        <service android:name=".update.ApkUpdateService" />
+    </application>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+</manifest>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/shop_dialog_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/white_top_left_right_corner15"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.67"
+        app:layout_constraintStart_toStartOf="parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/invoice"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:id="@+id/close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/general_tran_gray_btn_selector">
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/close_voice" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/close"
+            android:layout_above="@+id/bottom"
+            android:layout_marginBottom="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp">
+
+                <TextView
+                    android:id="@+id/invoice_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="发票类型"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/elect_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/invoice_type"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/score_selection_bg"
+                    android:gravity="center"
+                    android:minWidth="120dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/elec_invoice"
+                    android:textColor="@color/theme_text_color"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/paper_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/invoice_type"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/elect_invoice"
+                    android:background="@drawable/background_blk_edge_gray_corner20"
+                    android:gravity="center"
+                    android:minWidth="120dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/paper_invoice"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/elect_invoice"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/invoice_tips" />
+
+                <TextView
+                    android:id="@+id/tag"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.7dp"
+                    android:layout_below="@+id/tips"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/gray_theme" />
+
+                <TextView
+                    android:id="@+id/invoice_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tag"
+                    android:layout_marginTop="15dp"
+                    android:text="发票抬头"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/personal_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/invoice_title"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/score_selection_bg"
+                    android:gravity="center"
+                    android:minWidth="120dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="8dp"
+                    android:text="个人"
+                    android:textColor="@color/theme_text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/company_invoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/invoice_title"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/elect_invoice"
+                    android:background="@drawable/background_blk_edge_gray_corner20"
+                    android:gravity="center"
+                    android:minWidth="120dp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="8dp"
+                    android:text="单位"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/personal_invoice"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/person_name_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+
+                        <TextView
+                            android:layout_width="90dp"
+                            android:layout_height="wrap_content"
+                            android:text="个人名称"
+                            android:textColor="@color/gray_text333_color"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/person_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/hint_invoice_personname"
+                            android:textSize="@dimen/text_size_16"
+                            android:textColor="@color/gray_text333_color" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/company_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/personal_invoice"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        >
+
+                        <LinearLayout
+                            android:id="@+id/company_name_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/enterprise_name"
+                                android:textColor="@color/gray_text333_color"
+                                android:textSize="16sp" />
+
+                            <EditText
+                                android:id="@+id/company_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:hint="@string/hint_enterprise_name"
+                                android:textColor="@color/gray_text333_color"
+                                android:textSize="@dimen/text_size_16"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tax_num"
+                                android:textColor="@color/gray_text333_color"
+                                android:textSize="16sp" />
+
+                            <EditText
+                                android:id="@+id/company_num"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:hint="@string/hint_tax_num"
+                                android:textSize="@dimen/text_size_16"
+                                android:textColor="@color/gray_text333_color" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/email_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/person_name_layout"
+                        android:layout_marginTop="15dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="90dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/invoice_email"
+                            android:textColor="@color/gray_text333_color"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/hint_invoice_email"
+                            android:textSize="@dimen/text_size_16"
+                            android:textColor="@color/gray_text333_color" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
+            />
+        </ScrollView>
+        <LinearLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            >
+            <TextView
+                android:id="@+id/no_invoice"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="5"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:text="@string/no_invoice"
+                android:textColor="@color/gray_text333_color"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/general_gray_theme_btn_selector"
+                />
+            <TextView
+                android:id="@+id/save"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="8"
+                android:layout_marginRight="15dp"
+                android:text="@string/confirm"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/background_theme_corner20"
+                android:layout_marginBottom="50dp"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

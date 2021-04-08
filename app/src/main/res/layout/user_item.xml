@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/general_listitem_selector"
+    android:orientation="horizontal"
+    >
+    <LinearLayout
+        android:id="@+id/item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        >
+        <com.ilesson.ppim.view.RoundImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/default_icon"
+            android:layout_marginLeft="15dp"
+            android:scaleType="centerCrop"
+            />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="16sp"
+            android:singleLine="true"
+            android:maxEms="10"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            />
+    </LinearLayout>
+</LinearLayout>

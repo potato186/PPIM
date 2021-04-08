@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shop_dialog_normal_animation"
+    android:oneshot="false" >
+
+    <item
+        android:drawable="@drawable/shop_dialog1"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/shop_dialog2"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/shop_dialog3"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/shop_dialog4"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/shop_dialog5"
+        android:duration="200"/>
+
+</animation-list>

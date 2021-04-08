@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:id="@+id/layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="10dp"
+        android:id="@+id/item_layout"
+        android:background="@drawable/background_gray_corner5">
+
+        <ImageView
+            android:id="@+id/loction_icon"
+            android:layout_width="25dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp"
+            android:src="@mipmap/location_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="30dp" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toEndOf="@+id/loction_icon"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
+            app:layout_constraintStart_toEndOf="@+id/loction_icon"
+            app:layout_constraintTop_toBottomOf="@+id/guideline"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="5dp"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+    <EditText
+        android:layout_width="10dp"
+        android:layout_height="60dp"
+        android:id="@+id/note_editting"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@null"
+        android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+        >
+
+    </EditText>
+</android.support.constraint.ConstraintLayout>
