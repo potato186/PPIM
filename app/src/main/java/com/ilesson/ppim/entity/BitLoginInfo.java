@@ -7,9 +7,46 @@ public class BitLoginInfo {
     private String token;
     private String rToken;
     private String bToken;
+    private String realName;
+    private String realNameSymbol;
+    private String sex;
+    private String birthday;
+
     private boolean pay;
     private String date;
     private long timeout;
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getRealNameSymbol() {
+        return realNameSymbol;
+    }
+
+    public void setRealNameSymbol(String realNameSymbol) {
+        this.realNameSymbol = realNameSymbol;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 
     public String getPhone() {
         return phone;

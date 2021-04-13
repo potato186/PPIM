@@ -9,7 +9,9 @@
         android:layout_height="45dp"
         android:layout_alignParentTop="true"
         android:background="@color/gray_theme"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone"
+        >
 
         <RelativeLayout
             android:id="@+id/back_btn"
@@ -32,13 +34,105 @@
             android:textColor="@color/gray_text333_color"
             android:textSize="18sp" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/close"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right"
+        android:background="@drawable/general_tran_gray_btn_selector">
 
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/blk_close" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/phone_registe"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/gray_text333_color"
+        android:textSize="22sp"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="真实姓名"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="@dimen/registe_font_size" />
+
+        <EditText
+            android:id="@+id/name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="100dp"
+            android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+            android:background="@null"
+            android:hint="@string/hint_input_name"
+            android:textSize="@dimen/registe_font_size" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_theme" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="姓名拼音"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="@dimen/registe_font_size" />
+
+        <EditText
+            android:id="@+id/pinyin_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="100dp"
+            android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+            android:background="@null"
+            android:hint="@string/hint_input_name_pinyin"
+            android:textSize="@dimen/registe_font_size" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_theme" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
@@ -66,7 +160,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/theme_color" />
+            android:background="@color/gray_theme" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -181,7 +275,7 @@
             android:background="@drawable/general_gray_btn_selector"
             android:padding="5dp"
             android:text="发送验证码"
-            android:textColor="@color/theme_color" />
+            android:textColor="@color/gray_text333_color" />
 
         <View
             android:layout_width="match_parent"
@@ -229,11 +323,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/to_verify"
         android:textSize="14sp"
-        android:textColor="@color/theme_color"
         android:text="@string/pwd_rule6"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/rc_new_message_divider_text_color"
         />
     <TextView
         android:id="@+id/registe"
@@ -244,7 +340,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/general_red_theme_corner5_selector"
         android:gravity="center"
-        android:text="@string/confirm"
+        android:text="@string/registe_btn"
         android:textColor="@color/white"
         android:textSize="16sp" />
 

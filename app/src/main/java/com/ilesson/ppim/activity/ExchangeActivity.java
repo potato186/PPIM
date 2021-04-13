@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -34,6 +35,7 @@ import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.view.RoundImageView;
+import com.ilesson.ppim.view.TagCloudView;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -88,14 +90,16 @@ public class ExchangeActivity extends BaseActivity {
     private View minus;
     @ViewInject(R.id.add)
     private View add;
+    @ViewInject(R.id.tag_cloud_view)
+    private TagCloudView tagCloudView;
     @ViewInject(R.id.num)
     private TextView selectNum;
     @ViewInject(R.id.exchange)
     private TextView exchangeBtn;
     @ViewInject(R.id.exchange_score_all)
     private TextView exchangeAll;
-    @ViewInject(R.id.recylerview)
-    private RecyclerView recyclerView;
+//    @ViewInject(R.id.recylerview)
+//    private RecyclerView recyclerView;
     public static final String ADDRESS_INFO = "address_info";
     public static final int SET_ADDRESS_SUCCESS_TO_USE = 2;
     DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
@@ -123,7 +127,7 @@ public class ExchangeActivity extends BaseActivity {
 //                return content.length();
 //            }
 //        });
-        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setLayoutManager(layoutManager);
         loadData();
     }
 
@@ -141,6 +145,11 @@ public class ExchangeActivity extends BaseActivity {
             return;
         }
         exchange();
+    }
+
+    @Event(value = R.id.wares_img)
+    private void wares_img(View view) {
+        ImagePreviewActivity.startPreview(this,selection.getImage());
     }
 
     @Event(value = R.id.minus)
@@ -302,9 +311,10 @@ public class ExchangeActivity extends BaseActivity {
                 addressInfos = scoreData.getAddress();
                 shop = scoreData.getShop();
                 if (addressInfos == null || addressInfos.isEmpty()) {
-                    return;
+                    addressInfo = null;
+                }else{
+                    addressInfo = addressInfos.get(0);
                 }
-                addressInfo = addressInfos.get(0);
                 showAdress();
                 List<Produces> produces = scoreData.getProduces();
                 produce = produces.get(0);
@@ -319,7 +329,18 @@ public class ExchangeActivity extends BaseActivity {
 //                    data.get(i).setName(name);
 //                }
                 RefreshAdapter adapter = new RefreshAdapter(selections);
-                recyclerView.setAdapter(adapter);
+//                recyclerView.setAdapter(adapter);
+                List<String> texts = new ArrayList<>();
+                for (Selections options : selections) {
+                    texts.add(options.getName().replace("\n",""));
+                }
+                tagCloudView.setTags(texts);
+                tagCloudView.setOnTagClickListener(new TagCloudView.OnTagClickListener() {
+                    @Override
+                    public void onTagClick(int position) {
+                        showProduce(position);
+                    }
+                });
                 showProduce(0);
             }
         } catch (Exception e) {
@@ -375,7 +396,11 @@ public class ExchangeActivity extends BaseActivity {
             tag.setText(addressInfo.getTag());
             userName.setText(addressInfo.getName());
             phone.setText(addressInfo.getPhone());
-            addressView.setText(addressInfo.getAddress());
+            String address = addressInfo.getAddress();
+            if(!TextUtils.isEmpty(addressInfo.getProvince())&&!address.contains(addressInfo.getProvince())){
+                address=addressInfo.getProvince()+address;
+            }
+            addressView.setText(address);
         }
     }
 

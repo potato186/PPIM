@@ -7,14 +7,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right"
+            android:background="@drawable/general_tran_gray_btn_selector">
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/blk_close" />
+        </RelativeLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="20dp"
             android:text="登录"
             android:textColor="@color/gray_text333_color"
-            android:textSize="20sp" />
+            android:textSize="22sp" />
         <RelativeLayout
             android:id="@+id/phone_code_layout"
             android:layout_width="match_parent"
@@ -87,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/theme_color" />
+                android:background="@color/gray_theme" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -123,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_alignParentBottom="true"
-                android:background="@color/theme_color" />
+                android:background="@color/gray_theme" />
         </RelativeLayout>
 
 

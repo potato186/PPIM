@@ -107,6 +107,7 @@
         <activity android:name=".activity.NewFriendsListActivity" />
         <activity
             android:name=".activity.RegisteActivity"
+            android:theme="@style/AppTheme.white"
             />
 
         <activity

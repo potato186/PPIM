@@ -161,6 +161,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     public TextView allPrice;
     public TextView ttsModify;
     public TextView waresPrice;
+    public TextView waresInfo;
     public TextView waresQuantity;
     public TextView invoiceType;
     public TextView invoiceType1;
@@ -208,6 +209,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private InvoiceInfo invoiceInfo;
     private List<InvoiceInfo> invoiceInfos;
     private SmartOrder smartOrder;
+    private boolean isOwner;
     public void onEventMainThread(Conversation conversation) {
         if (!isFinishing()) {
             finish();
@@ -221,7 +223,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 //        startActivity(intent);
     }
 
-    private int size;
+    private int groupSize;
     private int themeId;
 
     public void showShopTheme(boolean state) {
@@ -276,6 +278,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         phoneView = findViewById(R.id.phone_view);
         resultText = findViewById(R.id.result_text);
         waresName = findViewById(R.id.wares_name);
+        waresInfo = findViewById(R.id.wares_info);
         waresPrice = findViewById(R.id.wares_price);
         unitPrice = findViewById(R.id.unit_price);
         express = findViewById(R.id.express_fee_price);
@@ -422,8 +425,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             if (mTargetId.contains("market")) {
                 playTts = SPUtils.get(PLAY_TTS, true);
                 showPlayState();
-                request("",false);
-//                search("",false,0,0,"potato","475235210@qq.com","");
+                request("", false);
                 voiceLayout.setVisibility(View.VISIBLE);
                 handler.sendEmptyMessageDelayed(0, 200);
                 groupName = intent.getData().getQueryParameter("title");
@@ -465,7 +467,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             public void run() {
                 editTag.requestFocus();
             }
-        },500);
+        }, 500);
     }
 
     @Override
@@ -478,15 +480,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         Intent intent = getIntent();
         imUtils = new IMUtils();
         getIntentDate(intent);
-        imUtils.setOnAddListener(new IMUtils.OnQueryInfoListener() {
-            @Override
-            public void onResult(int num, String name) {
-                title = name;
-                size = num;
-                showTitle();
-            }
-        });
+//        imUtils.setOnAddListener(new IMUtils.OnQueryInfoListener() {
+//            @Override
+//            public void onResult(int num, String name) {
+//                title = name;
+//                groupSize = num;
+//                showTitle();
+//            }
+//        });
     }
+
     public static final String FINISH_CURRENT = "finish_current";
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -511,33 +514,37 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
         if (resultCode == INVOICE_MODIFY_SUCCESS) {
             invoiceInfo = (InvoiceInfo) data.getSerializableExtra(INVOICE_MODIFY);
-            for(InvoiceInfo info:invoiceInfos){
-                if(info.getType().equals(invoiceInfo.getType())){
+            for (InvoiceInfo info : invoiceInfos) {
+                if (info.getType().equals(invoiceInfo.getType())) {
                     info.setMedium(invoiceInfo.getMedium());
                     info.setTypeName(invoiceInfo.getTypeName());
                     info.setType(invoiceInfo.getType());
                     info.setName(invoiceInfo.getName());
                     info.setMediumName(invoiceInfo.getMediumName());
-                    if(!TextUtils.isEmpty(invoiceInfo.getEmail())) {
+                    if (!TextUtils.isEmpty(invoiceInfo.getEmail())) {
                         info.setEmail(invoiceInfo.getEmail());
                     }
-                    if(!TextUtils.isEmpty(invoiceInfo.getNumber())) {
+                    if (!TextUtils.isEmpty(invoiceInfo.getNumber())) {
                         info.setNumber(invoiceInfo.getNumber());
                     }
-                    if(!TextUtils.isEmpty(invoiceInfo.getEmail())) {
+                    if (!TextUtils.isEmpty(invoiceInfo.getEmail())) {
                         info.setEmail(invoiceInfo.getEmail());
                     }
                 }
             }
-            if(invoiceInfos==null||invoiceInfos.isEmpty()){
+            if (invoiceInfos == null || invoiceInfos.isEmpty()) {
                 invoiceInfos = new ArrayList<>();
                 invoiceInfos.add(invoiceInfo);
+            }
+            String tag = invoiceInfo.getType().equals(INVOICE_PERSON) ? getResources().getString(R.string.personal) : getResources().getString(R.string.enterprise);
+            if (null != lastOrder) {
+                lastOrder.setInvoicetag(tag);
             }
             showInvoiceView(invoiceInfo);
             return;
         }
         if (resultCode == INVOICE_CANCEL) {
-            invoiceTag=null;
+            invoiceTag = null;
             showInvoiceView(null);
             return;
         }
@@ -547,14 +554,14 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             return;
         }
         if (resultCode == SET_ADDRESS_SUCCESS_TO_USE) {
-            request(buyKey,false);
-        }else if (resultCode == SET_ADDRESS_SUCCESS) {
-            request(currentKey,false);
+            request(buyKey, false);
+        } else if (resultCode == SET_ADDRESS_SUCCESS) {
+            request(currentKey, false);
         }
     }
 
     private void showTitle() {
-        titleTextView.setText(title + "(" + size + ")");
+        titleTextView.setText(title + "(" + groupSize + ")");
     }
 
     private static final String TAG = "ConversationActivity";
@@ -635,9 +642,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         ///pp/group?action=info&token=%s&group=%s
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN, "");
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
-        params.addBodyParameter("action", "info");
-        params.addBodyParameter("token", token);
-        params.addBodyParameter("group", mTargetId);
+        params.addParameter("action", "info");
+        params.addParameter("token", token);
+        params.addParameter("group", mTargetId);
         Log.d(TAG, "exitGroup: " + params.toString());
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
@@ -660,6 +667,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         UserInfo user = new UserInfo(info.getPhone(), info.getName(), Uri.parse(info.getIcon()));
                         users.add(user);
                     }
+                    title = groupBase.getGroup().getName();
+                    groupSize = groupBase.getSize();
+                    showTitle();
                     RongIM.getInstance().setGroupMembersProvider(new RongIM.IGroupMembersProvider() {
                         @Override
                         public void getGroupMembers(String groupId, RongIM.IGroupMemberCallback callback) {
@@ -763,10 +773,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 out();
                 break;
             case R.id.menu:
-                    Intent intent = new Intent(this, ChatInfoActivity.class);
-                    intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
-                    intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
-                    startActivityForResult(intent, 0);
+                Intent intent = new Intent(this, ChatInfoActivity.class);
+                intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
+                intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
+                intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
+                startActivityForResult(intent, 0);
                 break;
             case R.id.to_pay:
                 if (null != api && null != req) {
@@ -780,14 +791,14 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 break;
             case R.id.to_set_address:
 //                if (!ButtonUtils.isFastDoubleClick(R.id.to_set_address)) {
-                    startActivityForResult(new Intent(ConversationActivity.this, AddressActivity.class), 0);
+                startActivityForResult(new Intent(ConversationActivity.this, AddressActivity.class), 0);
 //                }
                 break;
             case R.id.show_content:
-                    if (currentOrder != null && !TextUtils.isEmpty(currentOrder.getLink())) {
-                        Intent intent1 = new Intent(ConversationActivity.this, PWebActivity.class);
-                        intent1.putExtra(PWebActivity.URL, currentOrder.getLink());
-                        startActivity(intent1);
+                if (currentOrder != null && !TextUtils.isEmpty(currentOrder.getLink())) {
+                    Intent intent1 = new Intent(ConversationActivity.this, PWebActivity.class);
+                    intent1.putExtra(PWebActivity.URL, currentOrder.getLink());
+                    startActivity(intent1);
                 }
                 break;
             case R.id.shop_car:
@@ -805,126 +816,127 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
     }
 
-    private void showInvoiceContent(SmartOrder order){
+    private void showInvoiceContent(SmartOrder order) {
         invoiceInfos = order.getInvoice();
 //        invoiceInfos = new ArrayList<>();
-        String pName = SPUtils.get(PERSON_NAME+phone, "");
-        String cName = SPUtils.get(COMPANY_NAME+phone, "");
-        String eName = SPUtils.get(EMAIL_NAME+phone, "");
-        String cNum = SPUtils.get(COMPANY_NUM+phone, "");
-        String pMedium = SPUtils.get(PERSON_MEDIUM+phone, "");
-        String cMedium = SPUtils.get(COMPANY_MEDIUM+phone, "");
-        if(null!=invoiceInfos&&!invoiceInfos.isEmpty()){
-            for(InvoiceInfo invoiceInfo:invoiceInfos){
-                if(invoiceInfo.getType().equals(INVOICE_PERSON)){
-                    if(!TextUtils.isEmpty(pName)){
+        String pName = SPUtils.get(PERSON_NAME + phone, "");
+        String cName = SPUtils.get(COMPANY_NAME + phone, "");
+        String eName = SPUtils.get(EMAIL_NAME + phone, "");
+        String cNum = SPUtils.get(COMPANY_NUM + phone, "");
+        String pMedium = SPUtils.get(PERSON_MEDIUM + phone, "");
+        String cMedium = SPUtils.get(COMPANY_MEDIUM + phone, "");
+        if (null != invoiceInfos && !invoiceInfos.isEmpty()) {
+            for (InvoiceInfo invoiceInfo : invoiceInfos) {
+                if (invoiceInfo.getType().equals(INVOICE_PERSON)) {
+                    if (!TextUtils.isEmpty(pName)) {
                         invoiceInfo.setName(pName);
                     }
-                    if(!TextUtils.isEmpty(pMedium)){
+                    if (!TextUtils.isEmpty(pMedium)) {
                         invoiceInfo.setMedium(pMedium);
                     }
-                }else{
-                    if(!TextUtils.isEmpty(cName)){
+                } else {
+                    if (!TextUtils.isEmpty(cName)) {
                         invoiceInfo.setName(cName);
                     }
-                    if(!TextUtils.isEmpty(cNum)){
+                    if (!TextUtils.isEmpty(cNum)) {
                         invoiceInfo.setNumber(cNum);
                     }
-                    if(!TextUtils.isEmpty(cMedium)){
+                    if (!TextUtils.isEmpty(cMedium)) {
                         invoiceInfo.setMedium(cMedium);
                     }
                 }
-                if(!TextUtils.isEmpty(eName)){
+                if (!TextUtils.isEmpty(eName)) {
                     invoiceInfo.setEmail(eName);
                 }
             }
-        }else{
+        } else {
         }
         invoiceTag = order.getInvoicetag();
         invoiceInfo = null;
 
         invoiceLayout.setVisibility(View.GONE);
         noInvoiceLayout.setVisibility(View.GONE);
-        if(!TextUtils.isEmpty(invoiceTag)){
-            String tag=getResources().getString(R.string.personal).equals(invoiceTag)?INVOICE_PERSON:INVOICE_COMPANY;
-            if(null!=invoiceInfos&&invoiceInfos.size()>0){
-                for(InvoiceInfo info:invoiceInfos){
-                    if(info.getType().equals(tag)){
+        if (!TextUtils.isEmpty(invoiceTag)) {
+            String tag = getResources().getString(R.string.personal).equals(invoiceTag) ? INVOICE_PERSON : INVOICE_COMPANY;
+            if (null != invoiceInfos && invoiceInfos.size() > 0) {
+                for (InvoiceInfo info : invoiceInfos) {
+                    if (info.getType().equals(tag)) {
                         invoiceInfo = info;
                         break;
                     }
                 }
             }
-            if(null==invoiceInfo){
+            if (null == invoiceInfo) {
                 invoiceInfo = new InvoiceInfo();
-                if(tag.equals(INVOICE_PERSON)){
-                    if(!TextUtils.isEmpty(pName)){
+                if (tag.equals(INVOICE_PERSON)) {
+                    if (!TextUtils.isEmpty(pName)) {
                         invoiceInfo.setName(pName);
                     }
-                }else{
-                    if(!TextUtils.isEmpty(cName)){
+                } else {
+                    if (!TextUtils.isEmpty(cName)) {
                         invoiceInfo.setName(cName);
                     }
-                    if(!TextUtils.isEmpty(cNum)){
+                    if (!TextUtils.isEmpty(cNum)) {
                         invoiceInfo.setNumber(cNum);
                     }
                 }
-                if(!TextUtils.isEmpty(eName)){
+                if (!TextUtils.isEmpty(eName)) {
                     invoiceInfo.setEmail(eName);
                 }
                 invoiceInfo.setType(tag);
-                if(TextUtils.isEmpty(invoiceInfo.getName())){
+                if (TextUtils.isEmpty(invoiceInfo.getName())) {
                     setInvoice(invoiceInfo);
-                }else{
+                } else {
                     invoiceInfo.setMedium(INVOICE_ELECT);
                     invoiceInfo.setMediumName(getResources().getString(R.string.elec_invoice));
                     showInvoiceView(invoiceInfo);
                 }
-            }else{
+            } else {
                 showInvoiceView(invoiceInfo);
             }
-        }else{
+        } else {
             noInvoiceLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    private void showInvoiceView(InvoiceInfo invoice){
+    private void showInvoiceView(InvoiceInfo invoice) {
         invoiceLayout.setVisibility(View.GONE);
         noInvoiceLayout.setVisibility(View.GONE);
-        if(null==invoice){
+        if (null == invoice) {
             noInvoiceLayout.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             invoiceLayout.setVisibility(View.VISIBLE);
-            String title = invoice.getType().equals(INVOICE_PERSON)?getResources().getString(R.string.personal):getResources().getString(R.string.enterprise);
+            String title = invoice.getType().equals(INVOICE_PERSON) ? getResources().getString(R.string.personal) : getResources().getString(R.string.enterprise);
             invoiceType.setText(invoice.getMediumName());
             invoiceType1.setText(invoice.getMediumName());
             invoiceTitleType.setText(title);
             invoiceTitleName.setText(invoice.getName());
-            if(INVOICE_PERSON.equals(invoice.getType())){
+            if (INVOICE_PERSON.equals(invoice.getType())) {
                 taxNumLayout.setVisibility(View.GONE);
-            }else{
+            } else {
                 taxNumLayout.setVisibility(View.VISIBLE);
             }
-            if(!TextUtils.isEmpty(invoice.getNumber())){
+            if (!TextUtils.isEmpty(invoice.getNumber())) {
                 invoiceNum.setText(invoice.getNumber());
             }
-            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s),BigDecimalUtil.format(Double.valueOf((double)smartOrder.getAllPrice()/100))));
-            if(invoice.getMedium().equals(INVOICE_ELECT)){
+            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), BigDecimalUtil.format(Double.valueOf((double) smartOrder.getAllPrice() / 100))));
+            if (invoice.getMedium().equals(INVOICE_ELECT)) {
                 invoiceEmail.setText(invoice.getEmail());
                 emailLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 emailLayout.setVisibility(View.GONE);
             }
         }
     }
 
-    private void setInvoice(InvoiceInfo invoice){
-        Intent invoiceIntent = new Intent(ConversationActivity.this,InvoiceActivity.class);
-        invoiceIntent.putExtra(INVOICE_DATA,(Serializable)invoiceInfos);
-        invoiceIntent.putExtra(INVOICE_MODIFY,invoice);
-        startActivityForResult(invoiceIntent,0);
+    private void setInvoice(InvoiceInfo invoice) {
+        Intent invoiceIntent = new Intent(ConversationActivity.this, InvoiceActivity.class);
+        invoiceIntent.putExtra(INVOICE_DATA, (Serializable) invoiceInfos);
+        invoiceIntent.putExtra(INVOICE_MODIFY, invoice);
+        startActivityForResult(invoiceIntent, 0);
         overridePendingTransition(0, 0);
     }
+
     public String serverId;
 
     public void getServer() {
@@ -1012,8 +1024,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     handleContent(key);
                 }
 //                getServer();
-            }
-            else {
+            } else {
                 setVoiceBtnLocation();
             }
         }
@@ -1067,13 +1078,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         if (waresIntroView.getVisibility() == View.VISIBLE) {
             return;
         }
-        waresIntroView.setVisibility(View.VISIBLE);
-        shopLayout.setVisibility(View.VISIBLE);
-        ttsView.setVisibility(View.GONE);
-        requestText.setVisibility(View.GONE);
-        resultImageView.setVisibility(View.GONE);
-        helpTextView.setVisibility(View.VISIBLE);
-        helpTextView.setText(helpText);
+        if (lastOrder != null) {
+            showOrderState(lastOrder);
+        }
+//        waresIntroView.setVisibility(View.VISIBLE);
+//        shopLayout.setVisibility(View.VISIBLE);
+//        ttsView.setVisibility(View.GONE);
+//        requestText.setVisibility(View.GONE);
+//        resultImageView.setVisibility(View.GONE);
+//        helpTextView.setVisibility(View.VISIBLE);
+//        helpTextView.setText(helpText);
     }
 
     private boolean recording;
@@ -1114,9 +1128,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     public void onStop() {
         super.onStop();
-        if(recording){
+        if (recording) {
             stop(false);
-            if(!xunfei){
+            if (!xunfei) {
                 stopTencenVoice();
             }
         }
@@ -1160,12 +1174,13 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
 
     }
+
     private AddressInfo addressInfo;
     private String buyKey;
     private String invoiceTag;
 
     public void request(final String key, final boolean voice) {
-        if(key.length()>100){
+        if (key.length() > 100) {
             return;
         }
         currentKey = key;
@@ -1175,7 +1190,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         params.addParameter("action", "talk");
         params.addParameter("group", mTargetId);
         params.addParameter("key", key);
-        if(!TextUtils.isEmpty(invoiceTag)&&null!=invoiceInfo){
+        if (!TextUtils.isEmpty(invoiceTag) && null != invoiceInfo) {
             params.addParameter("invoice_type", invoiceInfo.getType());
             params.addParameter("invoice_medium", invoiceInfo.getMedium());
             params.addParameter("invoice_name", invoiceInfo.getName());
@@ -1206,9 +1221,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         toSetAddress.setVisibility(View.GONE);
                         noInvoiceLayout.setVisibility(View.GONE);
                         invoiceLayout.setVisibility(View.GONE);
-                        waresIntroView.setVisibility(View.GONE);
-                        resultImageView.setVisibility(View.GONE);
-                        addressLayout.setVisibility(View.GONE);
+//                        waresIntroView.setVisibility(View.GONE);
+//                        resultImageView.setVisibility(View.GONE);
+//                        addressLayout.setVisibility(View.GONE);
                         BaseCode<List<SmartOrder>> data = new Gson().fromJson(
                                 result,
                                 new TypeToken<BaseCode<List<SmartOrder>>>() {
@@ -1235,7 +1250,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 //                        }
                         if (!TextUtils.isEmpty(ttsm)) {
                             String text = getResources().getString(R.string.modify_tts);
-                            SpannableStringBuilder style = new SpannableStringBuilder(text+ttsm);
+                            SpannableStringBuilder style = new SpannableStringBuilder(text + ttsm);
                             style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_color)), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                             ttsModify.setText(style);
                             ttsModify.setVisibility(View.VISIBLE);
@@ -1250,7 +1265,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         if (playTts) {
                             ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
                         } else {
-                            if (!TextUtils.isEmpty(currentKey)&&voice) {
+                            if (!TextUtils.isEmpty(currentKey) && voice) {
                                 playerUtils.play();
                             } else {
                                 ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
@@ -1261,61 +1276,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             showContent(order);
                         } else if (data.getTag() == 1) {//订单
 //                            showContent.setVisibility(View.GONE);
-                            shopCarNum.setVisibility(View.GONE);
-                            shopCarView.setVisibility(View.GONE);
-                            userName.setText("");
-                            addressView.setText("");
-                            phoneView.setText("");
-                            waresNum.setText("x" + order.getNum());
-                            helpText = order.getHelp();
-                            resultText.setVisibility(View.GONE);
-                            roundImageView.setVisibility(View.GONE);
-                            addressLayout.setVisibility(View.VISIBLE);
-                            resultImageView.setVisibility(View.GONE);
-                            buyKey = currentKey;
-                            if (!TextUtils.isEmpty(order.getIcon())) {
-                                roundImageView.setVisibility(View.VISIBLE);
-                                Glide.with(ConversationActivity.this).load(order.getIcon()).into(roundImageView);
-                            }
-                            waresIntroView.setVisibility(View.VISIBLE);
-                            shopCarNum.setVisibility(View.VISIBLE);
-                            shopCarView.setVisibility(View.VISIBLE);
-                            if (!TextUtils.isEmpty(order.getSubUnit())) {
-                                waresQuantity.setText("/" + order.getSubUnit());
-                            }
-                            if (!TextUtils.isEmpty(order.getPname())) {
-                                waresName.setText(order.getPname());
-                            }
-                            if (!TextUtils.isEmpty(order.getName())) {
-                                userName.setText(order.getName());
-                            }
-                            if (order.getFeiPrice() >= 0) {
-                                //BigDecimalUtil.format(Double.valueOf(waresIntro.getPrice())/100)
-                                express.setText(String.format(getResources().getString(R.string.express_fee), BigDecimalUtil.format(Double.valueOf(order.getFeiPrice()) / 100)));
-                                express.setVisibility(View.VISIBLE);
-                            }
-                            if (order.getPrice() >= 0) {
-                                waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100)));
-                                waresPrice.setVisibility(View.VISIBLE);
-                            }
-                            if (order.getAllPrice() >= 0) {
-                                allPrice.setText(TextUtil.getFei(ConversationActivity.this, order.getAllPrice()));
-                                allPrice.setVisibility(View.VISIBLE);
-                            }
-                            if (order.getSubPrice() >= 0) {
-                                unitPrice.setText(getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100));
-                                unitPrice.setVisibility(View.VISIBLE);
-                            }
-                            if (!TextUtils.isEmpty(order.getAddress())) {
-                                addressView.setText(order.getAddress());
-                            }
-                            if (!TextUtils.isEmpty(order.getPhone())) {
-                                phoneView.setText(order.getPhone());
-                            }
-                            if(TextUtils.isEmpty(order.getInvoicetag())){
-                                noInvoiceLayout.setVisibility(View.VISIBLE);
-                            }
-                            showInvoiceContent(order);
+                            showOrderState(order);
                         } else if (data.getTag() == 3) {//没有地址
                             toSetAddress.setVisibility(View.VISIBLE);
                             addressLayout.setVisibility(View.GONE);
@@ -1333,8 +1294,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             if (!TextUtils.isEmpty(order.getSubUnit())) {
                                 waresQuantity.setText("/" + order.getSubUnit());
                             }
-                            if (!TextUtils.isEmpty(order.getPname())) {
-                                waresName.setText(order.getPname());
+                            if (!TextUtils.isEmpty(order.getSubName())) {
+                                waresName.setText(order.getSubName());
+                            }
+                            if (!TextUtils.isEmpty(order.getText())) {
+                                waresInfo.setText(order.getSubDesc());
                             }
                             if (!TextUtils.isEmpty(order.getName())) {
                                 userName.setText(order.getName());
@@ -1347,10 +1311,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                                 waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(price / 100)));
                                 waresPrice.setVisibility(View.VISIBLE);
                             }
-                            if (order.getAllPrice() >= 0) {
-                                allPrice.setText(TextUtil.getFei(ConversationActivity.this, order.getAllPrice()));
-                                allPrice.setVisibility(View.VISIBLE);
-                            }
+//                            if (order.getAllPrice() >= 0) {
+//                                allPrice.setText(TextUtil.getFei(ConversationActivity.this, order.getAllPrice()));
+//                                allPrice.setVisibility(View.VISIBLE);
+//                            }
                             if (order.getSubPrice() >= 0) {
                                 unitPrice.setText(getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100));
                                 unitPrice.setVisibility(View.VISIBLE);
@@ -1368,20 +1332,17 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 //                            handler.sendEmptyMessageDelayed(4, 3000);
 //                            shopLayout.setVisibility(View.GONE);
 //                            RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE,"13823039350",title+getString(R.string.custom_server));
-                        }else if (data.getTag() == 6) {
+                        } else if (data.getTag() == 6) {
                             waresIntroView.setVisibility(View.GONE);
                             addressInfo = base.getExtra();
-                            if(!playTts){
+                            if (!playTts) {
                                 modifyAddress();
                             }
-                        }
-                        else if (data.getTag() == 8) {
+                        } else if (data.getTag() == 8) {
 
-                        }
-                        else if (data.getTag() == 9) {
+                        } else if (data.getTag() == 9) {
 //                            toOrderList();
-                        }
-                        else if (data.getTag() == 10) {
+                        } else if (data.getTag() == 10) {
 //                            toOrderList();
                         }
                     }
@@ -1411,19 +1372,84 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         });
     }
 
-    private void toOrderList(){
-        Intent intent = new Intent(ConversationActivity.this,WareOrderListActivity.class);
+    private SmartOrder lastOrder;
+
+    private void showOrderState(SmartOrder order) {
+        lastOrder = order;
+        shopCarNum.setVisibility(View.GONE);
+        shopCarView.setVisibility(View.GONE);
+        userName.setText("");
+        addressView.setText("");
+        phoneView.setText("");
+        waresNum.setText("x" + order.getNum());
+        helpText = order.getHelp();
+        resultText.setVisibility(View.GONE);
+        roundImageView.setVisibility(View.GONE);
+        addressLayout.setVisibility(View.VISIBLE);
+        resultImageView.setVisibility(View.GONE);
+        buyKey = currentKey;
+        if (!TextUtils.isEmpty(order.getIcon())) {
+            roundImageView.setVisibility(View.VISIBLE);
+            Glide.with(ConversationActivity.this).load(order.getIcon()).into(roundImageView);
+        }
+        waresIntroView.setVisibility(View.VISIBLE);
+        shopCarNum.setVisibility(View.VISIBLE);
+        shopCarView.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(order.getSubUnit())) {
+            waresQuantity.setText("/" + order.getSubUnit());
+        }
+        if (!TextUtils.isEmpty(order.getSubName())) {
+            waresName.setText(order.getSubName());
+        }
+        if (!TextUtils.isEmpty(order.getText())) {
+            waresInfo.setText(order.getText());
+        }
+        if (!TextUtils.isEmpty(order.getName())) {
+            userName.setText(order.getName());
+        }
+        if (order.getFeiPrice() >= 0) {
+            //BigDecimalUtil.format(Double.valueOf(waresIntro.getPrice())/100)
+            express.setText(String.format(getResources().getString(R.string.express_fee), BigDecimalUtil.format(Double.valueOf(order.getFeiPrice()) / 100)));
+            express.setVisibility(View.VISIBLE);
+        }
+        if (order.getPrice() >= 0) {
+            waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100)));
+            waresPrice.setVisibility(View.VISIBLE);
+        }
+        if (order.getAllPrice() >= 0) {
+            allPrice.setText(TextUtil.getFei(ConversationActivity.this, order.getAllPrice()));
+            allPrice.setVisibility(View.VISIBLE);
+        }
+        if (order.getSubPrice() >= 0) {
+            unitPrice.setText(getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100));
+            unitPrice.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(order.getAddress())) {
+            addressView.setText(order.getAddress());
+        }
+        if (!TextUtils.isEmpty(order.getPhone())) {
+            phoneView.setText(order.getPhone());
+        }
+        if (TextUtils.isEmpty(order.getInvoicetag())) {
+            noInvoiceLayout.setVisibility(View.VISIBLE);
+        }
+        showInvoiceContent(order);
+    }
+
+    private void toOrderList() {
+        Intent intent = new Intent(ConversationActivity.this, WareOrderListActivity.class);
         startActivity(intent);
     }
-    private void modifyAddress(){
-        Intent intent = new Intent(ConversationActivity.this,AddressActivity.class);
-        if(null==addressInfo){
-            intent.setClass(this,AddressListActivity.class);
+
+    private void modifyAddress() {
+        Intent intent = new Intent(ConversationActivity.this, AddressActivity.class);
+        if (null == addressInfo) {
+            intent.setClass(this, AddressListActivity.class);
         }
-        intent.putExtra(AddressActivity.CURRENTADDRESS,addressInfo);
+        intent.putExtra(AddressActivity.CURRENTADDRESS, addressInfo);
         intent.putExtra(ExchangeActivity.ADDRESS_INFO, true);
-        intent.putExtra(AddressActivity.ACTION_MODIFY_BUY,true);
-        startActivityForResult(intent,99);
+        intent.putExtra(AddressActivity.ACTION_MODIFY_BUY, true);
+        startActivityForResult(intent, 99);
     }
 
 
@@ -1500,9 +1526,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             public void onTTSFinish(int type) {
                 if (type == 6) {
                     modifyAddress();
-                }else if(type==5){
+                } else if (type == 5) {
                     getServer();
-                }else if(type==8||type==9||type==10){
+                } else if (type == 8 || type == 9 || type == 10) {
                     toOrderList();
                 }
             }
@@ -1512,9 +1538,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 
             }
         });
-            SpeechUtility.createUtility(ConversationActivity.this,
-                    getResources().getString(R.string.xunfei_appid));
-            initIfey();
+        SpeechUtility.createUtility(ConversationActivity.this,
+                getResources().getString(R.string.xunfei_appid));
+        initIfey();
     }
 
     public void toSpeech() {
@@ -1577,7 +1603,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         anim = AnimationUtils.loadAnimation(this, R.anim.voice_view_anim);
     }
 
-    private void showVolume(int volume){
+    private void showVolume(int volume) {
         int p = (last + volume) / 2;
         last = p;
         index = volume;
@@ -1604,9 +1630,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         if (requestText.getVisibility() == View.GONE && !TextUtils.isEmpty(content)) {
             requestText.setVisibility(View.VISIBLE);
         }
-        content = content.replace("，","").replace("。","").replace("！","").replace("？","");
+        content = content.replace("，", "").replace("。", "").replace("！", "").replace("？", "");
         requestText.setText(content);
-        request(content,true);
+        request(content, true);
     }
 
     @Event(R.id.voice_icon)
@@ -1623,7 +1649,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         Log.d(TAG, "record_view: stop();");
                         stop(true);
                     } else {
-                            start();
+                        start();
                     }
                 } else {
                     Toast.makeText(ConversationActivity.this, R.string.no_permission, Toast.LENGTH_SHORT).show();
@@ -1638,6 +1664,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         shopCarView.setVisibility(View.GONE);
         shopCarNum.setVisibility(View.GONE);
     }
+
     public void onEventMainThread(AddressInfo var) {
 //        search(buyKey,false);
     }
@@ -1649,6 +1676,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private AudioRecognizeTimeoutListener audioRecognizeTimeoutListener;
     private AudioRecognizeStateListener audioRecognizeStateListener;
     boolean dontHaveResult = true;
+
     private void startTencenVoice() {
         int appid = Integer.valueOf(PPConfig.apppId);
         int projectid = 1217813;
@@ -1666,19 +1694,19 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 
                     resMap.put(String.valueOf(seq), result.getText());
                     final String msg = buildMessage(resMap);
-                    Log.d(TAG, "onSliceSuccess: "+msg);
+                    Log.d(TAG, "onSliceSuccess: " + msg);
                     // 返回语音分片的识别结果
                 }
 
                 @Override
                 public void onSegmentSuccess(AudioRecognizeRequest audioRecognizeRequest, AudioRecognizeResult result, int seq) {
                     handler.removeMessages(5);
-                    handler.sendEmptyMessageDelayed(5,500);
+                    handler.sendEmptyMessageDelayed(5, 500);
                     // 返回语音流的识别结果
                     dontHaveResult = true;
                     resMap.put(String.valueOf(seq), result.getText());
                     final String msg = buildMessage(resMap);
-                    Log.d(TAG, "onSegmentSuccess: "+msg);
+                    Log.d(TAG, "onSegmentSuccess: " + msg);
                 }
 
                 @Override
@@ -1717,7 +1745,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         @Override
                         public void run() {
                             final String msg = buildMessage(resMap);
-                            stop(TextUtils.isEmpty(msg)?false:true);
+                            stop(TextUtils.isEmpty(msg) ? false : true);
                         }
                     });
                 }
@@ -1739,7 +1767,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                  */
                 @Override
                 public void onVoiceFlowFinishRecognize(AudioRecognizeRequest request, int seq) {
-                    Log.d(TAG, "onVoiceFlowFinishRecognize: "+request);
+                    Log.d(TAG, "onVoiceFlowFinishRecognize: " + request);
                 }
 
                 /**
@@ -1767,25 +1795,25 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                  */
                 @Override
                 public void onVoiceVolume(AudioRecognizeRequest request, final int volume) {
-                    Log.d(TAG, "onVoiceVolume: "+volume);
-                    showVolume(volume/3);
+                    Log.d(TAG, "onVoiceVolume: " + volume);
+                    showVolume(volume / 3);
                 }
 
             };
             AudioRecognizeRequest.Builder builder = new AudioRecognizeRequest.Builder();
 
-            boolean isSaveAudioRecordFiles=false;//默认是关的 false
+            boolean isSaveAudioRecordFiles = false;//默认是关的 false
             // 初始化识别请求
             audioRecognizeRequest = builder
 //                        .pcmAudioDataSource(new AudioRecordDataSource()) // 设置数据源
                     .pcmAudioDataSource(new AudioRecordDataSource(isSaveAudioRecordFiles)) // 设置数据源
                     //.templateName(templateName) // 设置模板
-                    .template(new AudioRecognizeTemplate("16k_ca",0,0)) // 设置自定义模板
+                    .template(new AudioRecognizeTemplate("16k_ca", 0, 0)) // 设置自定义模板
                     .setFilterDirty(1)  // 0 ：默认状态 不过滤脏话 1：过滤脏话
                     .setFilterModal(0) // 0 ：默认状态 不过滤语气词  1：过滤部分语气词 2:严格过滤
                     .setFilterPunc(2) // 0 ：默认状态 不过滤句末的句号 1：滤句末的句号
                     .setConvert_num_mode(1) //1：默认状态 根据场景智能转换为阿拉伯数字；0：全部转为中文数字。
-                        .setVadSilenceTime(2000) // 语音断句检测阈值，静音时长超过该阈值会被认为断句（多用在智能客服场景，需配合 needvad = 1 使用） 默认不传递该参数
+                    .setVadSilenceTime(2000) // 语音断句检测阈值，静音时长超过该阈值会被认为断句（多用在智能客服场景，需配合 needvad = 1 使用） 默认不传递该参数
                     .setNeedvad(1) //0：关闭 vad，1：默认状态 开启 vad。
                     .setHotWordId("2d36d9727d7e11eb80b3446a2eb5fd98")//热词 id。用于调用对应的热词表，如果在调用语音识别服务时，不进行单独的热词 id 设置，自动生效默认热词；如果进行了单独的热词 id 设置，那么将生效单独设置的热词 id。
                     .build();
@@ -1836,18 +1864,20 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }).start();
     }
 
-    private void stopTencenVoice(){
+    private void stopTencenVoice() {
         floatBtn.setBackgroundResource(imgs[0]);
         floatBtn.clearAnimation();
-                if (aaiClient!=null) {
-                    //停止语音识别，等待当前任务结束
-                    boolean state = aaiClient.stopAudioRecognize(currentRequestId);
-                    aaiClient.cancelAudioRecognize(currentRequestId);
-                    aaiClient.release();
-                    Log.d(TAG, "stopTencenVoice: "+state);
-                }
+        if (aaiClient != null) {
+            //停止语音识别，等待当前任务结束
+            boolean state = aaiClient.stopAudioRecognize(currentRequestId);
+            aaiClient.cancelAudioRecognize(currentRequestId);
+            aaiClient.release();
+            Log.d(TAG, "stopTencenVoice: " + state);
+        }
     }
+
     LinkedHashMap<String, String> resMap = new LinkedHashMap<>();
+
     private String buildMessage(Map<String, String> msg) {
 
         StringBuffer stringBuffer = new StringBuffer();

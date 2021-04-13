@@ -33,8 +33,11 @@ import com.ilesson.ppim.entity.Shop;
 import com.ilesson.ppim.entity.WaresDetialData;
 import com.ilesson.ppim.utils.BigDecimalUtil;
 import com.ilesson.ppim.utils.Constants;
+import com.ilesson.ppim.utils.PPScreenUtils;
+import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.view.RoundImageView;
+import com.ilesson.ppim.view.TagCloudView;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -48,6 +51,7 @@ import org.xutils.x;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.rong.eventbus.EventBus;
@@ -103,8 +107,8 @@ public class BuyActivity extends BaseActivity {
     private View add;
     @ViewInject(R.id.num)
     private TextView selectNum;
-    @ViewInject(R.id.exchange)
-    private TextView exchangeBtn;
+    @ViewInject(R.id.tag_cloud_view)
+    private TagCloudView tagCloudView;
     @ViewInject(R.id.exchange_score_all)
     private TextView exchangeAll;
     @ViewInject(R.id.recylerview)
@@ -127,6 +131,8 @@ public class BuyActivity extends BaseActivity {
     public TextView invoicePrice;
     @ViewInject(R.id.invoice_email)
     public TextView invoiceEmail;
+
+
     public static final String ADDRESS_INFO = "address_info";
     public static final int SET_ADDRESS_SUCCESS_TO_USE = 2;
 //    private ScoreInfo scoreInfo=new ScoreInfo();
@@ -143,6 +149,12 @@ public class BuyActivity extends BaseActivity {
         int pid = getIntent().getIntExtra(PRODUCT_ID,0);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         phone = SPUtils.get(USER_PHONE, "");
+        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this,2));
+//        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION,PPScreenUtils.dip2px(this,10));
+//        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION,PPScreenUtils.dip2px(this,10));
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,PPScreenUtils.dip2px(this,2));
+        recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
 //        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
 //            @Override
 //            public int getSpanSize(int position) {
@@ -152,7 +164,8 @@ public class BuyActivity extends BaseActivity {
 //            }
 //        });
         recyclerView.setLayoutManager(layoutManager);
-            loadData(pid);
+
+        loadData(pid);
     }
 
     private static final String TAG = "BuyActivity";
@@ -162,6 +175,10 @@ public class BuyActivity extends BaseActivity {
         finish();
     }
 
+    @Event(value = R.id.wares_img)
+    private void wares_img(View view) {
+        ImagePreviewActivity.startPreview(this,selection.getImage());
+    }
     @Event(value = R.id.no_invoice)
     private void no_invoice(View view) {
         setInvoice(null);
@@ -244,7 +261,7 @@ public class BuyActivity extends BaseActivity {
             invoiceType1.setText(invoice.getMediumName());
             invoiceTitleType.setText(title);
             invoiceTitleName.setText(invoice.getName());
-            invoicePrice.setText(total+"");
+            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), total+""));
 //            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan),smartOrder.getAllPrice()));
             if(invoice.getMedium().equals(INVOICE_ELECT)){
                 invoiceEmail.setText(invoice.getEmail());
@@ -263,12 +280,12 @@ public class BuyActivity extends BaseActivity {
         overridePendingTransition(0, 0);
     }
     private double total;
-    private double fei;
+    private double freight;
 
     public void setAllScore() {
         double waresp = Double.valueOf(num * selection.getPrice())/ 100;
-        total = waresp+fei;
-        String feiText = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(total) / 100));
+        total = waresp+ freight;
+        String feiText = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(freight) / 100));
         String price = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(waresp));
         String text = String.format(getResources().getString(R.string.all_format_rmb), total + "");
         int length = String.valueOf(total).length();
@@ -445,9 +462,10 @@ public class BuyActivity extends BaseActivity {
                 addressInfos = waresDetialData.getAddress();
                 shop = waresDetialData.getShop();
                 if (addressInfos == null || addressInfos.isEmpty()) {
-                    return;
+                    addressInfo = null;
+                }else{
+                    addressInfo = addressInfos.get(0);
                 }
-                addressInfo = addressInfos.get(0);
                 showAdress();
 //                List<Produces> produces = scoreData.getProduces();
 //                produce = waresDetialData.getProduce();
@@ -464,8 +482,19 @@ public class BuyActivity extends BaseActivity {
 //                    data.get(i).setName(name);
 //                }
                 RefreshAdapter adapter = new RefreshAdapter(selections);
-                recyclerView.setAdapter(adapter);
+//                recyclerView.setAdapter(adapter);
+                List<String> texts = new ArrayList<>();
+                for (Options options : selections) {
+                    texts.add(options.getName().replace("\n",""));
+                }
                 showProduce(0);
+                tagCloudView.setTags(texts);
+                tagCloudView.setOnTagClickListener(new TagCloudView.OnTagClickListener() {
+                    @Override
+                    public void onTagClick(int position) {
+                        showProduce(position);
+                    }
+                });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -476,7 +505,13 @@ public class BuyActivity extends BaseActivity {
 
     private void showProduce(int index) {
         total = 0;
+        num=1;
         selection = selections.get(index);
+        if(addressInfo!=null&&addressInfo.getAddress().contains(getResources().getString(R.string.default_province))){
+            freight =selection.getFei_in();
+        }else{
+            freight =selection.getFei_out();
+        }
 //        mostNum = scoreInfo.getValue() / selection.getScoreget();
         Glide.with(getApplicationContext()).load(selection.getImage()).into(imageView);
         waresName.setText(produce.getName());
@@ -551,7 +586,11 @@ public class BuyActivity extends BaseActivity {
             tag.setText(addressInfo.getTag());
             userName.setText(addressInfo.getName());
             phoneView.setText(addressInfo.getPhone());
-            addressView.setText(addressInfo.getAddress());
+            String address = addressInfo.getAddress();
+            if(!TextUtils.isEmpty(addressInfo.getProvince())&&!address.contains(addressInfo.getProvince())){
+                address=addressInfo.getProvince()+address;
+            }
+            addressView.setText(address);
         }
     }
 
@@ -648,36 +687,4 @@ public class BuyActivity extends BaseActivity {
         private TextView lastItem;
     }
 
-//    private void showSuccessDialog(){
-//        View view = getLayoutInflater().inflate(R.layout.privacy_dialog,null);
-//        final AlertDialog dialog = new AlertDialog.Builder(this)
-//                .setView(view).create();
-//        TextView title = (TextView) view.findViewById(R.id.title);
-//        title.setText(R.string.exchange_success);
-//        TextView scoreTv = (TextView) view.findViewById(R.id.content);
-//        String tips = String.format(getResources().getString(R.string.exchange_detail),shop.getName(),selection.getName(),num,selection.getUnit());
-//        scoreTv.setText(tips);
-//        TextView left = (TextView) view.findViewById(R.id.left_btn);
-//        TextView right = (TextView) view.findViewById(R.id.right_btn);
-//        left.setText(R.string.scan_ordre);
-//        right.setText(R.string.continue_exchange);
-//        dialog.setCanceledOnTouchOutside(false);
-//        scoreTv.setMovementMethod(LinkMovementMethod.getInstance());
-//        left.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//                startActivity(new Intent(BuyActivity.this,WareOrderListActivity.class));
-//                finish();
-//            }
-//        });
-//        right.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//                finish();
-//            }
-//        });
-//        dialog.show();
-//    }
 }

@@ -46,7 +46,7 @@ public class ImagePreviewActivity extends BaseActivity {
     private PreviewViewPager viewPager;
     public static final String ONLY_PREVIEW = "only_preview";
     public static final String NO_INDEX = "no_index";
-    private boolean onlyPreview;
+    public boolean onlyPreview;
     private boolean noIndex;
     private int position;
     private int maxSelectNum;
@@ -63,6 +63,14 @@ public class ImagePreviewActivity extends BaseActivity {
         intent.putExtra(EXTRA_PREVIEW_SELECT_LIST, (ArrayList) selectImages);
         intent.putExtra(EXTRA_POSITION, position);
         intent.putExtra(EXTRA_MAX_SELECT_NUM, maxSelectNum);
+        context.startActivityForResult(intent, REQUEST_PREVIEW);
+    }
+    public static void startPreview(Activity context,String path) {
+        Intent intent = new Intent(context, ImagePreviewActivity.class);
+        final List<LocalMedia> images = new ArrayList<>();
+        images.add(new LocalMedia(path.toString()));
+        intent.putExtra(EXTRA_PREVIEW_LIST, (ArrayList) images);
+        intent.putExtra(ONLY_PREVIEW,true);
         context.startActivityForResult(intent, REQUEST_PREVIEW);
     }
 
@@ -82,6 +90,9 @@ public class ImagePreviewActivity extends BaseActivity {
         images = (List<LocalMedia>) getIntent().getSerializableExtra(EXTRA_PREVIEW_LIST);
         position = getIntent().getIntExtra(EXTRA_POSITION, 1);
         selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(EXTRA_PREVIEW_SELECT_LIST);
+        if(null==selectImages){
+            selectImages = new ArrayList<>();
+        }
         maxSelectNum = getIntent().getIntExtra(EXTRA_MAX_SELECT_NUM, 3);
 
         barLayout = (LinearLayout) findViewById(R.id.bar_layout);

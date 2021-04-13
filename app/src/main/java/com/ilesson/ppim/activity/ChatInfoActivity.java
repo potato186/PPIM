@@ -22,7 +22,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
-import com.ilesson.ppim.entity.GroupBase;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
@@ -83,6 +82,7 @@ public class ChatInfoActivity extends BaseActivity{
     private static final String TAG = "ChatInfoActivity";
     public static final String GROUP_ID = "group_id";
     public static final String GROUP_NAME = "group_name";
+    public static final String ISOWNER = "isOwner";
     private String name;
     private String groupId;
     DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
@@ -94,6 +94,11 @@ public class ChatInfoActivity extends BaseActivity{
         setStatusBarLightMode(this,true);
         groupId = getIntent().getStringExtra(GROUP_ID);
         name = getIntent().getStringExtra(GROUP_NAME);
+        isOwner = getIntent().getBooleanExtra(ISOWNER,false);
+        if(isOwner){
+            delete.setVisibility(View.VISIBLE);
+            shopList.setVisibility(View.VISIBLE);
+        }
         groupName.setText(name);
         datas = new ArrayList<>();
         adapter = new UserAdapter(datas);
@@ -376,28 +381,23 @@ public class ChatInfoActivity extends BaseActivity{
         ///pp/group?action=info&token=%s&group=%s
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN,"");
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
-        params.addBodyParameter("action", "info");
-        params.addBodyParameter("token", token);
-        params.addBodyParameter("group", groupId);
+        params.addParameter("action", "list");
+        params.addParameter("token", token);
+        params.addParameter("page", 0);
+        params.addParameter("size", 3000);
+        params.addParameter("group", groupId);
         showProgress();
         Log.d(TAG, "exitGroup: " + params.toString());
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 Log.d(TAG, "onSuccess: =" + result);
-                BaseCode<GroupBase> base = new Gson().fromJson(
+                BaseCode<List<PPUserInfo>> base = new Gson().fromJson(
                         result,
-                        new TypeToken<BaseCode<GroupBase>>() {
+                        new TypeToken<BaseCode<List<PPUserInfo>>>() {
                         }.getType());
                 if (base.getCode() == 0) {
-                    GroupBase groupBase = base.getData();
-                    isOwner = groupBase.isOwner();
-                    if(isOwner){
-                        delete.setVisibility(View.VISIBLE);
-                        shopList.setVisibility(View.VISIBLE);
-                    }
-
-                    List<PPUserInfo> list = groupBase.getMembers();
+                    List<PPUserInfo> list = base.getData();
                     freshInfo(list);
                 } else {
                     Toast.makeText(ChatInfoActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();

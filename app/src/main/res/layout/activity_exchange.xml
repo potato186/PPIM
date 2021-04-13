@@ -50,19 +50,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/white"
-            android:paddingLeft="15dp"
             >
             <RelativeLayout
                 android:id="@+id/address_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
                 android:background="@drawable/white_gray_btn_selector"
                 >
                 <RelativeLayout
                     android:id="@+id/no_address_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:minHeight="60dp"
                     android:layout_toLeftOf="@+id/arrow"
                     android:visibility="gone"
                     >
@@ -171,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/white"
+                android:layout_marginLeft="15dp"
                 >
                 <com.ilesson.ppim.view.RoundImageView
                     android:layout_width="95dp"
@@ -229,6 +231,7 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical|right"
                 android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -236,11 +239,28 @@
                 android:text="@string/wares_type"
                 android:textColor="@color/gray_text333_color"
                 android:textSize="16sp"
+                android:layout_marginLeft="15dp"
+                />
+
+            <com.ilesson.ppim.view.TagCloudView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/tag_cloud_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                app:tcvItemBorderHorizontal="8dp"
+                app:tcvItemBorderVertical="10dp"
+                app:tcvTextColor="@color/gray_text333_color"
+                app:tcvCanTagClick="true"
                 />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recylerview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -248,6 +268,7 @@
                 android:textColor="@color/gray_text333_color"
                 android:textSize="16sp"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
                 />
             <TextView
                 android:id="@+id/least"
@@ -256,10 +277,12 @@
                 android:text="最少兑换"
                 android:textColor="@color/helptext_color"
                 android:textSize="14sp"
+                android:layout_marginLeft="15dp"
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
                 >
                 <TextView
                     android:id="@+id/most"

@@ -1,12 +1,12 @@
 package com.ilesson.ppim.activity;
 
-import android.Manifest;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,9 +25,9 @@ import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.ContryCode;
-import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.SmsInfo;
 import com.ilesson.ppim.utils.Constants;
+import com.ilesson.ppim.utils.TextUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.common.util.MD5;
@@ -44,14 +44,16 @@ import java.util.regex.Pattern;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 
-import static com.ilesson.ppim.activity.ResetPwdActivity.RESET_LOGIN_PWD;
-
 /**
  * Created by potato on 2020/3/5.
  */
 @ContentView(R.layout.activity_registe)
 public class RegisteActivity extends BaseActivity{
 
+    @ViewInject(R.id.name_edit)
+    private EditText nameEdit;
+    @ViewInject(R.id.pinyin_edit)
+    private EditText pinyinEdit;
     @ViewInject(R.id.nike_edit)
     private EditText nickEdit;
     @ViewInject(R.id.phone_edit)
@@ -75,13 +77,32 @@ public class RegisteActivity extends BaseActivity{
         setStatusBarLightMode(this,true);
         SMSSDK.registerEventHandler(eh);
         getContry();
+        nameEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                pinyinEdit.setText(TextUtil.getPinyin(s.toString()));
+                if(!TextUtils.isEmpty(s)){
+
+                }
+            }
+        });
 //        checkPermissions();
     }
     @Event(value = R.id.registe)
     private void registe(View view) throws DbException {
         registe();
     }
-    @Event(value = R.id.back_btn)
+    @Event(value = R.id.close)
     private void back_btn(View view) throws DbException {
         finish();
     }
@@ -209,12 +230,12 @@ public class RegisteActivity extends BaseActivity{
                 case TIME:
                     if (time > 0) {
                         mGetCodeTextView.setText(time+getResources().getString(R.string.get_code_again_time));
-                        mGetCodeTextView.setTextColor(getResources().getColor(R.color.grey_color));
+//                        mGetCodeTextView.setTextColor(getResources().getColor(R.color.gray_text333_color));
                         time--;
                         handleros.sendEmptyMessageDelayed(TIME, delayed);
                     } else {
                         mGetCodeTextView.setText(R.string.get_code_again);
-                        mGetCodeTextView.setTextColor(getResources().getColor(R.color.theme_color));
+//                        mGetCodeTextView.setTextColor(getResources().getColor(R.color.gray_text333_color));
                         mGetCodeTextView.setEnabled(true);
                         time=60;
                     }
@@ -232,6 +253,16 @@ public class RegisteActivity extends BaseActivity{
         }
     };
     private void registe() {
+        String userName = nameEdit.getText().toString();
+        if(TextUtils.isEmpty(userName)){
+            Toast.makeText(this,R.string.hint_input_name, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String pinyin = pinyinEdit.getText().toString();
+        if(TextUtils.isEmpty(pinyin)){
+            Toast.makeText(this,R.string.hint_input_name_pinyin, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String phone = phoneEdit.getText().toString();
         if(TextUtils.isEmpty(phone)){
             Toast.makeText(this,"手机号不能为空", Toast.LENGTH_SHORT).show();
@@ -258,6 +289,8 @@ public class RegisteActivity extends BaseActivity{
         params.addBodyParameter("mobile", phone);
         params.addBodyParameter("password", MD5.md5(pwd));
         params.addBodyParameter("name", nick);
+        params.addBodyParameter("real_name", userName);
+        params.addBodyParameter("name_symbol", pinyin);
         params.addBodyParameter("otp", code);
         Log.d(TAG, "loadData: "+params.toString());
         showProgress();

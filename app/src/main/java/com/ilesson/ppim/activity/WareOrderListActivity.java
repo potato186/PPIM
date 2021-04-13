@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.rong.imageloader.core.DisplayImageOptions;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
 
@@ -67,13 +66,11 @@ public class WareOrderListActivity extends BaseActivity {
     private List<WaresOrder> mList;
     private RefreshAdapter mAdapter;
     private String myId;
-    DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBarLightMode(this,true);
-        builder.cacheInMemory(true).cacheOnDisk(true);
         token = SPUtils.get(LOGIN_TOKEN,"");
         myId = SPUtils.get(USER_PHONE,"");
         mList = new ArrayList<>();
@@ -122,7 +119,7 @@ public class WareOrderListActivity extends BaseActivity {
 
             @Override
             public void onSuccess(String result) {
-                Log.d(TAG, "onSuccess: "+result);
+                Log.d(TAG, "loadData onSuccess: "+result);
                 readJson(result,clear);
             }
             @Override
@@ -243,7 +240,7 @@ public class WareOrderListActivity extends BaseActivity {
                     itemViewHolder.waresPrice.setVisibility(View.VISIBLE);
                     double price = Double.valueOf(order.getNum())*Double.valueOf(order.getPerPrice());
                     itemViewHolder.waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(price / 100)));
-                    itemViewHolder.unitPrice.setText(String.format(getResources().getString(R.string.rmb_format),BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100)));
+                    itemViewHolder.unitPrice.setText(String.format(getResources().getString(R.string.rmb_format),BigDecimalUtil.format(Double.valueOf(order.getPerPrice()) / 100)));
                     itemViewHolder.orderInfo.setText(R.string.buy_order);
                     String allPrice = String.format(getResources().getString(R.string.all_fee),BigDecimalUtil.format(Double.valueOf((double)price/100))+"");
                     itemViewHolder.allPrice.setText(allPrice);
@@ -255,6 +252,14 @@ public class WareOrderListActivity extends BaseActivity {
                 }else{
                     itemViewHolder.state.setText(R.string.has_post);
                     itemViewHolder.checkLogistc.setVisibility(View.VISIBLE);
+                }
+                if(!TextUtils.isEmpty(order.getConfirm_post())){
+                    itemViewHolder.state.setText(R.string.confirm_take_post);
+                    itemViewHolder.confirm.setVisibility(View.GONE);
+                }else {
+                    if(!TextUtils.isEmpty(order.getPostdate())){
+                        itemViewHolder.confirm.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }
@@ -330,7 +335,7 @@ public class WareOrderListActivity extends BaseActivity {
                 confirm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showConfirm(datas.get(getLayoutPosition()));
+                        showConfirm(confirm,datas.get(getLayoutPosition()));
                     }
                 });
             }
@@ -346,7 +351,7 @@ public class WareOrderListActivity extends BaseActivity {
         }
     }
 
-    private void showConfirm(final WaresOrder order){
+    private void showConfirm(final View confirm,final WaresOrder order){
         View view = getLayoutInflater().inflate(R.layout.confirm_take_delivery_dialog,null);
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(view);
@@ -366,15 +371,16 @@ public class WareOrderListActivity extends BaseActivity {
         view.findViewById(R.id.right_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                confirmOrder(confirm,order);
                 dialog.dismiss();
             }
         });
         dialog.show();
     }
-    private void confirmOrder(final WaresOrder order) {
+    private void confirmOrder(final View confirm,final WaresOrder order) {
         //确认收货：https://pp.fangnaokeji.com:9443/pp/order?action=confirm&oid=689
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
-        params.addBodyParameter("action", "confirm");
+        params.addBodyParameter("action", "confirm_post");
         params.addBodyParameter("oid", order.getId());
         Log.d(TAG, "loadData: "+params.toString());
         showProgress();
@@ -388,7 +394,8 @@ public class WareOrderListActivity extends BaseActivity {
                         new TypeToken<BaseCode>() {
                         }.getType());
                 if(base.getCode()==0){
-
+                    order.setConfirm_post("1");
+                    confirm.setVisibility(View.GONE);
                 }
             }
             @Override

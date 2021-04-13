@@ -66,8 +66,8 @@ public class WareDetailActivity extends BaseActivity {
     private ScrollListView detailRecylerview;
     @ViewInject(R.id.result_image)
     private ImageView resultImageView;
-    //    @ViewInject(R.id.empty_layout)
-//    private View emptyLayout;
+        @ViewInject(R.id.product_name)
+    private TextView productName;
     @ViewInject(R.id.banner)
     private Banner banner;
     private String myId;
@@ -196,6 +196,7 @@ public class WareDetailActivity extends BaseActivity {
                 produce = waresDetialData.getProduce();
                 shop = waresDetialData.getShop();
                 detailRecylerview.setAdapter(new SpecilAdapter(specilInfos));
+                productName.setText(produce.getName());
                 showBanner(options);
             }
         } catch (Exception e) {
@@ -213,7 +214,6 @@ public class WareDetailActivity extends BaseActivity {
         for (Options option : options) {
             images.add(option.getImage());
         }
-        images.add(produce.getImage_intro());
         banner.setImageLoader(new GlideImageLoader());
         //设置图片集合
         banner.setImages(images);
@@ -243,10 +243,16 @@ public class WareDetailActivity extends BaseActivity {
             //绑定数据
             if (holder instanceof OptionsAdapter.ItemViewHolder) {
                 OptionsAdapter.ItemViewHolder itemViewHolder = (OptionsAdapter.ItemViewHolder) holder;
-                Options order = datas.get(position);
+                final Options order = datas.get(position);
                 Glide.with(getApplicationContext()).load(order.getImage()).into(itemViewHolder.pic);
                 itemViewHolder.waresName.setText(order.getName());
                 itemViewHolder.waresPrice.setText(String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100)) + "/" + order.getUnit());
+                itemViewHolder.pic.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ImagePreviewActivity.startPreview(WareDetailActivity.this,order.getImage());
+                    }
+                });
             }
         }
 
@@ -323,7 +329,7 @@ public class WareDetailActivity extends BaseActivity {
 
     class GlideImageLoader extends ImageLoader {
         @Override
-        public void displayImage(Context context, Object path, final ImageView resultImageView) {
+        public void displayImage(Context context, final Object path, final ImageView resultImageView) {
 //            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 //                    LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 //                params.width = width;
@@ -333,6 +339,14 @@ public class WareDetailActivity extends BaseActivity {
                     .load(path)
 //                    .fitCenter()
                     .into(resultImageView);
+            resultImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImagePreviewActivity.startPreview(WareDetailActivity.this,path.toString());
+                }
+            });
+
+
 //            Glide.with(WareDetailActivity.this).asBitmap().load(produce.getImage_intro()).into(new SimpleTarget<Bitmap>() {
 //                @Override
 //                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

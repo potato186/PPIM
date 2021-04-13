@@ -7,16 +7,11 @@ import android.support.v4.app.Fragment;
 
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.EditExchangeActivity;
-import com.ilesson.ppim.activity.PayPwdActivity;
-import com.ilesson.ppim.activity.PayScoreActivity;
-import com.ilesson.ppim.utils.SPUtils;
 
 import io.rong.imkit.RongExtension;
 import io.rong.imkit.plugin.IPluginModule;
 
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
-import static com.ilesson.ppim.activity.PayScoreActivity.TARGET_ID;
 
 /**
  * Created by potato on 2020/3/12.
@@ -36,14 +31,14 @@ public class TransactionPlugin implements IPluginModule {
     public void onClick(Fragment fragment, RongExtension rongExtension) {
 //        CustomizeMessage pokeMessage = CustomizeMessage.obtain("50");
 //        Message message = Message.obtain(rongExtension.getTargetId(), Conversation.ConversationType.PRIVATE, pokeMessage);
-       boolean isPay = SPUtils.get(LOGIN_PAY, false);
-        if(!isPay){
-            fragment.getActivity().startActivity(new Intent(fragment.getActivity(), PayPwdActivity.class));
-        }else {
+//       boolean isPay = SPUtils.get(LOGIN_PAY, false);
+//        if(!isPay){
+//            fragment.getActivity().startActivity(new Intent(fragment.getActivity(), PayPwdActivity.class));
+//        }else {
             Intent intent = new Intent(fragment.getActivity(), EditExchangeActivity.class);
             intent.putExtra(GROUP_ID,rongExtension.getTargetId());
             fragment.getActivity().startActivityForResult(intent,5);
-        }
+//        }
 //        new IMUtils().sendRedPack(rongExtension.getTargetId(),8,"一包烟");
     }
 

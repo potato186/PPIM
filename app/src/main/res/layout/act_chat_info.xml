@@ -52,9 +52,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:numColumns="5"
-                android:padding="15dp"
+                android:paddingTop="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:verticalSpacing="15dp"
                 android:horizontalSpacing="15dp"
+                android:layout_marginBottom="35dp"
                 >
             </com.ilesson.ppim.view.ScrollGridView>
             </RelativeLayout>

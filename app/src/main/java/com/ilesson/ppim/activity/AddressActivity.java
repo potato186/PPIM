@@ -52,7 +52,7 @@ import io.rong.eventbus.EventBus;
  * Created by potato on 2019/4/9.
  */
 @ContentView(R.layout.act_address)
-public class AddressActivity extends BaseActivity{
+public class AddressActivity extends BaseActivity {
     @ViewInject(R.id.user_name)
     private EditText userName;
     @ViewInject(R.id.user_phone)
@@ -81,29 +81,30 @@ public class AddressActivity extends BaseActivity{
     private static final String ACTION_MODIFY = "modify";
     public static final String ACTION_MODIFY_BUY = "action_modify_buy";
     public static final String CURRENTADDRESS = "currentAddress";
-    public static final int SET_ADDRESS_SUCCESS=1;
+    public static final int SET_ADDRESS_SUCCESS = 1;
     private String tagContent;
     private boolean useAddress;
     private boolean buyAddress;
     private String countryCode;
+
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
-        setStatusBarLightMode(this,true);
+        setStatusBarLightMode(this, true);
         save.setEnabled(false);
-        editTexts = new EditText[]{userName,userPhone,adressDetail};
-        tagViews = new TextView[]{homeView,companyView,schoolView};
+        editTexts = new EditText[]{userName, userPhone, adressDetail};
+        tagViews = new TextView[]{homeView, companyView, schoolView};
         currentAddress = (AddressInfo) getIntent().getSerializableExtra(AddressActivity.CURRENTADDRESS);
-        useAddress = getIntent().getBooleanExtra(ExchangeActivity.ADDRESS_INFO,false);
-        buyAddress = getIntent().getBooleanExtra(ACTION_MODIFY_BUY,false);
-        if(null==currentAddress){
+        useAddress = getIntent().getBooleanExtra(ExchangeActivity.ADDRESS_INFO, false);
+        buyAddress = getIntent().getBooleanExtra(ACTION_MODIFY_BUY, false);
+        if (null == currentAddress) {
             title.setText(R.string.create_address);
-        }else{
+        } else {
             tagContent = currentAddress.getTag();
             province = currentAddress.getProvince();
             city = currentAddress.getCity();
             for (int i = 0; i < tagViews.length; i++) {
-                if(tagViews[i].getText().toString().equals(tagContent)){
+                if (tagViews[i].getText().toString().equals(tagContent)) {
                     selectTagView(i);
                 }
             }
@@ -128,14 +129,14 @@ public class AddressActivity extends BaseActivity{
             @Override
             public void afterTextChanged(Editable s) {
                 String content = s.toString();
-                if(content.length()>5){
-                    content = content.substring(0,6);
-                    Toast.makeText(AddressActivity.this,R.string.most_inupt_five_words,Toast.LENGTH_SHORT).show();
+                if (content.length() > 5) {
+                    content = content.substring(0, 6);
+                    Toast.makeText(AddressActivity.this, R.string.most_inupt_five_words, Toast.LENGTH_SHORT).show();
                 }
-                if(s.length()>0){
+                if (!getResources().getString(R.string.home).equals(content) && !getResources().getString(R.string.company).equals(content) && !getResources().getString(R.string.school).equals(content)) {
                     selectTagView(-1);
                 }
-                tagContent =content;
+                tagContent = content;
                 checkHome();
                 checkSave();
             }
@@ -143,70 +144,80 @@ public class AddressActivity extends BaseActivity{
     }
 
     private static final String TAG = "AdressActivity";
+
     @Event(R.id.save)
-    private void save(View view){
-        if(TextUtils.isEmpty(tagContent)){
-            Toast.makeText(this,R.string.choose_address_tag,Toast.LENGTH_LONG).show();
+    private void save(View view) {
+        if (TextUtils.isEmpty(tagContent)) {
+            Toast.makeText(this, R.string.choose_address_tag, Toast.LENGTH_LONG).show();
             return;
         }
-        if(homeItems==3){
-            String action = currentAddress==null? ACTION_ADD : ACTION_MODIFY;
-            int id = currentAddress==null?-1:currentAddress.getId();
-            add(id,action, tagContent,userName.getText().toString(),userPhone.getText().toString(),adressDetail.getText().toString());
+        if (homeItems == 3) {
+            String action = currentAddress == null ? ACTION_ADD : ACTION_MODIFY;
+            int id = currentAddress == null ? -1 : currentAddress.getId();
+            add(id, action, tagContent, userName.getText().toString(), userPhone.getText().toString(), adressDetail.getText().toString());
         }
     }
+
     @Event(R.id.home)
-    private void home(View view){
+    private void home(View view) {
         selectTagView(0);
     }
+
     @Event(R.id.company)
-    private void company(View view){
+    private void company(View view) {
         selectTagView(1);
     }
+
     @Event(R.id.school)
-    private void school(View view){
+    private void school(View view) {
         selectTagView(2);
     }
 
     @Event(R.id.phone_prefix_layout)
-    private void phonePrefix(View view){
+    private void phonePrefix(View view) {
         showCountryDialog();
     }
+
     @Event(R.id.area)
-    private void area(View view){
-        if(pvOptions!=null&&!pvOptions.isShowing()){
+    private void area(View view) {
+        if (pvOptions != null && !pvOptions.isShowing()) {
             pvOptions.show();
             hideInput();
         }
     }
-    private void selectTagView(int index){
+
+    private void selectTagView(int index) {
         for (int i = 0; i < tagViews.length; i++) {
-            if(i==index){
+            if (i == index) {
                 tagViews[i].setBackgroundResource(R.drawable.background_theme_corner20);
                 tagViews[i].setTextColor(getResources().getColor(R.color.white));
                 tagContent = tagViews[i].getText().toString();
-            }else{
+            } else {
                 tagViews[i].setBackgroundResource(R.drawable.general_gray_edge_white_corner20_selector);
                 tagViews[i].setTextColor(getResources().getColor(R.color.helptext_color));
             }
         }
-        if(currentAddress!=null){
-            if(tagContent.equals(currentAddress.getTag())){
+        if (currentAddress != null) {
+            if (tagContent.equals(currentAddress.getTag())) {
                 changed = false;
-            }else{
+            } else {
                 changed = true;
             }
-        }else{
+        } else {
             changed = true;
         }
-        editTag.setText(tagViews[index].getText());
+        if (index >= 0 && index < tagViews.length) {
+            editTag.setText(tagViews[index].getText());
+        }
         checkHome();
         checkSave();
     }
+
     @Event(R.id.back)
-    private void back(View view){
+    private void back(View view) {
         finish();
     }
+
     private void add(final int id, String action, final String tag, final String name, final String phone, final String address) {
         //map.put("province", province);
         //map.put("city", city);
@@ -214,7 +225,7 @@ public class AddressActivity extends BaseActivity{
         save.setEnabled(false);
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ADDRESS);
         params.addParameter("action", action);
-        if(id>=0){
+        if (id >= 0) {
             params.addParameter("id", id);
         }
         params.addParameter("province", province);
@@ -230,34 +241,34 @@ public class AddressActivity extends BaseActivity{
         org.xutils.x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                Log.d(TAG, "add: "+result);
+                Log.d(TAG, "add: " + result);
                 BaseCode<List<AddressInfo>> base = new Gson().fromJson(
                         result,
                         new TypeToken<BaseCode<List<AddressInfo>>>() {
                         }.getType());
-                if(base.getCode()==0){
-                    AddressInfo addressInfo = new AddressInfo(address,phone,name,tag);
-                    if(currentAddress==null){
+                if (base.getCode() == 0) {
+                    AddressInfo addressInfo = new AddressInfo(address, phone, name, tag);
+                    if (currentAddress == null) {
 
                     }
-                    if(id>0&&buyAddress){
+                    if (id > 0 && buyAddress) {
                         EventBus.getDefault().post(addressInfo);
                     }
                     EventBus.getDefault().post(new ExchangeAddress(addressInfo));
                     List<AddressInfo> list = (List<AddressInfo>) base.getData();
                     for (AddressInfo info : list) {
-                        if(info.getAddress().equals(address)&&info.getName().equals(name)&&info.getPhone().equals(phone)){
+                        if (info.getAddress().equals(address) && info.getName().equals(name) && info.getPhone().equals(phone)) {
                             addressInfo.setId(info.getId());
                             break;
                         }
                     }
                     Intent intent = new Intent();
-                    intent.putExtra(ExchangeActivity.ADDRESS_INFO,addressInfo);
-                    intent.putExtra(CURRENTADDRESS,currentAddress);
-                    int resultCode = useAddress?ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE:SET_ADDRESS_SUCCESS;
-                    setResult(resultCode,intent);
+                    intent.putExtra(ExchangeActivity.ADDRESS_INFO, addressInfo);
+                    intent.putExtra(CURRENTADDRESS, currentAddress);
+                    int resultCode = useAddress ? ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE : SET_ADDRESS_SUCCESS;
+                    setResult(resultCode, intent);
                     finish();
-                }else {
+                } else {
                     showToast(base.getMessage());
                 }
 
@@ -279,6 +290,7 @@ public class AddressActivity extends BaseActivity{
             }
         });
     }
+
     private void getArea() {
         RequestParams params = new RequestParams(Constants.BASE_URL + "/country/city.json");
         Log.d(TAG, "search: " + params.toString());
@@ -311,11 +323,13 @@ public class AddressActivity extends BaseActivity{
             }
         });
     }
+
     private List<String> provinceLists;
     private List<List<String>> cityLists;
     private int provienceIndex;
     private int cityIndex;
-    private void readArea(String json){
+
+    private void readArea(String json) {
         List<ProvinceList> list1 = new Gson().fromJson(
                 json,
                 new TypeToken<List<ProvinceList>>() {
@@ -326,29 +340,29 @@ public class AddressActivity extends BaseActivity{
         String address = provinceName;
         String p = "";
         String c = "";
-        if(currentAddress!=null){
+        if (currentAddress != null) {
             address = currentAddress.getAddress();
-            if(!TextUtils.isEmpty(currentAddress.getProvince())){
-                if(!address.startsWith(currentAddress.getProvince())){
-                    address=currentAddress.getProvince()+currentAddress.getCity()+address;
+            if (!TextUtils.isEmpty(currentAddress.getProvince())) {
+                if (!address.startsWith(currentAddress.getProvince())) {
+                    address = currentAddress.getProvince() + currentAddress.getCity() + address;
                 }
-                adressArea.setText(currentAddress.getProvince()+currentAddress.getCity());
+                adressArea.setText(currentAddress.getProvince() + currentAddress.getCity());
             }
-            if(!currentAddress.getTag().equals(getResources().getString(R.string.home))&&!currentAddress.getTag().equals(getResources().getString(R.string.company))&&!currentAddress.getTag().equals(getResources().getString(R.string.school))){
+            if (!currentAddress.getTag().equals(getResources().getString(R.string.home)) && !currentAddress.getTag().equals(getResources().getString(R.string.company)) && !currentAddress.getTag().equals(getResources().getString(R.string.school))) {
                 editTag.setText(currentAddress.getTag());
             }
         }
         for (int i = 0; i < list1.size(); i++) {
             ProvinceList province = list1.get(i);
-            if(currentAddress==null){
-                if(province.getName().equals(provinceName)){
+            if (currentAddress == null) {
+                if (province.getName().equals(provinceName)) {
                     provienceIndex = i;
                 }
-            }else {
-                if(address.startsWith(province.getName())){
+            } else {
+                if (address.startsWith(province.getName())) {
                     provienceIndex = i;
-                    p=province.getName();
-                    address = address.replace(province.getName(),"");
+                    p = province.getName();
+                    address = address.replace(province.getName(), "");
                 }
             }
 
@@ -357,53 +371,58 @@ public class AddressActivity extends BaseActivity{
             for (int j = 0; j < province.getCityList().size(); j++) {
                 CityList city = province.getCityList().get(j);
                 cs.add(city.getName());
-                if(currentAddress!=null&&address.startsWith(city.getName())){
+                if (currentAddress != null && address.startsWith(city.getName())) {
                     cityIndex = j;
-                    c=city.getName();
+                    c = city.getName();
                 }
             }
             cityLists.add(cs);
         }
-        if(!TextUtils.isEmpty(p)){
-            if(p.equals(c)){
+        if (!TextUtils.isEmpty(p)) {
+            if (p.equals(c)) {
                 adressArea.setText(p);
-            }else{
-                adressArea.setText(p+c);
+            } else {
+                adressArea.setText(p + c);
             }
         }
         initOptionPicker();
     }
+
     private AddressInfo currentAddress;
 
     private int homeItems;
-    private void checkHome(){
-        homeItems=0;
-        for(EditText editText: editTexts){
-            if(!TextUtils.isEmpty(editText.getText().toString())){
+
+    private void checkHome() {
+        homeItems = 0;
+        for (EditText editText : editTexts) {
+            if (!TextUtils.isEmpty(editText.getText().toString())) {
                 homeItems++;
             }
         }
     }
+
     private boolean changed;
-    private boolean checkSave(){
+
+    private boolean checkSave() {
         String areas = adressArea.getText().toString();
-        if(homeItems==3&&!TextUtils.isEmpty(areas)&&!TextUtils.isEmpty(tagContent)){
+        if (homeItems == 3 && !TextUtils.isEmpty(areas) && !TextUtils.isEmpty(tagContent)) {
             changed = true;
         }
 
-        if(changed){
+        if (changed) {
             save.setTextColor(getResources().getColor(R.color.white));
             save.setBackgroundResource(R.drawable.background_theme_corner20);
             save.setEnabled(true);
-        }else{
+        } else {
             save.setTextColor(getResources().getColor(R.color.color_999999));
             save.setBackgroundResource(R.drawable.background_gray_corner20);
             save.setEnabled(false);
         }
         return false;
     }
-    private void addListener(){
-        for(EditText editText: editTexts){
+
+    private void addListener() {
+        for (EditText editText : editTexts) {
             editText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -423,10 +442,12 @@ public class AddressActivity extends BaseActivity{
             });
         }
     }
+
     private OptionsPickerView pvOptions;
     private String area;
     private String province;
     private String city;
+
     private void initOptionPicker() {//条件选择器初始化
 
         /**
@@ -436,72 +457,40 @@ public class AddressActivity extends BaseActivity{
         pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
             @Override
             public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                area = provinceLists.get(options1)+provinceLists.get(options2);
-                Log.d(TAG, "onOptionsSelect: "+area);
-                setSelectArea(options1,options2);
-
-//                adressArea.setText(area);
-                //返回的分别是三个级别的选中位置
-//                String tx = options1Items.get(options1).getPickerViewText()
-//                        + options2Items.get(options1).get(options2)
-//                        /* + options3Items.get(options1).get(options2).get(options3).getPickerViewText()*/;
-//                btn_Options.setText(tx);
+                area = provinceLists.get(options1) + provinceLists.get(options2);
+                Log.d(TAG, "onOptionsSelect: " + area);
+                setSelectArea(options1, options2);
             }
 
-        })
-//                .setTitleText("城市选择")
-//                .setContentTextSize(20)//设置滚轮文字大小
-//                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(provienceIndex,cityIndex)//默认选中项
-//                .setBgColor(Color.BLACK)
-//                .setTitleBgColor(Color.DKGRAY)
-//                .setTitleColor(Color.LTGRAY)
-//                .setCancelColor(Color.YELLOW)
-//                .setSubmitColor(Color.YELLOW)
-//                .setTextColorCenter(Color.LTGRAY)
-//                .isRestoreItem(true)//切换时是否还原，设置默认选中第一项。
-//                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-//                .setLabels("省", "市", "")
-//                .setOutSideColor(0x00000000) //设置外部遮罩颜色
+        }).setSelectOptions(provienceIndex, cityIndex)//默认选中项
+                .setCancelColor(getResources().getColor(R.color.helptext_color))
+                .setSubmitColor(getResources().getColor(R.color.second_blk_text))
                 .setOptionsSelectChangeListener(new OnOptionsSelectChangeListener() {
                     @Override
                     public void onOptionsSelectChanged(int options1, int options2, int options3) {
-                        setSelectArea(options1,options2);
-//                        String p = provinceLists.get(options1);
-//                        String c = cityLists.get(options1).get(options2);
-//                        if(p.equals(c)){
-//                            area=p;
-//                        }else{
-//                            area=p+c;
-//                        }
-//                        adressArea.setText(area);
-                        String str = "options1: " + options1 + "\noptions2: " + options2 + "\noptions3: " + options3;
-//                        Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
+                        setSelectArea(options1, options2);
                     }
                 })
                 .build();
-//        pvOptions.setSelectOptions(1,1);
-//        pvOptions.setPicker(provinceLists);//一级选择器
         pvOptions.setPicker(provinceLists, cityLists);//二级选择器
-        /*pvOptions.setPicker(options1Items, options2Items,options3Items);//三级选择器*/
     }
 
-    private void setSelectArea(int options1,int options2){
+    private void setSelectArea(int options1, int options2) {
         province = provinceLists.get(options1);
         city = cityLists.get(options1).get(options2);
-        if(province.equals(city)){
-            area=province;
-        }else{
-            area=province+city;
+        if (province.equals(city)) {
+            area = province;
+        } else {
+            area = province + city;
         }
         adressArea.setText(area);
-        if(currentAddress!=null){
-            if(area.equals(currentAddress.getProvince()+currentAddress.getCity())){
+        if (currentAddress != null) {
+            if (area.equals(currentAddress.getProvince() + currentAddress.getCity())) {
                 changed = false;
-            }else{
+            } else {
                 changed = true;
             }
-        }else{
+        } else {
             changed = true;
         }
         checkHome();
@@ -509,9 +498,10 @@ public class AddressActivity extends BaseActivity{
     }
 
     private List<ContryCode> contryCodes;
+
     private void getContry() {
         contryCodes = new ArrayList<>();
-        RequestParams params = new RequestParams(Constants.BASE_URL+"/country/country.json");
+        RequestParams params = new RequestParams(Constants.BASE_URL + "/country/country.json");
         org.xutils.x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public boolean onCache(String result) {
@@ -552,8 +542,10 @@ public class AddressActivity extends BaseActivity{
             }
         });
     }
+
     private Dialog mCountryDialog;
-    private void showCountryDialog(){
+
+    private void showCountryDialog() {
         mCountryDialog = new Dialog(this);
         mCountryDialog.setCanceledOnTouchOutside(false);
         Window window = mCountryDialog.getWindow();
@@ -567,6 +559,7 @@ public class AddressActivity extends BaseActivity{
         mCountryDialog.setCanceledOnTouchOutside(true);
         mCountryDialog.show();
     }
+
     private class CountryAdapter extends BaseAdapter {
 
         private List<ContryCode> data;
@@ -610,14 +603,15 @@ public class AddressActivity extends BaseActivity{
                 @Override
                 public void onClick(View v) {
                     countryCode = content.getTel();
-                    phonePrefix.setText("+"+ countryCode);
+                    phonePrefix.setText("+" + countryCode);
                     mCountryDialog.dismiss();
                 }
             });
             return view;
         }
     }
-    class ViewHolder{
+
+    class ViewHolder {
         private TextView countryTextView;
         private TextView codeTextView;
     }

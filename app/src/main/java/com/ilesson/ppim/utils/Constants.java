@@ -7,7 +7,7 @@ package com.ilesson.ppim.utils;
 public interface Constants {
 
     String BASE_URL="https://pp.fangnaokeji.com:9443/pp";
-//    String BASE_URL="https://v.lesson1234.com:9443/pp";
+    String RBASE_URL=" http://192.168.2.30:8080/pp";
 //    String BASE_URL="http://192.168.2.192:8080/pp";
 //    String AI_URL="https://aiibt.net/pigai.php";
     String AI_URL="http://www.xn--gmq6f129l.net/api20.php";

@@ -14,6 +14,7 @@ public class PPUserInfo implements Serializable{
     private int id;
     private String phone;
     private boolean pay;
+    private boolean joined;
     private String token;
     private String name;
     private String icon;
@@ -27,6 +28,22 @@ public class PPUserInfo implements Serializable{
     }
 
     public PPUserInfo() {
+    }
+
+    public boolean isJoined() {
+        return joined;
+    }
+
+    public void setJoined(boolean joined) {
+        this.joined = joined;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
     }
 
     public PPUserInfo(String phone, String name, String icon) {

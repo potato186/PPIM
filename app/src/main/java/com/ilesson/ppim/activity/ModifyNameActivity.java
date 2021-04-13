@@ -18,6 +18,7 @@ import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.TextUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -30,6 +31,8 @@ import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_NAME;
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.LoginActivity.NAME_SYMBL;
+import static com.ilesson.ppim.activity.LoginActivity.REAL_NAME;
 import static com.ilesson.ppim.activity.LoginActivity.USER_NAME;
 
 
@@ -46,12 +49,16 @@ public class ModifyNameActivity extends BaseActivity{
     private TextView title;
     @ViewInject(R.id.nike_edit)
     private EditText nikeEdit;
-    public static final int MODIFY_PERSON=0;
+    public static final int MODIFY_NAME=0;
     public static final int MODIFY_GROUP=1;
+    public static final int MODIFY_REAL_NAME=2;
+    public static final int MODIFY_SYMBL=3;
     public static final String MODIFY_TYPE="modify_type";
     public static final String MODIFY_RESULT="modify_result";
     private int type;
     private String groupId;
+    private String realName;
+    private String nameSymbl;
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -64,8 +71,16 @@ public class ModifyNameActivity extends BaseActivity{
             title.setText(R.string.modify_group_name);
             groupName.setVisibility(View.VISIBLE);
             text = name;
-        }else{
+        }else if(type==MODIFY_NAME){
             text = SPUtils.get(USER_NAME,"");
+        }else if(type==MODIFY_REAL_NAME){
+            text = SPUtils.get(REAL_NAME,"");
+            realName = text;
+            title.setText(R.string.modify_real_name);
+        }else{
+            text = SPUtils.get(NAME_SYMBL,"");
+            nameSymbl = text;
+            title.setText(R.string.modify_real_name_symbol);
         }
         nikeEdit.setText(text);
         nikeEdit.setSelection(text.length());
@@ -110,10 +125,19 @@ public class ModifyNameActivity extends BaseActivity{
     private void modify(final String name) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.USER_URL);
         String token = SPUtils.get(LOGIN_TOKEN,"");
-        params.addQueryStringParameter("token", token);
-        params.addQueryStringParameter("action", "modify");
-        params.addQueryStringParameter("name", name);
-        params.setMultipart(true);
+        params.addParameter("token", token);
+        if(type==MODIFY_GROUP||type==MODIFY_NAME){
+            params.addParameter("action", "modify");
+            params.addParameter("name", name);
+        }else if(type==MODIFY_REAL_NAME){
+            params.addParameter("action", "mod_rname");
+            params.addParameter("real_name", name);
+            params.addParameter("name_symbol", TextUtil.getPinyin(name));
+        }else{
+            params.addParameter("action", "mod_rname");
+            params.addParameter("real_name", SPUtils.get(USER_NAME,""));
+            params.addParameter("name_symbol", name);
+        }
         showProgress();
         Log.d(TAG, "loadData: " + params.toString());
         x.http().post(params, new Callback.CommonCallback<String>() {
@@ -125,7 +149,14 @@ public class ModifyNameActivity extends BaseActivity{
                         new TypeToken<BaseCode<PPUserInfo>>() {
                         }.getType());
                 if(base.getCode()==0){
-                    SPUtils.put(USER_NAME,name);
+                    if(type==MODIFY_NAME){
+                        SPUtils.put(USER_NAME,name);
+                    }else if(type==MODIFY_REAL_NAME){
+                        SPUtils.put(REAL_NAME,name);
+                        SPUtils.put(NAME_SYMBL,TextUtil.getPinyin(name));
+                    }else if(type==MODIFY_SYMBL){
+                        SPUtils.put(NAME_SYMBL,name);
+                    }
                     Intent intent = new Intent();
                     setResult(MODIFY_SUCCESS,intent);
                     finish();

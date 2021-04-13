@@ -1,5 +1,6 @@
 <resources>
     <string name="app_label_name">智能PP</string>
+    <string name="phone_registe">手机号注册</string>
     <string name="item_a">消息</string>
     <string name="item_b">通讯录</string>
     <string name="item_c">集市</string>
@@ -29,6 +30,8 @@
     <string name="link">链接</string>
     <string name="note_voice">语音</string>
     <string name="seconds">秒</string>
+    <string name="select_sex">选择性别</string>
+    <string name="select_birthday">选择出生日期</string>
     <string name="take_picture">拍摄照片</string>
     <string name="preview">预览</string>
     <string name="preview_num">预览(%1$s)</string>
@@ -59,6 +62,8 @@
     <string name="business_order_empty">还没有用户购买过您的商品</string>
     <string name="has_post">已发货</string>
     <string name="no_post">待发货</string>
+    <string name="confirm_take_post">已签收</string>
+    <string name="custom_confirm_take_post">买家已签收</string>
     <string name="order_manager">商家订单管理</string>
     <string name="logistics_num">物流单号</string>
     <string name="logistics_state">物流状态</string>
@@ -139,6 +144,7 @@
     <string name="user_birth">生日</string>
     <string name="male">男</string>
     <string name="famale">女</string>
+    <string name="unknown">未知</string>
     <string name="select_language">选择语音种类</string>
     <string name="your_language">您的语言:</string>
     <string name="tts_language">播报语音:</string>
@@ -313,7 +319,7 @@
     <string name="verify_sms">短信验证</string>
     <string name="empty_sms">验证码不能为空</string>
     <string name="pwd_rule">必须包含大小写字符及数字，长度大于等于8</string>
-    <string name="pwd_rule6">设置密码长度大于等于6</string>
+    <string name="pwd_rule6">提示:密码由字母或数字组成，必须大于等于6位</string>
     <string name="nike_rule6">昵称不能少于2个字符</string>
     <string name="not_active_fund">你尚未开通财富功能</string>
     <string name="fund_apply">财富由Bitcaps提供</string>
@@ -333,6 +339,13 @@
     <string name="nike">昵称</string>
     <string name="nick_amost_2">昵称不能少于2个字符</string>
     <string name="registe">用户注册</string>
+    <string name="registe_btn">注册</string>
+    <string name="real_name">真实姓名</string>
+    <string name="real_name_symbol">姓名拼音</string>
+    <string name="modify_real_name_symbol">修改姓名拼音</string>
+    <string name="modify_real_name">修改真实姓名</string>
+    <string name="hint_input_name">请填写您的真实姓名</string>
+    <string name="hint_input_name_pinyin">请填写您的姓名拼音</string>
     <string name="activate_now">立即开通</string>
     <string name="activate_fund">开通财富</string>
     <string name="account_has_created">账号已存在</string>
@@ -406,6 +419,7 @@
     <string name="invoice_price">开票金额</string>
     <string name="invoice_email">收票邮箱</string>
     <string name="hint_invoice_email">请填写邮箱</string>
+    <string name="error_email">邮箱格式不正确</string>
     <string name="hint_invoice_personname">请填写“个人”或您的姓名</string>
     <string name="personal">个人</string>
     <string name="enterprise">单位</string>

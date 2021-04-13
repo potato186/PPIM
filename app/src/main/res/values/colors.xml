@@ -37,6 +37,7 @@
     <color name="update_cancel_gray_color">#88d3d3d3</color>
     <color name="gray_text_color">#999999</color>
     <color name="registe_text_color">#aa333333</color>
+    <color name="second_blk_text">#575757</color>
     <color name="gray_text333_color">#333333</color>
     <color name="redpacket_color">#EBCD99</color>
     <color name="compose_color">#f2f2f2</color>

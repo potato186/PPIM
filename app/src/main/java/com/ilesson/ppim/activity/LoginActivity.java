@@ -75,6 +75,8 @@ public class LoginActivity extends BaseActivity {
     public static final String USER_PHONE = "login_user_phone";
     public static final String USER_SCORE = "user_score";
     public static final String USER_NAME = "login_user_name";
+    public static final String REAL_NAME = "real_name";
+    public static final String NAME_SYMBL = "name_symbl";
     public static final String AGREE_PRIVACY = "agree_privacy";
     private String countryCode = "86";
     private String countryName = "CN";
@@ -92,6 +94,10 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    @Event(value = R.id.close)
+    private void back_btn(View view) throws DbException {
+        finish();
+    }
     @Event(value = R.id.login)
     private void login(View view) throws DbException {
         login();

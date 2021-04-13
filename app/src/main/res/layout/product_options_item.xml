@@ -16,8 +16,6 @@
             android:layout_toRightOf="@+id/wares_img"
             android:layout_marginLeft="15dp"
             android:textColor="@color/gray_text333_color"
-            android:layout_marginTop="5dp"
-            android:text="芝面吃醋"
             android:textSize="16sp" />
         <LinearLayout
             android:id="@+id/unit_layout"
@@ -53,8 +51,7 @@
             android:textSize="15sp"
             android:layout_toRightOf="@+id/wares_img"
             android:layout_marginLeft="15dp"
-            android:text="$1.00/个"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             />
         <com.ilesson.ppim.view.RoundImageView
             android:id="@+id/wares_img"

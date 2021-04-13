@@ -15,29 +15,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ilesson.ppim.R;
-import com.ilesson.ppim.activity.ForwadSelectActivity;
 import com.ilesson.ppim.activity.PPicturePagerActivity;
 
 import java.lang.ref.WeakReference;
 
-import io.rong.imkit.RongIM;
+import io.rong.imkit.R.drawable;
+import io.rong.imkit.R.id;
+import io.rong.imkit.R.layout;
+import io.rong.imkit.R.string;
 import io.rong.imkit.destruct.DestructManager;
 import io.rong.imkit.model.ProviderTag;
 import io.rong.imkit.model.UIMessage;
-import io.rong.imkit.plugin.ImagePlugin;
-import io.rong.imkit.utilities.OptionsPopupDialog;
 import io.rong.imkit.utilities.RongUtils;
 import io.rong.imkit.widget.AsyncImageView;
 import io.rong.imkit.widget.provider.IContainerItemProvider;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Message;
 import io.rong.message.ImageMessage;
-
-
-import io.rong.imkit.R.drawable;
-import io.rong.imkit.R.id;
-import io.rong.imkit.R.layout;
-import io.rong.imkit.R.string;
 
 @ProviderTag(
         messageContent = ImageMessage.class,
@@ -74,7 +68,6 @@ public class PPImageItemProvider extends IContainerItemProvider.MessageProvider<
             intent.putExtra("message", message.getMessage());
             view.getContext().startActivity(intent);
         }
-
     }
 
     public void bindView(View v, int position, ImageMessage content, UIMessage message) {

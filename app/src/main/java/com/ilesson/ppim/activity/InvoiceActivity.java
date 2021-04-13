@@ -19,6 +19,8 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 
@@ -213,6 +215,12 @@ public class InvoiceActivity extends BaseActivity {
             }
         }
         if (!TextUtils.isEmpty(email)) {
+            Pattern p = Pattern.compile("^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\\.([a-zA-Z0-9_-])+)+$");  //正则表达式
+            Matcher m = p.matcher(email);
+            if(!m.matches()){
+                showToast(R.string.error_email);
+                return;
+            }
             modifyInfo.setEmail(email);
             SPUtils.put(EMAIL_NAME+phone, email);
         } else {

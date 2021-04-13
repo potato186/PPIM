@@ -17,6 +17,7 @@ import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.PostState;
 import com.ilesson.ppim.entity.WaresOrder;
+import com.ilesson.ppim.utils.BigDecimalUtil;
 import com.ilesson.ppim.utils.Constants;
 
 import org.xutils.common.Callback;
@@ -88,8 +89,10 @@ public class ModifyLogisticActivity extends BaseActivity{
             invoiceType1.setText(order.getInvoice_mediumName());
             invoiceTitleType.setText(title);
             invoiceTitleName.setText(order.getInvoice_name());
+
             double price = Double.valueOf(order.getNum())*Double.valueOf(order.getPerPrice());
-            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s),price+""));
+            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), BigDecimalUtil.format(Double.valueOf((double)price/100))));
+
             if(order.getInvoice_medium().equals(INVOICE_ELECT)){
                 invoiceEmail.setText(order.getInvoice_email());
                 emailLayout.setVisibility(View.VISIBLE);

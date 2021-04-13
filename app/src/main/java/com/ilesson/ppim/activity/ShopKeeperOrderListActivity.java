@@ -249,7 +249,7 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                     itemViewHolder.waresPrice.setVisibility(View.VISIBLE);
                     double price = Double.valueOf(order.getNum())*Double.valueOf(order.getPerPrice());
                     itemViewHolder.waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(price / 100)));
-                    itemViewHolder.unitPrice.setText(String.format(getResources().getString(R.string.rmb_format),BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100)));
+                    itemViewHolder.unitPrice.setText(String.format(getResources().getString(R.string.rmb_format),BigDecimalUtil.format(Double.valueOf(order.getPerPrice()) / 100)));
                     itemViewHolder.orderInfo.setText(R.string.buy_order);
                     String allPrice = String.format(getResources().getString(R.string.all_fee),BigDecimalUtil.format(Double.valueOf((double)price/100))+"");
                     itemViewHolder.allPrice.setText(allPrice);
@@ -264,6 +264,9 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                     itemViewHolder.state.setText(R.string.has_post);
                     itemViewHolder.checkLogistc.setVisibility(View.VISIBLE);
                     itemViewHolder.confirm.setVisibility(View.GONE);
+                }
+                if(!TextUtils.isEmpty(order.getConfirm_post())){
+                    itemViewHolder.state.setText(R.string.custom_confirm_take_post);
                 }
             }
         }

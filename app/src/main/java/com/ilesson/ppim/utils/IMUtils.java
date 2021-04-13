@@ -81,7 +81,6 @@ public class IMUtils {
             @Override
 
             public UserInfo getUserInfo(String userId) {
-                Log.d(TAG, "getUserInfo: =" + userId);
                 searchUserInfo(token, userId);
                 return null;
 
@@ -114,6 +113,8 @@ public class IMUtils {
                         }.getType());
                 if (base.getCode() == 0) {
                     GroupInfo info = base.getData();
+//                    String test = "https://pp.fangnaokeji.com:9443/pp/images/demo/shop_01.png";
+//                    Group group = new Group(userId, info.getName(), Uri.parse(test));
                     Group group = new Group(userId, info.getName(), Uri.parse(info.getIcon()));
                     RongIM.getInstance().refreshGroupInfoCache(group);
                     if(null!=onQueryInfoListener){

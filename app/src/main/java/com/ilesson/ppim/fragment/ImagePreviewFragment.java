@@ -1,7 +1,6 @@
 package com.ilesson.ppim.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +13,6 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.ImagePreviewActivity;
@@ -62,7 +60,11 @@ public class ImagePreviewFragment extends Fragment {
             @Override
             public void onViewTap(View view, float x, float y) {
                 ImagePreviewActivity activity = (ImagePreviewActivity) getActivity();
-                activity.switchBarVisibility();
+                if(activity.onlyPreview){
+                    activity.finish();
+                }else{
+                    activity.switchBarVisibility();
+                }
             }
         });
         return contentView;

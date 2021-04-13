@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_theme"
@@ -113,7 +114,6 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
                             android:textSize="@dimen/text_size_16"
-                            android:text="potato"
                             android:textColor="@color/gray_text333_color"
                             />
                         <TextView
@@ -125,7 +125,6 @@
                             android:layout_toRightOf="@+id/user_name"
                             android:textColor="@color/gray_text333_color"
                             android:textSize="@dimen/text_size_16"
-                            android:text="186e3463892"
                             />
 
                         <TextView
@@ -136,7 +135,6 @@
                             android:textSize="@dimen/text_size_16"
                             android:layout_marginTop="5dp"
                             android:textColor="@color/gray_text333_color"
-                            android:text="广东省附近的深刻理解"
                             />
                     </RelativeLayout>
 
@@ -288,7 +286,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:padding="15dp"
                 android:background="@drawable/background_white_corner10"
                 android:orientation="vertical"
                 >
@@ -297,12 +294,27 @@
                     android:layout_height="wrap_content"
                     android:text="@string/wares_type1"
                     android:textSize="16sp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="15dp"
+                    />
+                <com.ilesson.ppim.view.TagCloudView
+                    android:id="@+id/tag_cloud_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    app:tcvItemBorderHorizontal="8dp"
+                    app:tcvItemBorderVertical="10dp"
+                    app:tcvTextColor="@color/gray_text333_color"
+                    app:tcvCanTagClick="true"
                     />
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recylerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:visibility="gone"
                     />
             </LinearLayout>
 

@@ -32,6 +32,15 @@ public class WaresOrder implements Serializable {
     private String shopkeeper;
     private String shoplogo;
     private String shopname;
+    private String confirm_post;
+
+    public String getConfirm_post() {
+        return confirm_post;
+    }
+
+    public void setConfirm_post(String confirm_post) {
+        this.confirm_post = confirm_post;
+    }
 
     public String getShoplogo() {
         return shoplogo;
