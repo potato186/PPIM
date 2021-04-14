@@ -33,6 +33,15 @@ public class WaresOrder implements Serializable {
     private String shoplogo;
     private String shopname;
     private String confirm_post;
+    private String subDesc;
+
+    public String getSubDesc() {
+        return subDesc;
+    }
+
+    public void setSubDesc(String subDesc) {
+        this.subDesc = subDesc;
+    }
 
     public String getConfirm_post() {
         return confirm_post;

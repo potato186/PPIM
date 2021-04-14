@@ -208,6 +208,7 @@
             android:name=".activity.TbsFileActivity"
             android:theme="@style/AppTheme.white" />
         <activity android:name=".activity.ChatInfoActivity" />
+        <activity android:name=".activity.MoreMemberActivity" />
         <activity
             android:name=".activity.ScoreCodeActivity"
             android:theme="@style/AppTheme.code" />

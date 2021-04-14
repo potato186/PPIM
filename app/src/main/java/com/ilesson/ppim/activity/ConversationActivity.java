@@ -669,6 +669,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     }
                     title = groupBase.getGroup().getName();
                     groupSize = groupBase.getSize();
+                    isOwner = groupBase.isOwner();
                     showTitle();
                     RongIM.getInstance().setGroupMembersProvider(new RongIM.IGroupMembersProvider() {
                         @Override
@@ -1297,7 +1298,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             if (!TextUtils.isEmpty(order.getSubName())) {
                                 waresName.setText(order.getSubName());
                             }
-                            if (!TextUtils.isEmpty(order.getText())) {
+                            if (!TextUtils.isEmpty(order.getSubDesc())) {
                                 waresInfo.setText(order.getSubDesc());
                             }
                             if (!TextUtils.isEmpty(order.getName())) {
@@ -1401,8 +1402,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         if (!TextUtils.isEmpty(order.getSubName())) {
             waresName.setText(order.getSubName());
         }
-        if (!TextUtils.isEmpty(order.getText())) {
-            waresInfo.setText(order.getText());
+        if (!TextUtils.isEmpty(order.getSubDesc())) {
+            waresInfo.setText(order.getSubDesc());
         }
         if (!TextUtils.isEmpty(order.getName())) {
             userName.setText(order.getName());

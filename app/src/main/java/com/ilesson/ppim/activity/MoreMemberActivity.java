@@ -27,8 +27,6 @@ import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.view.RoundImageView;
-import com.ilesson.ppim.view.ScrollListView;
-import com.ilesson.ppim.view.SwitchButton;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -54,36 +52,22 @@ import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_GROUP;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
-import static com.ilesson.ppim.activity.MoreMemberActivity.GROUP_MEMBER;
-import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
 
 
 /**
  * Created by potato on 2019/4/9.
  */
-@ContentView(R.layout.act_chat_info)
-public class ChatInfoActivity extends BaseActivity{
+@ContentView(R.layout.act_more_member)
+public class MoreMemberActivity extends BaseActivity{
     @ViewInject(R.id.title)
     private TextView titleTextView;
-    @ViewInject(R.id.group_name)
-    private TextView groupName;
-    @ViewInject(R.id.delete)
-    private TextView delete;
-    @ViewInject(R.id.shop_list_layout)
-    private View shopList;
-    @ViewInject(R.id.quit)
-    private View quit;
-    @ViewInject(R.id.more_member)
-    private View moreMember;
-    @ViewInject(R.id.voice_switch)
-    private SwitchButton switchButton;
     @ViewInject(R.id.recylerview)
-    private ScrollListView recylerView;
+    private RecyclerView recylerView;
     private DataAdapter adapter;
     private List<PPUserInfo> datas;
     private static final String TAG = "ChatInfoActivity";
     public static final String GROUP_ID = "group_id";
-    public static final String GROUP_NAME = "group_name";
+    public static final String GROUP_MEMBER = "group_member";
     public static final String ISOWNER = "isOwner";
     private String name;
     private String groupId;
@@ -94,14 +78,13 @@ public class ChatInfoActivity extends BaseActivity{
         super.onCreate(arg0);
         setStatusBarLightMode(this,true);
         groupId = getIntent().getStringExtra(GROUP_ID);
-        name = getIntent().getStringExtra(GROUP_NAME);
-        isOwner = getIntent().getBooleanExtra(ISOWNER,false);
-        if(isOwner){
-            delete.setVisibility(View.VISIBLE);
-            shopList.setVisibility(View.VISIBLE);
+        datas = (List<PPUserInfo>) getIntent().getSerializableExtra(GROUP_MEMBER);
+        if(null==datas){
+            return;
         }
-        groupName.setText(name);
-        datas = new ArrayList<>();
+        String text = String.format(getResources().getString(R.string.chat_info), datas.size());
+        titleTextView.setText(text);
+        isOwner = getIntent().getBooleanExtra(ISOWNER,false);
         adapter = new DataAdapter(datas);
 //        gridView.setAdapter(adapter);
 //        gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
@@ -126,24 +109,23 @@ public class ChatInfoActivity extends BaseActivity{
 
         recylerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         recylerView.setAdapter(adapter);
-        addUser = new PPUserInfo();
-        addUser.setName("add");
-        deleteUser = new PPUserInfo();
-        deleteUser.setName("remove");
-        boolean state = SPUtils.get(PLAY_TTS,true);
-        if(state){
-            switchButton.open(1);
-        }else {
-            switchButton.close(1);
-        }
-        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SwitchButton buttonView, boolean isChecked) {
-                SPUtils.put(PLAY_TTS, isChecked);
-            }
-        });
-//        searchGroupMember();
-        requestGroupInfo();
+//        addUser = new PPUserInfo();
+//        addUser.setName("add");
+//        deleteUser = new PPUserInfo();
+//        deleteUser.setName("remove");
+//        boolean state = SPUtils.get(PLAY_TTS,true);
+//        if(state){
+//            switchButton.open(1);
+//        }else {
+//            switchButton.close(1);
+//        }
+//        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(SwitchButton buttonView, boolean isChecked) {
+//                SPUtils.put(PLAY_TTS, isChecked);
+//            }
+//        });
+//        requestGroupInfo();
     }
 
     @Event(R.id.back_btn)
@@ -156,20 +138,19 @@ public class ChatInfoActivity extends BaseActivity{
     }
     @Event(R.id.more_member)
     private void more_member(View view){
-        startActivity(new Intent(this,MoreMemberActivity.class).putExtra(GROUP_MEMBER,(Serializable)ppUserInfos));
+        startActivity(new Intent(this,ShopKeeperOrderListActivity.class));
     }
     @Event(R.id.code_layout)
     private void code_layout(View view){
-        Intent intent = new Intent(ChatInfoActivity.this,UserCodeActivity.class);
+        Intent intent = new Intent(MoreMemberActivity.this,UserCodeActivity.class);
         intent.putExtra(GROUP_ID, groupId);
         startActivity(intent);
     }
     @Event(R.id.group_name_layout)
     private void group_name(View view){
-        Intent intent = new Intent(ChatInfoActivity.this,ModifyNameActivity.class);
+        Intent intent = new Intent(MoreMemberActivity.this,ModifyNameActivity.class);
         intent.putExtra(GROUP_ID, groupId);
         intent.putExtra(MODIFY_TYPE, MODIFY_GROUP);
-        intent.putExtra(ChatInfoActivity.GROUP_NAME, name);
         startActivityForResult(intent,0);
     }
     @Event(R.id.quit)
@@ -183,7 +164,7 @@ public class ChatInfoActivity extends BaseActivity{
     @Event(value=R.id.gridview,type=AdapterView.OnItemClickListener.class)
     private void item(AdapterView<?> parent, View view, int position, long id){
         Intent intent = new Intent();
-        intent.setClass(ChatInfoActivity.this, ContactActivity.class);
+        intent.setClass(MoreMemberActivity.this, ContactActivity.class);
         List<PPUserInfo> list = new ArrayList<>();
         list.addAll(datas);
         list.remove(addUser);
@@ -209,7 +190,7 @@ public class ChatInfoActivity extends BaseActivity{
             PPUserInfo userInfo = datas.get(position);
         }else{
             PPUserInfo userInfo = datas.get(position);
-            intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
+            intent = new Intent(MoreMemberActivity.this,FriendDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
             intent.putExtras(bundle);
@@ -243,7 +224,6 @@ public class ChatInfoActivity extends BaseActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode== MODIFY_SUCCESS){
             name = data.getStringExtra(MODIFY_RESULT);
-            groupName.setText(name);
             modifyed = true;
             return;
         }
@@ -332,9 +312,9 @@ public class ChatInfoActivity extends BaseActivity{
                 if (base.getCode() == 0) {
 //                    SPUtils.put(phone+groupId,false);
                     RongIM.getInstance().removeConversation(Conversation.ConversationType.GROUP,groupId,null);
-                    startActivity(new Intent(ChatInfoActivity.this,MainActivity.class));
+                    startActivity(new Intent(MoreMemberActivity.this,MainActivity.class));
                 } else {
-                    Toast.makeText(ChatInfoActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(MoreMemberActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -370,9 +350,9 @@ public class ChatInfoActivity extends BaseActivity{
                 if (base.getCode() == 0) {
                     RongIM.getInstance().removeConversation(Conversation.ConversationType.GROUP,groupId,null);
                     new IMUtils().sendTextMsg(groupId,"该群已解散");
-                    startActivity(new Intent(ChatInfoActivity.this,MainActivity.class));
+                    startActivity(new Intent(MoreMemberActivity.this,MainActivity.class));
                 } else {
-                    Toast.makeText(ChatInfoActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(MoreMemberActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -414,7 +394,7 @@ public class ChatInfoActivity extends BaseActivity{
                     List<PPUserInfo> list = base.getData();
                     freshInfo(list);
                 } else {
-                    Toast.makeText(ChatInfoActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(MoreMemberActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -433,22 +413,16 @@ public class ChatInfoActivity extends BaseActivity{
             }
         });
     }
-    private List<PPUserInfo> ppUserInfos;
     private void freshInfo(List<PPUserInfo> list){
-        ppUserInfos = list;
         datas.clear();
         if(list.size()>20){
-            datas.addAll(list.subList(0,20));
-            moreMember.setVisibility(View.VISIBLE);
+            datas = datas.subList(0,20);
         }else{
             datas.addAll(list);
-            moreMember.setVisibility(View.GONE);
         }
         if(!groupId.contains("market")){
             datas.add(addUser);
         }else{
-            quit.setVisibility(View.GONE);
-            delete.setVisibility(View.GONE);
         }
         if(isOwner){
             if(!groupId.contains("market")){
@@ -491,7 +465,7 @@ public class ChatInfoActivity extends BaseActivity{
                 }else if("remove".equals(userInfo.getName())){
                     itemViewHolder.imageView.setImageResource(R.drawable.remove_selector);
                 }else{
-                    Glide.with(ChatInfoActivity.this).asBitmap().load(userInfo.getIcon()).into(itemViewHolder.imageView);
+                    Glide.with(MoreMemberActivity.this).asBitmap().load(userInfo.getIcon()).into(itemViewHolder.imageView);
                     itemViewHolder.name.setText(userInfo.getName());
                 }
             }

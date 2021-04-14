@@ -356,7 +356,7 @@ public class ExchangeActivity extends BaseActivity {
         mostNum = scoreInfo.getValue() / selection.getScoreget();
         Glide.with(getApplicationContext()).load(selection.getImage()).into(imageView);
         waresName.setText(produce.getName());
-        quantity.setText(selection.getName() + "/" + selection.getUnit());
+        quantity.setText(selection.getDesc());
         hasScore.setText(String.format(getResources().getString(R.string.has_score_num), scoreInfo.getValue()));
         least.setText(String.format(getResources().getString(R.string.least_exchange_num), selection.getMin(), selection.getUnit()));
         most.setText(String.format(getResources().getString(R.string.most_exchange_num), mostNum, selection.getUnit()));
@@ -533,4 +533,9 @@ public class ExchangeActivity extends BaseActivity {
         dialog.show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

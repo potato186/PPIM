@@ -293,4 +293,9 @@ public class ScoreListActivity extends BaseActivity {
         mAdapter.notifyItemChanged(position);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

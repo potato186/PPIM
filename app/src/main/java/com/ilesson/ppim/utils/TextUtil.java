@@ -43,6 +43,9 @@ public class TextUtil {
                 try{
                     String[] arr = PinyinHelper.toHanyuPinyinStringArray(chars[i],format);
                     buffer.append(arr[0]);  //转换出的结果包含了多音字，这里简单粗暴的取了第一个拼音。
+                    if(i<chars.length-1){
+                        buffer.append(" ");
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }

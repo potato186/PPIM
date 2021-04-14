@@ -223,6 +223,7 @@ public class WareOrderListActivity extends BaseActivity {
                 Glide.with(WareOrderListActivity.this).load(order.getIcon()).into(itemViewHolder.pic);
                 itemViewHolder.waresName.setText(order.getName());
                 itemViewHolder.waresNum.setText(String.format(getResources().getString(R.string.num_format),order.getNum()));
+                itemViewHolder.waresInfo.setText(order.getSubDesc());
                 if (!TextUtils.isEmpty(order.getFei())) {
                     itemViewHolder.express.setText(String.format(getResources().getString(R.string.express_fee), BigDecimalUtil.format(Double.valueOf(order.getFei()) / 100)));
                 }
@@ -249,9 +250,11 @@ public class WareOrderListActivity extends BaseActivity {
                 if(TextUtils.isEmpty(order.getPostdate())){
                     itemViewHolder.checkLogistc.setVisibility(View.GONE);
                     itemViewHolder.state.setText(R.string.no_post);
+                    itemViewHolder.confirm.setVisibility(View.GONE);
                 }else{
                     itemViewHolder.state.setText(R.string.has_post);
                     itemViewHolder.checkLogistc.setVisibility(View.VISIBLE);
+                    itemViewHolder.confirm.setVisibility(View.VISIBLE);
                 }
                 if(!TextUtils.isEmpty(order.getConfirm_post())){
                     itemViewHolder.state.setText(R.string.confirm_take_post);
@@ -284,7 +287,7 @@ public class WareOrderListActivity extends BaseActivity {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            TextView userName, orderNo,phone,address,logiscticName,state,express,allPrice,waresName,waresPrice,waresQuantity,orderInfo
+            TextView userName, orderNo,phone,address,waresInfo,state,express,allPrice,waresName,waresPrice,waresQuantity,orderInfo
                     ,callServer,confirm,checkLogistc,waresNum,unitPrice;
             View logisticNameView, logisticNoView;
             ImageView pic;
@@ -303,6 +306,7 @@ public class WareOrderListActivity extends BaseActivity {
                 callServer = itemView.findViewById(R.id.call_server);
                 confirm = itemView.findViewById(R.id.confirm);
                 state = itemView.findViewById(R.id.order_state);
+                waresInfo = itemView.findViewById(R.id.wares_info);
                 checkLogistc = itemView.findViewById(R.id.check_logistc);
                 allPrice.setTextColor(getResources().getColor(R.color.gray_text333_color));
                 itemView.setOnClickListener(new View.OnClickListener() {

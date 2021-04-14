@@ -383,6 +383,9 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         }
     }
 
+    public static String getStringById(int res){
+        return getContext().getResources().getString(res);
+    }
     //调用该方法即可
     public static void setAppFontSize(float fontScale,Activity context) {
         if (ilessonApp != null) {

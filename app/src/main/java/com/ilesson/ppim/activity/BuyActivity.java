@@ -515,7 +515,7 @@ public class BuyActivity extends BaseActivity {
 //        mostNum = scoreInfo.getValue() / selection.getScoreget();
         Glide.with(getApplicationContext()).load(selection.getImage()).into(imageView);
         waresName.setText(produce.getName());
-        quantity.setText(selection.getName() + "/" + selection.getUnit());
+        quantity.setText(selection.getDesc());
         String price = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(num * selection.getPrice()) / 100));
 //        String text = String.format(getResources().getString(R.string.rmb_format), selection.getPrice()+"");
         int length = String.valueOf(selection.getPrice()).length();
@@ -687,4 +687,9 @@ public class BuyActivity extends BaseActivity {
         private TextView lastItem;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

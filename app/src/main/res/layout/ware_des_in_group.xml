@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/layout"
     android:orientation="vertical"
@@ -66,14 +66,42 @@
         android:background="@color/gray_theme"
         android:layout_marginTop="10dp"
         />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="详情介绍"
-        android:textSize="16sp"
-        android:textColor="@color/gray_text333_color"
-        android:layout_marginTop="10dp"
-        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="详情介绍"
+            android:textSize="16sp"
+            android:textColor="@color/gray_text333_color"
+            android:layout_alignParentBottom="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="更多详情"
+            android:textSize="14sp"
+            android:drawableRight="@mipmap/theme_arrow"
+            android:layout_toLeftOf="@+id/tag_arrow"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/theme_text_color"
+            android:layout_alignParentBottom="true"
+            />
+        <TextView
+            android:id="@+id/tag_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentBottom="true"
+            android:background="@mipmap/theme_arrow"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

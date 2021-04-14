@@ -214,6 +214,7 @@
     <string name="retry">重试</string>
     <string name="quit_tip">删除并退出群聊后,将不再接收此群聊信息</string>
     <string name="delete_group_tip">是否解散群聊</string>
+    <string name="more_member">查看全部群成员</string>
     <string name="delete_it">是否删除?</string>
     <string name="create_group_title">建群提示</string>
     <string name="create_group_now">继续创建</string>

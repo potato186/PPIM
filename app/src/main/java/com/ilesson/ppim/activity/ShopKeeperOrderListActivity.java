@@ -1,6 +1,5 @@
 package com.ilesson.ppim.activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -232,6 +231,7 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                 Glide.with(ShopKeeperOrderListActivity.this).load(order.getIcon()).into(itemViewHolder.pic);
                 itemViewHolder.waresName.setText(order.getName());
                 itemViewHolder.waresNum.setText(String.format(getResources().getString(R.string.num_format),order.getNum()));
+                itemViewHolder.waresInfo.setText(order.getSubDesc());
                 if (!TextUtils.isEmpty(order.getFei())) {
                     itemViewHolder.express.setText(String.format(getResources().getString(R.string.express_fee), BigDecimalUtil.format(Double.valueOf(order.getFei()) / 100)));
                 }
@@ -291,7 +291,7 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            TextView userName, orderNo,phone,address,logiscticName,state,express,allPrice,waresName,waresPrice,waresQuantity,orderInfo
+            TextView userName, orderNo,phone,address,waresInfo,state,express,allPrice,waresName,waresPrice,waresQuantity,orderInfo
                     ,callServer,confirm,checkLogistc,waresNum,unitPrice;
             View logisticNameView, logisticNoView;
             ImageView pic;
@@ -310,6 +310,7 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                 callServer = itemView.findViewById(R.id.call_server);
                 confirm = itemView.findViewById(R.id.confirm);
                 state = itemView.findViewById(R.id.order_state);
+                waresInfo = itemView.findViewById(R.id.wares_info);
                 checkLogistc = itemView.findViewById(R.id.check_logistc);
                 allPrice.setTextColor(getResources().getColor(R.color.gray_text333_color));
                 callServer.setText(R.string.call_user);
@@ -361,71 +362,6 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                 layout = itemView.findViewById(R.id.layout);
             }
         }
-    }
-
-    private void showConfirm(final WaresOrder order){
-        View view = getLayoutInflater().inflate(R.layout.confirm_take_delivery_dialog,null);
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(view);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        android.view.WindowManager.LayoutParams p = dialog.getWindow().getAttributes();
-        p.width = (int) (PPScreenUtils.getScreenWidth(this) * 0.85);
-        p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setAttributes(p);
-        Glide.with(getApplicationContext()).load(order.getIcon()).into((ImageView) view.findViewById(R.id.wares_img));
-        view.findViewById(R.id.left_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        view.findViewById(R.id.right_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-    private void confirmOrder(final WaresOrder order) {
-        //确认收货：https://pp.fangnaokeji.com:9443/pp/order?action=confirm&oid=689
-        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
-        params.addBodyParameter("action", "confirm");
-        params.addBodyParameter("oid", order.getId());
-        Log.d(TAG, "loadData: "+params.toString());
-        showProgress();
-        x.http().post(params, new Callback.CommonCallback<String>() {
-
-            @Override
-            public void onSuccess(String result) {
-                Log.d(TAG, "onSuccess: "+result);
-                BaseCode base = new Gson().fromJson(
-                        result,
-                        new TypeToken<BaseCode>() {
-                        }.getType());
-                if(base.getCode()==0){
-
-                }
-            }
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                ex.printStackTrace();
-            }
-
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                cex.printStackTrace();
-            }
-
-
-            @Override
-            public void onFinished() {
-                swipeLayout.setRefreshing(false);
-                hideProgress();
-            }
-        });
     }
 
     @Override

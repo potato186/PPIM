@@ -57,6 +57,8 @@ public class WaresOrderDetailctivity extends BaseActivity {
     public TextView waresNum;
     @ViewInject(R.id.unit_price)
     public TextView unitPrice;
+    @ViewInject(R.id.wares_info)
+    public TextView waresInfo;
     @ViewInject(R.id.all_price)
     public TextView allPrice;
     @ViewInject(R.id.order_num)
@@ -120,7 +122,7 @@ public class WaresOrderDetailctivity extends BaseActivity {
         waresName.setText(order.getName());
         waresPrice.setText(getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100));
 //        waresQuantity.setText(order.getInfo());
-
+        waresInfo.setText(order.getSubDesc());
         if(TextUtils.isEmpty(order.getPostdate())){
             postTimeView.setVisibility(View.GONE);
         }else{
@@ -167,7 +169,7 @@ public class WaresOrderDetailctivity extends BaseActivity {
             waresPrice.setVisibility(View.VISIBLE);
             double price = Double.valueOf(order.getNum())*Double.valueOf(order.getPerPrice());
             waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(price / 100)));
-            unitPrice.setText(String.format(getResources().getString(R.string.rmb_format),BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100)));
+            unitPrice.setText(String.format(getResources().getString(R.string.rmb_format),BigDecimalUtil.format(Double.valueOf(order.getPerPrice()) / 100)));
             String allp = String.format(getResources().getString(R.string.all_fee),BigDecimalUtil.format(Double.valueOf((double)price/100))+"");
             allPrice.setText(allp);
         }

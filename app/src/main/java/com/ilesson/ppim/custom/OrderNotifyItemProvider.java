@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.GroupWaresIntro;
 import com.ilesson.ppim.entity.OrderConfirmInfo;
@@ -142,7 +143,7 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
     @Override
     public Spannable getContentSummary(OrderConfirmMessage data) {
         GroupWaresIntro intro = getEntity(data.getContent());
-        return new SpannableString(intro.getName());
+        return new SpannableString(IlessonApp.getStringById(R.string.order_tips));
     }
 
     @Override

@@ -284,14 +284,14 @@ public class RegisteActivity extends BaseActivity{
             return;
         }
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.BUSER_URL);
-        params.addBodyParameter("action", "signup_v3");
-        params.addBodyParameter("country", countryName);
-        params.addBodyParameter("mobile", phone);
-        params.addBodyParameter("password", MD5.md5(pwd));
-        params.addBodyParameter("name", nick);
-        params.addBodyParameter("real_name", userName);
-        params.addBodyParameter("name_symbol", pinyin);
-        params.addBodyParameter("otp", code);
+        params.addParameter("action", "signup_v3");
+        params.addParameter("country", countryName);
+        params.addParameter("mobile", phone);
+        params.addParameter("password", MD5.md5(pwd));
+        params.addParameter("name", nick);
+        params.addParameter("real_name", userName);
+        params.addParameter("name_symbol", pinyin);
+        params.addParameter("otp", code);
         Log.d(TAG, "loadData: "+params.toString());
         showProgress();
         org.xutils.x.http().post(params, new Callback.CommonCallback<String>() {

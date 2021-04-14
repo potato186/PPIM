@@ -166,6 +166,7 @@
                 android:layout_height="10dp"
                 android:background="@color/gray_theme"
                 />
+
             <RelativeLayout
                 android:id="@+id/content_view"
                 android:layout_width="match_parent"
