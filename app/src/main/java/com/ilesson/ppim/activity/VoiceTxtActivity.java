@@ -29,7 +29,7 @@ import com.ilesson.ppim.entity.SemanticBase;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.utils.PPScreenUtils;
-import com.ilesson.ppim.view.IfeyVoiceWidget;
+import com.ilesson.ppim.view.IfeyVoiceWidget1;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.xutils.common.Callback;
@@ -96,7 +96,7 @@ public class VoiceTxtActivity extends BaseActivity {
 
     //    @ViewInject(R.id.anim_img)
 //    private ImageView mAnimImageView;
-    public IfeyVoiceWidget ifeyBtn;
+    public IfeyVoiceWidget1 ifeyBtn;
     private Animation mAnim;
     private Animation mAnimStop;
     private String device;
@@ -200,7 +200,7 @@ public class VoiceTxtActivity extends BaseActivity {
     }
 
     public void toSpeech() {
-        ifeyBtn = new IfeyVoiceWidget(this);
+        ifeyBtn = new IfeyVoiceWidget1(this);
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Consumer<Boolean>() {
             public void accept(Boolean aBoolean) {
@@ -218,7 +218,7 @@ public class VoiceTxtActivity extends BaseActivity {
     private StringBuilder stringBuilder = new StringBuilder();
 
     private void initIfey() {
-        ifeyBtn.initIfey(new IfeyVoiceWidget.MessageListener() {
+        ifeyBtn.initIfey(new IfeyVoiceWidget1.MessageListener() {
 
             @Override
             public void onReceiverMessage(String content) {
@@ -239,7 +239,8 @@ public class VoiceTxtActivity extends BaseActivity {
                 if (recording) {
 //                    start();
                 } else {
-//                    stop();
+                    recording = false;
+                    stop();
                 }
             }
         }, null, false);
@@ -247,6 +248,7 @@ public class VoiceTxtActivity extends BaseActivity {
 
     private void startRecord() {
         ifeyBtn.start();
+        recording = true;
         Log.d(TAG, "startRecord: ");
 //        imageRecord.setImageResource(R.mipmap.recording);
         Glide.with(getApplicationContext()).load(R.mipmap.recording).into(imageRecord);
@@ -263,6 +265,7 @@ public class VoiceTxtActivity extends BaseActivity {
         if (null != ifeyBtn) {
             ifeyBtn.stop();
         }
+        recording = false;
 //        imageRecord.setImageResource(R.mipmap.assassin);
         Glide.with(getApplicationContext()).load(R.mipmap.voice_1).into(imageRecord);
     }

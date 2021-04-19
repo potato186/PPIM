@@ -55,4 +55,8 @@ public class TextUtil {
         }
         return buffer.toString();
     }
+
+    public static String getServerId(String id){
+        return id.replace("+","").replace("86_","").replace("852_","").replace("853_","").replace("886_","");
+    }
 }

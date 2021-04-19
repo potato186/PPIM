@@ -85,10 +85,16 @@ public class WareDetailActivity extends BaseActivity {
 //        token = SPUtils.get(LOGIN_TOKEN,"");
         myId = SPUtils.get(USER_PHONE, "");
         groupId = getIntent().getStringExtra(PRODUCT_ID);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
+        LinearLayoutManager manager = new LinearLayoutManager(this){@Override
+        public boolean canScrollVertically() {
+            return false;
+        }};
 //        manager.setStackFromEnd(true);//设置从底部开始，最新添加的item每次都会显示在最下面
         optionsRecyclerview.setLayoutManager(manager);
-        detailRecylerview.setLayoutManager(new LinearLayoutManager(this));
+        detailRecylerview.setLayoutManager(new LinearLayoutManager(this){@Override
+        public boolean canScrollVertically() {
+            return false;
+        }});
 
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this, 4));
@@ -125,7 +131,10 @@ public class WareDetailActivity extends BaseActivity {
         if (shop == null) {
             return;
         }
-        RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, shop.getShopkeeper(), shop.getName() + getResources().getString(R.string.custom_server));
+
+        String serverId = TextUtil.getServerId(shop.getShopkeeper());
+        RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,serverId,String.format(getResources().getString(R.string.custom_server),shop.getName()));
+//        RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE, shop.getShopkeeper(), shop.getName() + getResources().getString(R.string.custom_server));
     }
 
     private void loadData() {

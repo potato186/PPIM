@@ -125,6 +125,7 @@ import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_DATA;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PAPER;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
 import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_MEDIUM;
 import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_NAME;
@@ -540,6 +541,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             if (null != lastOrder) {
                 lastOrder.setInvoicetag(tag);
             }
+            invoiceMedium = INVOICE_PAPER.equals(invoiceInfo.getMedium())?getResources().getString(R.string.paper_type):"";
+            if(null!=lastOrder){
+                lastOrder.setInv_eptype(invoiceMedium);
+            }
             showInvoiceView(invoiceInfo);
             return;
         }
@@ -553,10 +558,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             showTitle();
             return;
         }
-        if (resultCode == SET_ADDRESS_SUCCESS_TO_USE) {
-            request(buyKey, false);
-        } else if (resultCode == SET_ADDRESS_SUCCESS) {
-            request(currentKey, false);
+        if (resultCode == SET_ADDRESS_SUCCESS_TO_USE||resultCode == SET_ADDRESS_SUCCESS) {
+            String key = buyKey;
+            String text = "寄到";
+            if(key.length()>2){
+                if(key.startsWith(text)||key.substring(1).startsWith(text)||key.substring(2).startsWith(text)){
+                    key=postPlace+key;
+                }
+            }
+            request(key, false);
+            requestText.setText(key);
         }
     }
 
@@ -662,15 +673,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 if (base.getCode() == 0) {
                     GroupBase groupBase = base.getData();
                     List<PPUserInfo> list = groupBase.getMembers();
-                    final List<UserInfo> users = new ArrayList<>();
-                    for (PPUserInfo info : list) {
-                        UserInfo user = new UserInfo(info.getPhone(), info.getName(), Uri.parse(info.getIcon()));
-                        users.add(user);
-                    }
                     title = groupBase.getGroup().getName();
                     groupSize = groupBase.getSize();
                     isOwner = groupBase.isOwner();
                     showTitle();
+                    final List<UserInfo> users = new ArrayList<>();
+                    for (PPUserInfo info : list) {
+                        Uri portraitUri = Uri.parse(info.getIcon());
+                        UserInfo user = new UserInfo(info.getPhone(), info.getName(), portraitUri);
+                        users.add(user);
+                    }
                     RongIM.getInstance().setGroupMembersProvider(new RongIM.IGroupMembersProvider() {
                         @Override
                         public void getGroupMembers(String groupId, RongIM.IGroupMemberCallback callback) {
@@ -853,6 +865,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         } else {
         }
         invoiceTag = order.getInvoicetag();
+        invoiceMedium = order.getInv_eptype();
+        if(TextUtils.isEmpty(invoiceTag)&&!TextUtils.isEmpty(invoiceMedium)){
+            invoiceTag =  getResources().getString(R.string.personal);
+        }
         invoiceInfo = null;
 
         invoiceLayout.setVisibility(View.GONE);
@@ -885,11 +901,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     invoiceInfo.setEmail(eName);
                 }
                 invoiceInfo.setType(tag);
-                if (TextUtils.isEmpty(invoiceInfo.getName())) {
+                String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium)?INVOICE_PAPER:INVOICE_ELECT;
+//                String mediumName = medium.equals(INVOICE_ELECT)?getResources().getString(R.string.elec_invoice):getResources().getString(R.string.paper_invoice);
+//                invoiceInfo.setMedium(medium);
+//                invoiceInfo.setMediumName(mediumName);
+                if (TextUtils.isEmpty(invoiceInfo.getName())||(medium.equals(INVOICE_ELECT)&&TextUtils.isEmpty(invoiceInfo.getEmail()))) {
+                    noInvoiceLayout.setVisibility(View.VISIBLE);
                     setInvoice(invoiceInfo);
                 } else {
-                    invoiceInfo.setMedium(INVOICE_ELECT);
-                    invoiceInfo.setMediumName(getResources().getString(R.string.elec_invoice));
+//                    invoiceInfo.setMedium(INVOICE_ELECT);
+//                    invoiceInfo.setMediumName(getResources().getString(R.string.elec_invoice));
                     showInvoiceView(invoiceInfo);
                 }
             } else {
@@ -907,22 +928,26 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             noInvoiceLayout.setVisibility(View.VISIBLE);
         } else {
             invoiceLayout.setVisibility(View.VISIBLE);
-            String title = invoice.getType().equals(INVOICE_PERSON) ? getResources().getString(R.string.personal) : getResources().getString(R.string.enterprise);
-            invoiceType.setText(invoice.getMediumName());
-            invoiceType1.setText(invoice.getMediumName());
+            String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium)?INVOICE_PAPER:INVOICE_ELECT;
+            String mediumName = medium.equals(INVOICE_ELECT)?getResources().getString(R.string.elec_invoice):getResources().getString(R.string.paper_invoice);
+            invoiceInfo.setMedium(medium);
+            invoiceInfo.setMediumName(mediumName);
+            String title = invoiceInfo.getType().equals(INVOICE_PERSON) ? getResources().getString(R.string.personal) : getResources().getString(R.string.enterprise);
+            invoiceType.setText(invoiceInfo.getMediumName());
+            invoiceType1.setText(invoiceInfo.getMediumName());
             invoiceTitleType.setText(title);
-            invoiceTitleName.setText(invoice.getName());
-            if (INVOICE_PERSON.equals(invoice.getType())) {
+            invoiceTitleName.setText(invoiceInfo.getName());
+            if (INVOICE_PERSON.equals(invoiceInfo.getType())) {
                 taxNumLayout.setVisibility(View.GONE);
             } else {
                 taxNumLayout.setVisibility(View.VISIBLE);
             }
-            if (!TextUtils.isEmpty(invoice.getNumber())) {
-                invoiceNum.setText(invoice.getNumber());
+            if (!TextUtils.isEmpty(invoiceInfo.getNumber())) {
+                invoiceNum.setText(invoiceInfo.getNumber());
             }
-            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), BigDecimalUtil.format(Double.valueOf((double) smartOrder.getAllPrice() / 100))));
-            if (invoice.getMedium().equals(INVOICE_ELECT)) {
-                invoiceEmail.setText(invoice.getEmail());
+            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), BigDecimalUtil.format(Double.valueOf((double) lastOrder.getAllPrice() / 100))));
+            if (invoiceInfo.getMedium().equals(INVOICE_ELECT)) {
+                invoiceEmail.setText(invoiceInfo.getEmail());
                 emailLayout.setVisibility(View.VISIBLE);
             } else {
                 emailLayout.setVisibility(View.GONE);
@@ -964,7 +989,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 if (base.getCode() == 0) {
                     serverId = base.getData();
                     String name = SPUtils.get(MARKET_SERVER, "");
-                    RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE, serverId, name + getResources().getString(R.string.custom_server));
+
+                    String id = TextUtil.getServerId(serverId);
+                    RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE,id,String.format(getResources().getString(R.string.custom_server),name));
+//                    RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE, id, name + getResources().getString(R.string.custom_server));
                 }
 //                readJson(result);
             }
@@ -1177,11 +1205,13 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     }
 
     private AddressInfo addressInfo;
-    private String buyKey;
+    private String buyKey="";
     private String invoiceTag;
+    private String invoiceMedium;
+    private String postPlace="";
 
     public void request(final String key, final boolean voice) {
-        if (key.length() > 100) {
+        if (key==null||key.length() > 100) {
             return;
         }
         currentKey = key;
@@ -1274,11 +1304,15 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         }
 
                         if (data.getTag() == 0) {
+                            if(tts.contains("寄到哪里")){
+                                postPlace = key;
+                            }
                             showContent(order);
                         } else if (data.getTag() == 1) {//订单
 //                            showContent.setVisibility(View.GONE);
                             showOrderState(order);
                         } else if (data.getTag() == 3) {//没有地址
+                            buyKey = currentKey;
                             toSetAddress.setVisibility(View.VISIBLE);
                             addressLayout.setVisibility(View.GONE);
                             express.setVisibility(View.GONE);

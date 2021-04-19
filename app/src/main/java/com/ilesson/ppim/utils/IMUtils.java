@@ -38,6 +38,8 @@ import io.rong.message.TextMessage;
 
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.LoginActivity.NAME_SYMBL;
+import static com.ilesson.ppim.activity.LoginActivity.REAL_NAME;
 import static com.ilesson.ppim.activity.LoginActivity.TOKEN;
 import static com.ilesson.ppim.activity.LoginActivity.USER_ICON;
 import static com.ilesson.ppim.activity.LoginActivity.USER_MONEY;
@@ -45,6 +47,8 @@ import static com.ilesson.ppim.activity.LoginActivity.USER_NAME;
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 import static com.ilesson.ppim.activity.MainActivity.GROUP_TYPE;
 import static com.ilesson.ppim.activity.MainActivity.PERSON_TYPE;
+import static com.ilesson.ppim.activity.UserDetailActivity.BIRTH;
+import static com.ilesson.ppim.activity.UserDetailActivity.SEX;
 import static com.ilesson.ppim.fragment.FundFragment.FUND_HAD_LOAD;
 import static com.ilesson.ppim.fragment.FundFragment.FUND_NOT_ACTIVED;
 
@@ -550,5 +554,9 @@ public class IMUtils {
         SPUtils.put(FUND_HAD_LOAD, false);
         SPUtils.put(TOKEN, "");
         SPUtils.put("bToken", "");
+        SPUtils.put(REAL_NAME,"");
+        SPUtils.put(NAME_SYMBL, "");
+        SPUtils.put(BIRTH,"");
+        SPUtils.put(SEX,"");
     }
 }

@@ -16,6 +16,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -96,6 +97,8 @@
         <activity android:name=".activity.PayRedPacketActivity" />
         <activity android:name=".activity.WareDetailActivity" />
         <activity android:name=".activity.ExchangeActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity android:name=".activity.ExchangeServerActivity"
             android:theme="@style/AppTheme.white" />
         <activity android:name=".activity.InvoiceActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"

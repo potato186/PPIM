@@ -92,9 +92,9 @@ public class UserDetailActivity extends BaseActivity{
         setSexText();
         formatter = new SimpleDateFormat("yyyy-MM-dd");
         birthday = SPUtils.get(BIRTH,"");
-        if(TextUtils.isEmpty(birthday)){
-            birthday = formatter.format(new Date());
-        }
+//        if(TextUtils.isEmpty(birthday)){
+//            birthday = formatter.format(new Date());
+//        }
         inputCantonese = SPUtils.get(INPUT_CANTONESE,false);
         if(inputCantonese){
             language.setText(R.string.cantonese);

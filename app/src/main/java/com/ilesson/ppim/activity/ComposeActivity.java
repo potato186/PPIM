@@ -43,7 +43,7 @@ import com.ilesson.ppim.entity.LocalMedia;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.utils.WxShareUtils;
-import com.ilesson.ppim.view.IfeyVoiceWidget;
+import com.ilesson.ppim.view.IfeyVoiceWidget1;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -112,11 +112,11 @@ public class ComposeActivity extends BaseActivity implements View.OnClickListene
     private Animation mAnim;
     private Animation mAnimStop;
     private EditText mTitleView;
-    public IfeyVoiceWidget ifeyBtn;
+    public IfeyVoiceWidget1 ifeyBtn;
 
     private Conversation.ConversationType conversationType;
     private String targetId;
-
+    private boolean recording;
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -124,7 +124,7 @@ public class ComposeActivity extends BaseActivity implements View.OnClickListene
         setStatusBarLightMode(this, true);
         mSharedPreferences = getSharedPreferences(getPackageName(),
                 MODE_PRIVATE);
-        ifeyBtn = new IfeyVoiceWidget(this);
+        ifeyBtn = new IfeyVoiceWidget1(this);
         mPhone = SPUtils.get(LoginActivity.USER_PHONE, "");
         Intent intent = getIntent();
         mUserName = intent.getStringExtra(OutlineActivity.USER_NAME);
@@ -250,7 +250,7 @@ public class ComposeActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initIfey(boolean longVoice) {
-        ifeyBtn.initIfey(new IfeyVoiceWidget.MessageListener() {
+        ifeyBtn.initIfey(new IfeyVoiceWidget1.MessageListener() {
 
             @Override
             public void onReceiverMessage(String content) {
@@ -272,26 +272,29 @@ public class ComposeActivity extends BaseActivity implements View.OnClickListene
             }
 
             @Override
-            public void onStateChanged(boolean recording) {
+            public void onStateChanged(boolean state) {
+                recording = state;
                 if (recording) {
+                }else {
+                   stopRecord();
                 }
             }
         }, null, longVoice);
     }
 
-    private boolean mStartRecord = false;
+//    private boolean mStartRecord = false;
 
     private void startRecord() {
         Log.d(TAG, "startRecord: ");
         ifeyBtn.start();
         mStartTalkTextView.setText(R.string.start_talk);
         mAnimImageView.startAnimation(mAnim);
-        mStartRecord = true;
+        recording = true;
     }
 
     private void stopRecord() {
+        recording = false;
         ifeyBtn.stop();
-        mStartRecord = false;
         mStartTalkTextView.setText("");
         mAnimImageView.startAnimation(mAnimStop);
     }
@@ -486,7 +489,7 @@ public class ComposeActivity extends BaseActivity implements View.OnClickListene
                 }
 //                mModelTextView.setText(R.string.voice_input);
                 hintKeyBoard();
-                if (!mStartRecord) {
+                if (!recording) {
                     Log.d(TAG, "onClick: switch_btn");
                     startRecord();
                 }
@@ -497,7 +500,7 @@ public class ComposeActivity extends BaseActivity implements View.OnClickListene
                 hideSoftInput();
                 break;
             case R.id.record_view:
-                if (mStartRecord) {
+                if (recording) {
                     stopRecord();
                 } else {
                     Log.d(TAG, "onClick: record_view");

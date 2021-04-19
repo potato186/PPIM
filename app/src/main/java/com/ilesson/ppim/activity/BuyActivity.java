@@ -56,11 +56,13 @@ import java.util.List;
 
 import io.rong.eventbus.EventBus;
 
+import static com.ilesson.ppim.activity.AddressListActivity.ADDRESS_DETAIL;
 import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_MEDIUM;
 import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NAME;
 import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NUM;
 import static com.ilesson.ppim.activity.InvoiceActivity.EMAIL_NAME;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_CANCEL;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_COMPANY;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_DATA;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY;
@@ -132,6 +134,10 @@ public class BuyActivity extends BaseActivity {
     @ViewInject(R.id.invoice_email)
     public TextView invoiceEmail;
 
+    @ViewInject(R.id.tax_num)
+    public View taxLayout;
+    @ViewInject(R.id.company_num)
+    public TextView companyNum;
 
     public static final String ADDRESS_INFO = "address_info";
     public static final int SET_ADDRESS_SUCCESS_TO_USE = 2;
@@ -261,7 +267,13 @@ public class BuyActivity extends BaseActivity {
             invoiceType1.setText(invoice.getMediumName());
             invoiceTitleType.setText(title);
             invoiceTitleName.setText(invoice.getName());
-            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), total+""));
+            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), BigDecimalUtil.format(total)));
+            if(invoice.getType().equals(INVOICE_COMPANY)){
+                taxLayout.setVisibility(View.VISIBLE);
+                companyNum.setText(invoice.getNumber());
+            }else{
+                taxLayout.setVisibility(View.GONE);
+            }
 //            invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan),smartOrder.getAllPrice()));
             if(invoice.getMedium().equals(INVOICE_ELECT)){
                 invoiceEmail.setText(invoice.getEmail());
@@ -287,7 +299,7 @@ public class BuyActivity extends BaseActivity {
         total = waresp+ freight;
         String feiText = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(freight) / 100));
         String price = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(waresp));
-        String text = String.format(getResources().getString(R.string.all_format_rmb), total + "");
+        String text = String.format(getResources().getString(R.string.all_format_rmb), BigDecimalUtil.format(total));
         int length = String.valueOf(total).length();
         waresPrice.setText(price);
         feiPrice.setText(feiText);
@@ -314,6 +326,7 @@ public class BuyActivity extends BaseActivity {
             intent.setClass(this, AddressActivity.class);
         } else {
             intent.setClass(this, AddressListActivity.class);
+            intent.putExtra(ADDRESS_DETAIL,addressInfo);
         }
         intent.putExtra(BuyActivity.ADDRESS_INFO, true);
         startActivityForResult(intent, 0);
@@ -495,6 +508,8 @@ public class BuyActivity extends BaseActivity {
                         showProduce(position);
                     }
                 });
+            }else{
+                showToast(base.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -514,8 +529,9 @@ public class BuyActivity extends BaseActivity {
         }
 //        mostNum = scoreInfo.getValue() / selection.getScoreget();
         Glide.with(getApplicationContext()).load(selection.getImage()).into(imageView);
-        waresName.setText(produce.getName());
-        quantity.setText(selection.getDesc());
+        String name = selection.getName();
+        waresName.setText(name);
+//        quantity.setText(selection.getDesc());
         String price = String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(num * selection.getPrice()) / 100));
 //        String text = String.format(getResources().getString(R.string.rmb_format), selection.getPrice()+"");
         int length = String.valueOf(selection.getPrice()).length();
@@ -587,8 +603,8 @@ public class BuyActivity extends BaseActivity {
             userName.setText(addressInfo.getName());
             phoneView.setText(addressInfo.getPhone());
             String address = addressInfo.getAddress();
-            if(!TextUtils.isEmpty(addressInfo.getProvince())&&!address.contains(addressInfo.getProvince())){
-                address=addressInfo.getProvince()+address;
+            if(!TextUtils.isEmpty(addressInfo.getProvince())&&!address.contains(addressInfo.getCity())){
+                address=addressInfo.getProvince()+addressInfo.getCity()+address;
             }
             addressView.setText(address);
         }

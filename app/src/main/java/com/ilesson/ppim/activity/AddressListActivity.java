@@ -73,17 +73,18 @@ public class AddressListActivity extends BaseActivity {
     public static final String ADDRESS_DETAIL = "address_detail";
     DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
     private AddressInfo addressInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarLightMode(this,true);
+        setStatusBarLightMode(this, true);
         builder.cacheInMemory(true).cacheOnDisk(true);
-        token = SPUtils.get(LOGIN_TOKEN,"");
-        myId = SPUtils.get(USER_PHONE,"");
-        moveY = PPScreenUtils.getScreenHeight(this)/2;
+        token = SPUtils.get(LOGIN_TOKEN, "");
+        myId = SPUtils.get(USER_PHONE, "");
+        moveY = PPScreenUtils.getScreenHeight(this) / 2;
         mList = new ArrayList<>();
         mAdapter = new RefreshAdapter(mList);
-        useAddress = getIntent().getBooleanExtra(ExchangeActivity.ADDRESS_INFO,false);
+        useAddress = getIntent().getBooleanExtra(ExchangeActivity.ADDRESS_INFO, false);
         addressInfo = (AddressInfo) getIntent().getSerializableExtra(ADDRESS_DETAIL);
         LinearLayoutManager manager = new LinearLayoutManager(this);
 //        manager.setStackFromEnd(true);//设置从底部开始，最新添加的item每次都会显示在最下面
@@ -91,10 +92,10 @@ public class AddressListActivity extends BaseActivity {
         recyclerView.setAdapter(mAdapter);
         swipeLayout.setEnabled(false);
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
-        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this,3));
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this, 3));
 //        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION,PPScreenUtils.dip2px(this,10));
 //        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION,PPScreenUtils.dip2px(this,10));
-        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,PPScreenUtils.dip2px(this,3));
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this, 3));
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -106,29 +107,32 @@ public class AddressListActivity extends BaseActivity {
     }
 
     private static final String TAG = "AddressListActivity";
+
     @Event(value = R.id.back_btn)
     private void back_btn(View view) {
         finish();
     }
+
     @Event(value = R.id.create_address)
     private void create_address(View view) {
-        Intent intent = new Intent(AddressListActivity.this,AddressActivity.class);
-        intent.putExtra(ExchangeActivity.ADDRESS_INFO,useAddress);
+        Intent intent = new Intent(AddressListActivity.this, AddressActivity.class);
+        intent.putExtra(ExchangeActivity.ADDRESS_INFO, useAddress);
         startActivityForResult(intent, ADD_ADDRESS);
     }
 
     private String cacheJson;
+
     private void requstList(final boolean loadCache) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ADDRESS);
         params.addParameter("action", "list");
-        params.addParameter("phone", SPUtils.get(USER_PHONE,""));
+        params.addParameter("phone", SPUtils.get(USER_PHONE, ""));
         Log.d(TAG, "search: " + params.toString());
         cacheJson = null;
         org.xutils.x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public boolean onCache(String result) {
-                Log.d(TAG, "onCache: "+loadCache);
-                if(loadCache){
+                Log.d(TAG, "onCache: " + loadCache);
+                if (loadCache) {
                     cacheJson = result;
                 }
                 return false;
@@ -136,14 +140,14 @@ public class AddressListActivity extends BaseActivity {
 
             @Override
             public void onSuccess(String result) {
-                Log.d(TAG, "requstList: "+result);
+                Log.d(TAG, "requstList: " + result);
                 swipeLayout.setRefreshing(false);
                 readJson(result);
             }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                if(!TextUtils.isEmpty(cacheJson)){
+                if (!TextUtils.isEmpty(cacheJson)) {
                     readJson(cacheJson);
                 }
             }
@@ -155,35 +159,36 @@ public class AddressListActivity extends BaseActivity {
 
             @Override
             public void onFinished() {
-                Log.d(TAG, "onFinished: "+System.currentTimeMillis());
+                Log.d(TAG, "onFinished: " + System.currentTimeMillis());
             }
         });
     }
 
 
-    private void readJson(String result){
-        result = result.replace("default","isDefault");
+    private void readJson(String result) {
+        result = result.replace("default", "isDefault");
         BaseCode<List<AddressInfo>> base = new Gson().fromJson(
                 result,
                 new TypeToken<BaseCode<List<AddressInfo>>>() {
                 }.getType());
-        if(base.getCode()==0){
+        if (base.getCode() == 0) {
             List<AddressInfo> datas = base.getData();
-            if(datas==null){
+            if (datas == null) {
                 return;
             }
             mList.clear();
             mList.addAll(datas);
-            if(mList.isEmpty()){
+            if (mList.isEmpty()) {
                 moveUp();
-            }else{
+            } else {
                 moveDown();
             }
             mAdapter.notifyDataSetChanged();
-        }else {
+        } else {
             showToast(base.getMessage());
         }
     }
+
     class RefreshAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         List<AddressInfo> datas = new ArrayList<>();
 
@@ -205,7 +210,8 @@ public class AddressListActivity extends BaseActivity {
             this.datas = data;
         }
 
-        /**a
+        /**
+         * a
          * 更新加载更多状态
          *
          * @param status
@@ -239,20 +245,20 @@ public class AddressListActivity extends BaseActivity {
             if (holder instanceof ItemViewHolder) {
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
                 AddressInfo addressInfo = datas.get(position);
-                if(addressInfo==null){
+                if (addressInfo == null) {
                     return;
                 }
                 String adr = addressInfo.getAddress();
                 String province = addressInfo.getProvince();
                 String city = addressInfo.getCity();
                 String pre = "";
-                if(!TextUtils.isEmpty(province)){
-                    pre=province;
-                    if(!TextUtils.isEmpty(city)&&!city.equals(province)){
-                        pre=pre+city;
+                if (!TextUtils.isEmpty(province)) {
+                    pre = province;
+                    if (!TextUtils.isEmpty(city) && !city.equals(province)) {
+                        pre = pre + city;
                     }
                 }
-                itemViewHolder.address.setText(pre+adr);
+                itemViewHolder.address.setText(pre + adr);
                 itemViewHolder.phone.setText(addressInfo.getPhone());
 //                if(addressInfo.getTag().equals(getString(R.string.home))){
 //                    itemViewHolder.tag.setTextColor(Color.RED);
@@ -261,9 +267,9 @@ public class AddressListActivity extends BaseActivity {
 //                }
                 itemViewHolder.tag.setText(addressInfo.getTag());
                 itemViewHolder.userName.setText(addressInfo.getName());
-                if(addressInfo.getIsDefault().equals("1")){
+                if (addressInfo.getIsDefault().equals("1")) {
                     itemViewHolder.imageView.setImageResource(R.mipmap.checked);
-                }else{
+                } else {
                     itemViewHolder.imageView.setImageResource(R.mipmap.uncheck);
                 }
             }
@@ -281,9 +287,10 @@ public class AddressListActivity extends BaseActivity {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            TextView userName,phone,address,tag,delete;
-            View modify,check;
+            TextView userName, phone, address, tag, delete;
+            View modify, check;
             ImageView imageView;
+
             public ItemViewHolder(@NonNull View itemView) {
                 super(itemView);
                 userName = itemView.findViewById(R.id.name);
@@ -305,9 +312,9 @@ public class AddressListActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         AddressInfo addressInfo = datas.get(getLayoutPosition());
-                        if(addressInfo.getIsDefault().equals("1")){
+                        if (addressInfo.getIsDefault().equals("1")) {
                             return;
-                        }else {
+                        } else {
                             setDefult(addressInfo);
                         }
                     }
@@ -315,56 +322,61 @@ public class AddressListActivity extends BaseActivity {
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(addressInfo!=null&&addressInfo.getId()==datas.get(getLayoutPosition()).getId()){
+                        if (addressInfo != null && addressInfo.getId() == datas.get(getLayoutPosition()).getId()) {
                             return;
                         }
-                        showDeleteDialog(datas.get(getLayoutPosition()).getId(),getLayoutPosition());
+                        showDeleteDialog(datas.get(getLayoutPosition()).getId(), getLayoutPosition());
                     }
                 });
 
             }
-            private void setListener(View view){
+
+            private void setListener(View view) {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(useAddress){
+                        if (useAddress) {
                             setAddressResult(datas.get(getLayoutPosition()));
-                        }else{
+                        } else {
 //                            modifyAddress();
                         }
                     }
                 });
             }
-            private void modifyAddress(){
-                Intent intent = new Intent(AddressListActivity.this,AddressActivity.class);
-                intent.putExtra(AddressActivity.CURRENTADDRESS,datas.get(getLayoutPosition()));
+
+            private void modifyAddress() {
+                Intent intent = new Intent(AddressListActivity.this, AddressActivity.class);
+                intent.putExtra(AddressActivity.CURRENTADDRESS, datas.get(getLayoutPosition()));
                 startActivityForResult(intent, MODIFY_ADDRESS);
             }
         }
     }
-    private void setAddressResult(AddressInfo addressInfo){
+
+    private void setAddressResult(AddressInfo addressInfo) {
         Intent intent = new Intent();
-        intent.putExtra(ExchangeActivity.ADDRESS_INFO,addressInfo);
-        setResult(ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE,intent);
+        intent.putExtra(ExchangeActivity.ADDRESS_INFO, addressInfo);
+        setResult(ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE, intent);
         finish();
     }
+
     public static final int MODIFY_ADDRESS = 90;
     public static final int ADD_ADDRESS = 91;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(data!=null){
-            if(resultCode==SET_ADDRESS_SUCCESS){
+        if (data != null) {
+            if (resultCode == SET_ADDRESS_SUCCESS) {
                 requstList(false);
-                if(true)return;
+                if (true) return;
                 AddressInfo addressInfo = (AddressInfo) data.getSerializableExtra(AddressActivity.CURRENTADDRESS);
-                if(requestCode==MODIFY_ADDRESS){
-                    if(null==addressInfo){
+                if (requestCode == MODIFY_ADDRESS) {
+                    if (null == addressInfo) {
                         return;
                     }
-                    for(int i =0;i<mList.size();i++){
+                    for (int i = 0; i < mList.size(); i++) {
                         AddressInfo address = mList.get(i);
-                        if(addressInfo.getId()==address.getId()){
+                        if (addressInfo.getId() == address.getId()) {
                             address.setAddress(addressInfo.getAddress());
                             address.setName(addressInfo.getName());
                             address.setPhone(addressInfo.getPhone());
@@ -373,18 +385,19 @@ public class AddressListActivity extends BaseActivity {
                             return;
                         }
                     }
-                }else if(requestCode==ADD_ADDRESS){
+                } else if (requestCode == ADD_ADDRESS) {
                     mList.add(addressInfo);
-                    mAdapter.notifyItemInserted(mList.size()-1);
+                    mAdapter.notifyItemInserted(mList.size() - 1);
 //                    requstList();
                 }
-            }else if(resultCode==ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE){
+            } else if (resultCode == ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE) {
                 AddressInfo addressInfo = (AddressInfo) data.getSerializableExtra(ExchangeActivity.ADDRESS_INFO);
                 setAddressResult(addressInfo);
             }
         }
     }
-    private void delete(int id,final int index) {
+
+    private void delete(int id, final int index) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ADDRESS);
         params.addParameter("action", "delete");
         params.addParameter("id", id);
@@ -393,22 +406,22 @@ public class AddressListActivity extends BaseActivity {
         org.xutils.x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                Log.d(TAG, "delete: "+result);
+                Log.d(TAG, "delete: " + result);
                 BaseCode<List<AddressInfo>> base = new Gson().fromJson(
                         result,
                         new TypeToken<BaseCode<List<AddressInfo>>>() {
                         }.getType());
-                if(base.getCode()==0){
-                    mList.remove(index);
+                if (base.getCode() == 0) {
+                    AddressInfo info = mList.remove(index);
                     mAdapter.notifyItemRemoved(index);
-                    if(mAdapter.getItemCount()==0){
+                    if (mAdapter.getItemCount() == 0) {
                         moveUp();
                     }
-                    if(mList.isEmpty()){
+                    if (null != addressInfo && addressInfo.getId() == info.getId()) {
                         EventBus.getDefault().post(new ExchangeAddress(null));
                     }
 //                    requstList();
-                }else {
+                } else {
                     showToast(base.getMessage());
                 }
             }
@@ -429,48 +442,52 @@ public class AddressListActivity extends BaseActivity {
             }
         });
     }
+
     private Point point = new Point();
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             point.x = (int) ev.getRawX();
             point.y = (int) ev.getRawY();
         }
         return super.dispatchTouchEvent(ev);
     }
 
-    private void moveUp(){
+    private void moveUp() {
         emptyView.setVisibility(View.VISIBLE);
 //        ObjectAnimator.ofFloat(addAddress, "translationY", -moveY).setDuration(500).start();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,PPScreenUtils.dip2px(this,60));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, PPScreenUtils.dip2px(this, 60));
         params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         addAddress.setLayoutParams(params);
         addAddress.setBackgroundColor(getResources().getColor(R.color.gray_theme));
     }
-    private void moveDown(){
+
+    private void moveDown() {
         emptyView.setVisibility(View.GONE);
 //        ObjectAnimator.ofFloat(addAddress, "translationY", moveY).setDuration(500).start();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,PPScreenUtils.dip2px(this,60));
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, PPScreenUtils.dip2px(this, 60));
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         addAddress.setLayoutParams(params);
         addAddress.setBackgroundColor(getResources().getColor(R.color.white));
     }
+
     private void setDefult(final AddressInfo info) {
         //action=default&id=XXX
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ADDRESS);
         params.addParameter("action", "default");
-        params.addParameter("id", info.getId()+"");
+        params.addParameter("id", info.getId() + "");
         Log.d(TAG, "search: " + params.toString());
         org.xutils.x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                Log.d(TAG, "requstList: "+result);
-                for(AddressInfo addressInfo:mList){
+                Log.d(TAG, "requstList: " + result);
+                for (AddressInfo addressInfo : mList) {
                     addressInfo.setIsDefault("0");
                 }
                 info.setIsDefault("1");
                 mList.remove(info);
-                mList.add(0,info);
+                mList.add(0, info);
                 mAdapter.notifyDataSetChanged();
 //                readJson(result);
             }
@@ -486,13 +503,13 @@ public class AddressListActivity extends BaseActivity {
 
             @Override
             public void onFinished() {
-                Log.d(TAG, "onFinished: "+System.currentTimeMillis());
+                Log.d(TAG, "onFinished: " + System.currentTimeMillis());
             }
         });
     }
 
-    private void showDeleteDialog(final int id,final int index){
-        View view = getLayoutInflater().inflate(R.layout.practice_dialog,null);
+    private void showDeleteDialog(final int id, final int index) {
+        View view = getLayoutInflater().inflate(R.layout.practice_dialog, null);
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(view);
         TextView scoreTv = (TextView) view.findViewById(R.id.content);
@@ -506,7 +523,7 @@ public class AddressListActivity extends BaseActivity {
         view.findViewById(R.id.right_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delete(id,index);
+                delete(id, index);
                 dialog.dismiss();
             }
         });

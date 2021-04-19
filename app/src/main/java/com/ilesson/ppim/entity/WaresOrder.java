@@ -29,11 +29,20 @@ public class WaresOrder implements Serializable {
     private String invoice_medium;
     private String invoice_typeName;
     private String invoice_type;
+    private String invoice_number;
     private String shopkeeper;
     private String shoplogo;
     private String shopname;
     private String confirm_post;
     private String subDesc;
+
+    public String getInvoice_number() {
+        return invoice_number;
+    }
+
+    public void setInvoice_number(String invoice_number) {
+        this.invoice_number = invoice_number;
+    }
 
     public String getSubDesc() {
         return subDesc;

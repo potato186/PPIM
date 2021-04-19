@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.rong.eventbus.EventBus;
-import io.rong.imageloader.core.DisplayImageOptions;
 
 import static com.ilesson.ppim.activity.AddressListActivity.ADDRESS_DETAIL;
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
@@ -102,7 +101,6 @@ public class ExchangeActivity extends BaseActivity {
 //    private RecyclerView recyclerView;
     public static final String ADDRESS_INFO = "address_info";
     public static final int SET_ADDRESS_SUCCESS_TO_USE = 2;
-    DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
     private ScoreInfo scoreInfo;
     private int num = 1;
 
@@ -111,7 +109,6 @@ public class ExchangeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setStatusBarLightMode(this, true);
         EventBus.getDefault().register(this);
-        builder.cacheInMemory(true).cacheOnDisk(true);
 //        token = SPUtils.get(LOGIN_TOKEN,"");
         scoreInfo = (ScoreInfo) getIntent().getSerializableExtra(SCORE_INFO);
         if (scoreInfo == null) {
@@ -342,6 +339,8 @@ public class ExchangeActivity extends BaseActivity {
                     }
                 });
                 showProduce(0);
+            }else{
+                showToast(base.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -355,8 +354,9 @@ public class ExchangeActivity extends BaseActivity {
         selection = selections.get(index);
         mostNum = scoreInfo.getValue() / selection.getScoreget();
         Glide.with(getApplicationContext()).load(selection.getImage()).into(imageView);
-        waresName.setText(produce.getName());
-        quantity.setText(selection.getDesc());
+        String name = selection.getName();
+        waresName.setText(name);
+//        quantity.setText(selection.getDesc());
         hasScore.setText(String.format(getResources().getString(R.string.has_score_num), scoreInfo.getValue()));
         least.setText(String.format(getResources().getString(R.string.least_exchange_num), selection.getMin(), selection.getUnit()));
         most.setText(String.format(getResources().getString(R.string.most_exchange_num), mostNum, selection.getUnit()));
@@ -397,10 +397,11 @@ public class ExchangeActivity extends BaseActivity {
             userName.setText(addressInfo.getName());
             phone.setText(addressInfo.getPhone());
             String address = addressInfo.getAddress();
-            if(!TextUtils.isEmpty(addressInfo.getProvince())&&!address.contains(addressInfo.getProvince())){
-                address=addressInfo.getProvince()+address;
+            if(!TextUtils.isEmpty(addressInfo.getProvince())&&!address.contains(addressInfo.getCity())){
+                address=addressInfo.getProvince()+addressInfo.getCity()+address;
             }
             addressView.setText(address);
+            addressInfo.setAddress(address);
         }
     }
 

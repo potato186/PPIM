@@ -193,6 +193,7 @@
     <string name="least_exchange_num">最少兑换%1$d%2$s</string>
     <string name="exchange_detail">您已兑换%1$s（%2$s）%3$d%4$s</string>
     <string name="all_exchange_score">合计:%1$d积分</string>
+    <string name="has_score">当前拥有:%1$d积分</string>
     <string name="all_exchange_rmb">合计:%1$d</string>
     <string name="all_format_rmb">合计:¥%1$s</string>
     <string name="all_pay_score">实付:%1$d积分</string>
@@ -242,7 +243,7 @@
     <string name="recording">正在录音</string>
     <string name="qc_card">二维码名片</string>
     <string name="send">发送</string>
-    <string name="custom_server">-客服</string>
+    <string name="custom_server">%1$s-客服</string>
     <string name="collect_success">收藏成功</string>
     <string name="collect_cancel">取消收藏</string>
     <string name="get_photo">手写作文识别</string>
@@ -412,6 +413,7 @@
     <string name="no_invoice">不开发票</string>
     <string name="elec_invoice">电子普通发票</string>
     <string name="paper_invoice">纸质普通发票</string>
+    <string name="paper_type">纸质</string>
     <string name="invoice_type">发票类型</string>
     <string name="invoice_title">发票抬头</string>
     <string name="invoice_content">发票内容</string>

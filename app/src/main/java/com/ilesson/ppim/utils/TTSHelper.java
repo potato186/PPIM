@@ -118,7 +118,8 @@ public class TTSHelper {
 //		} catch (UnsupportedEncodingException e) {
 //			e.printStackTrace();
 //		}
-		int code = mTts.startSpeaking(text, mTtsListener);
+		String content = text.replace(" ","");
+		int code = mTts.startSpeaking(content, mTtsListener);
 	}
 	private TtsExceptionHandler handler = new TtsExceptionHandler() {
 		@Override

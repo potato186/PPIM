@@ -269,6 +269,9 @@ public class ScoreListActivity extends BaseActivity {
                         ScoreInfo order = datas.get(position);
                         Intent intent = new Intent(ScoreListActivity
                                 .this,ExchangeActivity.class);
+                        if(order.getType()==1){
+                            intent.setClass(ScoreListActivity.this,ExchangeServerActivity.class);
+                        }
                         intent.putExtra(ScoreDetailActivity.SCORE_INFO,order);
                         startActivity(intent);
                     }

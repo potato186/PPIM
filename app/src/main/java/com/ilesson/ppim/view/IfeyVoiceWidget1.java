@@ -385,17 +385,20 @@ public class IfeyVoiceWidget1 extends View implements OnClickListener {
         }
         // 3.开始识别,设置引擎类型为云端
         mAsr.setParameter(SpeechConstant.ENGINE_TYPE, "cloud");
-//        if (longVoice) {
-//            mAsr.setParameter(SpeechConstant.ASR_PTT, "1");
-//            mAsr.setParameter(SpeechConstant.VAD_BOS, "20000");
-//        }else{
-//            mAsr.setParameter(SpeechConstant.ASR_PTT, "0");
-//            mAsr.setParameter(SpeechConstant.VAD_BOS, "1000");
-        // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
+        if (longVoice) {
+            mAsr.setParameter(SpeechConstant.ASR_PTT, "1");
+//            mAsr.setParameter(SpeechConstant.VAD_BOS, "10000");
+//            mAsr.setParameter(SpeechConstant.VAD_EOS, "10000");
+        }else {
+            mAsr.setParameter(SpeechConstant.ASR_PTT, "0");
+        }
         mAsr.setParameter(SpeechConstant.VAD_BOS, "5000");
-        mAsr.setParameter(SpeechConstant.ASR_PTT, "0");
-        // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
         mAsr.setParameter(SpeechConstant.VAD_EOS, "1000");
+        // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
+//        mAsr.setParameter(SpeechConstant.VAD_BOS, "5000");
+//        mAsr.setParameter(SpeechConstant.ASR_PTT, "0");
+//        // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
+//        mAsr.setParameter(SpeechConstant.VAD_EOS, "1000");
 //        mAsr.setParameter(SpeechConstant.ACCENT, "cn_cantonese");
 
 //        }
@@ -485,7 +488,7 @@ public class IfeyVoiceWidget1 extends View implements OnClickListener {
 
                 String key = null != keyWord ? keyWord.trim() : "";
                 sbf.append(key);
-
+                System.out.println("===========message=>>====" + key);
             }
             if (isLast) {
                 String word = sbf.toString();

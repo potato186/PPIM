@@ -121,7 +121,6 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
                             android:textSize="@dimen/text_size_16"
-                            android:text="potato"
                             android:textColor="@color/gray_text333_color"
                             />
                         <TextView
@@ -133,7 +132,6 @@
                             android:layout_toRightOf="@+id/user_name"
                             android:textColor="@color/gray_text333_color"
                             android:textSize="@dimen/text_size_16"
-                            android:text="186e3463892"
                             />
 
                         <TextView
@@ -144,7 +142,6 @@
                             android:textSize="@dimen/text_size_16"
                             android:layout_marginTop="5dp"
                             android:textColor="@color/gray_text333_color"
-                            android:text="广东省附近的深刻理解"
                             />
                     </RelativeLayout>
 
@@ -175,47 +172,52 @@
                 android:background="@color/white"
                 android:layout_marginLeft="15dp"
                 >
-                <com.ilesson.ppim.view.RoundImageView
-                    android:layout_width="95dp"
-                    android:layout_height="95dp"
-                    android:id="@+id/wares_img"
-                    android:scaleType="centerCrop"
-                    android:layout_marginTop="10dp"
-                    />
-                <LinearLayout
+                <RelativeLayout
+                    android:id="@+id/wares_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/wares_img"
-                    android:orientation="vertical"
-                    android:layout_marginTop="12dp"
                     >
-                    <TextView
-                        android:id="@+id/wares_name"
+                    <com.ilesson.ppim.view.RoundImageView
+                        android:layout_width="95dp"
+                        android:layout_height="95dp"
+                        android:id="@+id/wares_img"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="10dp"
+                        />
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:textColor="@color/gray_text333_color"
-                        android:textSize="18sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/wares_quantity"
-                        android:textColor="@color/helptext_color"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        />
-                   <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/wares_score_price"
-                        android:textColor="@color/red"
-                        android:textSize="16sp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="15dp"
-                        />
+                        android:layout_toRightOf="@+id/wares_img"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        >
+                        <TextView
+                            android:id="@+id/wares_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="@color/gray_text333_color"
+                            android:textSize="18sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/wares_quantity"
+                            android:textColor="@color/helptext_color"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/wares_score_price"
+                            android:textColor="@color/red"
+                            android:textSize="16sp"
+                            android:layout_marginLeft="20dp"
+                            />
 
-                </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
 
             </RelativeLayout>
             <TextView
@@ -251,7 +253,7 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
-                app:tcvItemBorderHorizontal="8dp"
+                app:tcvBorder="10dp"
                 app:tcvItemBorderVertical="10dp"
                 app:tcvTextColor="@color/gray_text333_color"
                 app:tcvCanTagClick="true"

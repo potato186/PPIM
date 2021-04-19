@@ -50,6 +50,8 @@ import java.util.List;
 
 import static com.ilesson.ppim.activity.MainActivity.FRESH;
 import static com.ilesson.ppim.activity.ResetPwdActivity.RESET_LOGIN_PWD;
+import static com.ilesson.ppim.activity.UserDetailActivity.BIRTH;
+import static com.ilesson.ppim.activity.UserDetailActivity.SEX;
 import static com.ilesson.ppim.fragment.FundFragment.ACTION_PAY;
 
 /**
@@ -163,6 +165,18 @@ public class LoginActivity extends BaseActivity {
                     SPUtils.put(USER_ICON, info.getIcon());
                     SPUtils.put(USER_NAME, info.getName());
                     SPUtils.put(LOGIN_TOKEN, info.getrToken());
+                    if(!TextUtils.isEmpty(info.getRealName())){
+                        SPUtils.put(REAL_NAME,info.getRealName());
+                    }
+                    if(!TextUtils.isEmpty(info.getRealNameSymbol())){
+                        SPUtils.put(NAME_SYMBL, info.getRealNameSymbol());
+                    }
+                    if(!TextUtils.isEmpty(info.getBirthday())){
+                        SPUtils.put(BIRTH,info.getBirthday());
+                    }
+                    if(!TextUtils.isEmpty(info.getSex())){
+                        SPUtils.put(SEX,info.getSex());
+                    }
 //                    SPUtils.put(LOGIN_TOKEN, UrlUtil.getURLEncoderString(base.getData().getToken()));
                     sendBroadcast(new Intent(ACTION_PAY));
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);

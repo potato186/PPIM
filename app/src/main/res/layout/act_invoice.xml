@@ -228,7 +228,7 @@
                                 android:background="@null"
                                 android:hint="@string/hint_enterprise_name"
                                 android:textColor="@color/gray_text333_color"
-                                android:textSize="@dimen/text_size_16"/>
+                                android:textSize="16sp"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -250,7 +250,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@null"
                                 android:hint="@string/hint_tax_num"
-                                android:textSize="@dimen/text_size_16"
+                                android:textSize="16sp"
                                 android:textColor="@color/gray_text333_color" />
                         </LinearLayout>
                     </LinearLayout>
@@ -261,6 +261,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/person_name_layout"
                         android:layout_marginTop="15dp"
+                        android:layout_marginBottom="20dp"
                         android:orientation="horizontal">
 
                         <TextView

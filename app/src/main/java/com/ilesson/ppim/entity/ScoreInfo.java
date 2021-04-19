@@ -8,6 +8,15 @@ public class ScoreInfo implements Serializable {
     private String logo;
     private int value;
     private int sid;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getDate() {
         return date;

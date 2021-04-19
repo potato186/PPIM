@@ -28,6 +28,7 @@ import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.TextUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -324,7 +325,10 @@ public class WareOrderListActivity extends BaseActivity {
                         WaresOrder order = datas.get(getLayoutPosition());
 //                        serverId = base.getData();
 //                        new IMUtils().requestShopServer(null,order.getId());
-                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE,order.getShopkeeper(),order.getName()+getString(R.string.custom_server));
+
+                        String serverId = TextUtil.getServerId(order.getShopkeeper());
+                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE,serverId,String.format(getResources().getString(R.string.custom_server),order.getName()));
+//                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE,order.getShopkeeper(),order.getName()+getString(R.string.custom_server));
                     }
                 });
                 checkLogistc.setOnClickListener(new View.OnClickListener() {
@@ -399,6 +403,8 @@ public class WareOrderListActivity extends BaseActivity {
                         }.getType());
                 if(base.getCode()==0){
                     order.setConfirm_post("1");
+                    int index = mList.indexOf(order);
+                    mAdapter.notifyItemChanged(index);
                     confirm.setVisibility(View.GONE);
                 }
             }

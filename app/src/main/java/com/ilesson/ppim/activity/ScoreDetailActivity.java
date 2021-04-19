@@ -110,6 +110,9 @@ public class ScoreDetailActivity extends BaseActivity {
     @Event(value = R.id.exchange)
     private void exchange(View view) {
         Intent intent = new Intent( this,ExchangeActivity.class);
+        if(scoreInfo.getType()==1){
+            intent.setClass(this,ExchangeServerActivity.class);
+        }
         intent.putExtra(ScoreDetailActivity.SCORE_INFO,scoreInfo);
         startActivity(intent);
     }

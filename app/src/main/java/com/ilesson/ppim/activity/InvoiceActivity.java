@@ -97,9 +97,9 @@ public class InvoiceActivity extends BaseActivity {
                 if (info.getType().equals(INVOICE_PERSON)) {
                     personName.setText(info.getName());
                     if (info.getMedium().equals(INVOICE_ELECT)) {
-                        electInvoice(electInvoice);
+//                        electInvoice(electInvoice);
                     } else {
-                        paperInvoice(paperInvoice);
+//                        paperInvoice(paperInvoice);
                     }
 
                 } else {
@@ -188,7 +188,7 @@ public class InvoiceActivity extends BaseActivity {
         String pName = personName.getText().toString();
         String cName = companyName.getText().toString();
         String cNum = companyNum.getText().toString();
-        String email = emailText.getText().toString();
+        String email = emailText.getText().toString().replace(" ","");
         if (!TextUtils.isEmpty(pName)) {
             SPUtils.put(PERSON_NAME+phone, pName);
         } else {

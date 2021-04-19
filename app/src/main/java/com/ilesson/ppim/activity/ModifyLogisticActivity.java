@@ -28,6 +28,7 @@ import org.xutils.view.annotation.ViewInject;
 
 import io.rong.eventbus.EventBus;
 
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_COMPANY;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
 import static com.ilesson.ppim.activity.WaresOrderManagerListActivity.WARESORDER;
@@ -50,6 +51,10 @@ public class ModifyLogisticActivity extends BaseActivity{
     public View invoiceLayout;
     @ViewInject(R.id.email_layout)
     public View emailLayout;
+    @ViewInject(R.id.tax_num)
+    public View taxLayout;
+    @ViewInject(R.id.company_num)
+    public TextView companyNum;
     @ViewInject(R.id.invoice_type)
     public TextView invoiceType;
     @ViewInject(R.id.voice_type)
@@ -82,6 +87,7 @@ public class ModifyLogisticActivity extends BaseActivity{
         if(!TextUtils.isEmpty(order.getPostno())){
             postNo.setText(order.getPostno());
         }
+
         if(!TextUtils.isEmpty(order.getInvoice_name())){
             invoiceLayout.setVisibility(View.VISIBLE);
             String title = order.getInvoice_type().equals(INVOICE_PERSON)?getResources().getString(R.string.personal):getResources().getString(R.string.enterprise);
@@ -89,10 +95,14 @@ public class ModifyLogisticActivity extends BaseActivity{
             invoiceType1.setText(order.getInvoice_mediumName());
             invoiceTitleType.setText(title);
             invoiceTitleName.setText(order.getInvoice_name());
-
             double price = Double.valueOf(order.getNum())*Double.valueOf(order.getPerPrice());
             invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s), BigDecimalUtil.format(Double.valueOf((double)price/100))));
-
+            if(order.getInvoice_type().equals(INVOICE_COMPANY)){
+                taxLayout.setVisibility(View.VISIBLE);
+                companyNum.setText(order.getInvoice_number());
+            }else{
+                taxLayout.setVisibility(View.GONE);
+            }
             if(order.getInvoice_medium().equals(INVOICE_ELECT)){
                 invoiceEmail.setText(order.getInvoice_email());
                 emailLayout.setVisibility(View.VISIBLE);

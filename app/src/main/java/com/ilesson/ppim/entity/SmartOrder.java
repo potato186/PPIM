@@ -20,7 +20,7 @@ public class SmartOrder {
     private String invoicetag;
 
     private String subUnit;
-    private String num;
+    private int num;
     private int feiPrice;
     private String prodname;
     private int subid;
@@ -30,7 +30,16 @@ public class SmartOrder {
     private String subImage;
     private int allPrice;
     private String subName;
+    private String inv_eptype;
     private List<InvoiceInfo> invoice;
+
+    public String getInv_eptype() {
+        return inv_eptype;
+    }
+
+    public void setInv_eptype(String inv_eptype) {
+        this.inv_eptype = inv_eptype;
+    }
 
     public List<InvoiceInfo> getInvoice() {
         return invoice;
@@ -56,11 +65,11 @@ public class SmartOrder {
         this.subUnit = subUnit;
     }
 
-    public String getNum() {
+    public int getNum() {
         return num;
     }
 
-    public void setNum(String num) {
+    public void setNum(int num) {
         this.num = num;
     }
 

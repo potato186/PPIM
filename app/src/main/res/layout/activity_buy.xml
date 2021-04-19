@@ -159,58 +159,64 @@
                 android:layout_marginTop="10dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:paddingTop="15dp"
+                android:paddingTop="10dp"
                 android:paddingBottom="4dp"
                 android:background="@drawable/background_white_corner10"
                 >
-                <com.ilesson.ppim.view.RoundImageView
-                    android:layout_width="95dp"
-                    android:layout_height="95dp"
-                    android:id="@+id/wares_img"
-                    android:scaleType="centerCrop"
-                    android:layout_marginTop="10dp"
-                    />
-                <LinearLayout
+                <RelativeLayout
+                    android:id="@+id/wares_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/wares_img"
-                    android:orientation="vertical"
-                    android:layout_marginTop="12dp"
                     >
-                    <TextView
-                        android:id="@+id/wares_name"
+                    <com.ilesson.ppim.view.RoundImageView
+                        android:layout_width="95dp"
+                        android:layout_height="95dp"
+                        android:id="@+id/wares_img"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="10dp"
+                        />
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:textColor="@color/gray_text333_color"
-                        android:textSize="18sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/wares_quantity"
-                        android:textColor="@color/helptext_color"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        />
-                   <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/wares_score_price"
-                        android:textColor="@color/red"
-                        android:textSize="16sp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="15dp"
-                        />
+                        android:layout_toRightOf="@+id/wares_img"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        >
+                        <TextView
+                            android:id="@+id/wares_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:textColor="@color/gray_text333_color"
+                            android:textSize="18sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/wares_quantity"
+                            android:textColor="@color/helptext_color"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/wares_score_price"
+                            android:textColor="@color/red"
+                            android:textSize="16sp"
+                            android:layout_marginLeft="20dp"
+                            />
 
-                </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
                 <TextView
                     android:id="@+id/tag1"
                     android:layout_width="match_parent"
                     android:layout_height="0.6dp"
                     android:background="@color/gray_theme"
                     android:layout_marginTop="20dp"
-                    android:layout_below="@+id/wares_img"
+                    android:layout_below="@+id/wares_layout"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -304,8 +310,8 @@
                     android:layout_marginBottom="15dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="10dp"
-                    app:tcvItemBorderHorizontal="8dp"
                     app:tcvItemBorderVertical="10dp"
+                    app:tcvBorder="10dp"
                     app:tcvTextColor="@color/gray_text333_color"
                     app:tcvCanTagClick="true"
                     />
@@ -512,6 +518,28 @@
                             android:layout_marginLeft="15dp"
                             />
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/tax_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tax_num"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/company_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/gray_text333_color"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="15dp"
+                            />
+                    </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

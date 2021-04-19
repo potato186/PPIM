@@ -25,6 +25,7 @@ import com.ilesson.ppim.entity.WaresOrder;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.TextUtil;
 import com.ilesson.ppim.view.ScrollListView;
 
 import org.xutils.common.Callback;
@@ -213,7 +214,10 @@ public class WaresLogistcDetailctivity extends BaseActivity {
                 if (base.getCode() == 0) {
                     serverId = base.getData();
                     new IMUtils().requestShopServer(null, order.getId());
-                    RongIM.getInstance().startConversation(WaresLogistcDetailctivity.this, Conversation.ConversationType.PRIVATE, serverId, order.getName() + getString(R.string.custom_server));
+                    String serverId = TextUtil.getServerId(order.getShopkeeper());
+                    RongIM.getInstance().startConversation(WaresLogistcDetailctivity.this, Conversation.ConversationType.PRIVATE,serverId,String.format(getResources().getString(R.string.custom_server),order.getName()));
+//
+//                    RongIM.getInstance().startConversation(WaresLogistcDetailctivity.this, Conversation.ConversationType.PRIVATE, serverId, order.getName() + getString(R.string.custom_server));
                 }
 //                readJson(result);
             }

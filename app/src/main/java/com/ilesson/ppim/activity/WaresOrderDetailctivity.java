@@ -16,6 +16,8 @@ import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.WaresOrder;
 import com.ilesson.ppim.utils.BigDecimalUtil;
 import com.ilesson.ppim.utils.Dateuitls;
+import com.ilesson.ppim.utils.IMUtils;
+import com.ilesson.ppim.utils.TextUtil;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
 
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_COMPANY;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
 
@@ -79,6 +82,11 @@ public class WaresOrderDetailctivity extends BaseActivity {
     public TextView checkLogistc;
     @ViewInject(R.id.state)
     public TextView state;
+
+    @ViewInject(R.id.tax_num)
+    public View taxLayout;
+    @ViewInject(R.id.company_num)
+    public TextView companyNum;
 
     @ViewInject(R.id.post_time_view)
     public View postTimeView;
@@ -142,6 +150,13 @@ public class WaresOrderDetailctivity extends BaseActivity {
             logisticsName.setText(order.getPostname());
             logisticsNameView.setVisibility(View.VISIBLE);
         }
+        if(!TextUtils.isEmpty(order.getConfirm_post())){
+            if(shopOrder){
+                state.setText(R.string.custom_confirm_take_post);
+            }else{
+                state.setText(R.string.confirm_take_post);
+            }
+        }
         orderNum.setText(order.getTransaction_id());
         payTime.setText(Dateuitls.getOrderPayTime(order.getPay_date()));
         phoneView.setText(order.getUphone());
@@ -189,6 +204,12 @@ public class WaresOrderDetailctivity extends BaseActivity {
             invoiceTitleName.setText(order.getInvoice_name());
             double price = Double.valueOf(order.getNum())*Double.valueOf(order.getPerPrice());
             invoicePrice.setText(String.format(getResources().getString(R.string.format_yuan_s),BigDecimalUtil.format(Double.valueOf((double)price/100))));
+            if(order.getInvoice_type().equals(INVOICE_COMPANY)){
+                taxLayout.setVisibility(View.VISIBLE);
+                companyNum.setText(order.getInvoice_number());
+            }else{
+                taxLayout.setVisibility(View.GONE);
+            }
             if(order.getInvoice_medium().equals(INVOICE_ELECT)){
                 invoiceEmail.setText(order.getInvoice_email());
                 emailLayout.setVisibility(View.VISIBLE);
@@ -223,7 +244,11 @@ public class WaresOrderDetailctivity extends BaseActivity {
             name = order.getShopname()+getResources().getString(R.string.custom_server);
         }
         if(!TextUtils.isEmpty(targetId)){
-            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,targetId,name);
+            new IMUtils().requestShopServer(null, order.getId());
+            String id = TextUtil.getServerId(targetId);
+            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,id,String.format(getResources().getString(R.string.custom_server),name));
+
+//            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,targetId,name);
         }
     }
 }

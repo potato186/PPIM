@@ -233,11 +233,19 @@ public class AddressActivity extends BaseActivity {
         params.addParameter("name", name);
 //        params.addParameter("country", phone);
         params.addParameter("phone", phone);
-        params.addParameter("address", address);
+        String ads = address;
+//        if(!address.contains(city)){
+//            ads=city+address;
+//        }
+//        if(!address.contains(province)){
+//            ads=province+ads;
+//        }
+        params.addParameter("address", ads);
 //        params.addParameter("prefix", phonePrefix);
         params.addParameter("tag", tag);
         Log.d(TAG, "search: " + params.toString());
         showProgress();
+        final String faddress = ads;
         org.xutils.x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -247,7 +255,10 @@ public class AddressActivity extends BaseActivity {
                         new TypeToken<BaseCode<List<AddressInfo>>>() {
                         }.getType());
                 if (base.getCode() == 0) {
-                    AddressInfo addressInfo = new AddressInfo(address, phone, name, tag);
+                    AddressInfo addressInfo = new AddressInfo(faddress, phone, name, tag);
+                    addressInfo.setProvince(province);
+                    addressInfo.setCity(city);
+                    addressInfo.setId(id);
                     if (currentAddress == null) {
 
                     }

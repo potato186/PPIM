@@ -11,6 +11,7 @@
 <android.support.constraint.ConstraintLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:visibility="gone"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.ilesson.ppim.view.RoundImageView
@@ -59,6 +60,15 @@
         />
 
 </android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/result_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:scaleType="fitXY"
+        />
     <TextView
         android:id="@+id/tag"
         android:layout_width="match_parent"

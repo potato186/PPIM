@@ -18,7 +18,9 @@ import com.ilesson.ppim.entity.GroupWaresIntro;
 import com.ilesson.ppim.entity.OrderConfirmInfo;
 import com.ilesson.ppim.utils.BigDecimalUtil;
 import com.ilesson.ppim.utils.IMUtils;
+import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.TextUtil;
 import com.ilesson.ppim.view.RoundImageView;
 
 import io.rong.imkit.RongIM;
@@ -36,7 +38,7 @@ import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 
 @ProviderTag(messageContent = OrderConfirmMessage.class)
 public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvider<OrderConfirmMessage> {
-
+    public static final double ITEMPROVIDER_WIDTH = .736;
     class ViewHolder {
         TextView uName,address,phone, name, price, num;
         RoundImageView imageView;
@@ -77,6 +79,11 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
         } else {
             holder.layout.setBackgroundResource(io.rong.imkit.R.drawable.rc_ic_bubble_left);
         }
+        final int sw = PPScreenUtils.getScreenWidth(v.getContext());
+        ViewGroup.LayoutParams params = holder.layout.getLayoutParams();
+        final int layoutW = (int) (sw * ITEMPROVIDER_WIDTH);
+        params.width = layoutW;
+        holder.layout.setLayoutParams(params);
         final OrderConfirmInfo waresIntro = new Gson().fromJson(content.getContent(),OrderConfirmInfo.class);
 
 //        GroupWaresIntro waresIntro = getEntity(content.getContent());
@@ -106,7 +113,10 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
             @Override
             public void onClick(View v) {
                 new IMUtils().requestShopServer(null, waresIntro.getShopkeeper());
-                RongIM.getInstance().startConversation(v.getContext(), Conversation.ConversationType.PRIVATE, waresIntro.getShopkeeper(), waresIntro.getName() + v.getContext().getResources().getString(R.string.custom_server));
+                String serverId = TextUtil.getServerId(waresIntro.getShopkeeper());
+                RongIM.getInstance().startConversation(v.getContext(), Conversation.ConversationType.PRIVATE,serverId,String.format(v.getContext().getResources().getString(R.string.custom_server),waresIntro.getName()));
+
+//                RongIM.getInstance().startConversation(v.getContext(), Conversation.ConversationType.PRIVATE, waresIntro.getShopkeeper(), waresIntro.getName() + v.getContext().getResources().getString(R.string.custom_server));
             }
         });
         String state = SPUtils.get(SPUtils.get(USER_PHONE,"")+waresIntro.getOid(),"");

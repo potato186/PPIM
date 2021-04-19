@@ -7,8 +7,6 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
-
 import static org.junit.Assert.assertEquals;
 
 ;
@@ -51,10 +49,8 @@ public class ExampleUnitTest {
     }
     @Test
     public void main12(){
-        long time = 1612231208588l;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = sdf.format(time);
-        System.out.println(date);
+        String time = "亲，每箱 12 包，每包 400 克，300 元/箱。";
+        System.out.println(time.replace(" ",""));
     }
 
 }
