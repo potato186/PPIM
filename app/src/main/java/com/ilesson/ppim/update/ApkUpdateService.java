@@ -20,11 +20,6 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import static com.ilesson.ppim.update.Consts.APK_DOWNLOAD_URL;
 
@@ -48,15 +43,13 @@ public class ApkUpdateService extends IntentService {
         }else{
             NotificationUtils.showNotification(getString(getApplicationInfo().labelRes),"",0,channelId,10,100);
         }
-        String urlStr = intent.getStringExtra(APK_DOWNLOAD_URL).replace("http","https");
+        String urlStr = intent.getStringExtra(APK_DOWNLOAD_URL);
         Log.d(TAG, "onHandleIntent: " + urlStr);
         File dir = StorageUtils.getCacheDirectory(this);
         String apkName = urlStr.substring(urlStr.lastIndexOf("/") + 1, urlStr.length());
         final File apkFile = new File(dir, apkName);
         HttpUtils utils = new HttpUtils();
         utils.download(urlStr, apkFile.getAbsolutePath(), true, new RequestCallBack<File>(){
-
-
             @Override
             public void onStart() {
                 super.onStart();
@@ -74,7 +67,6 @@ public class ApkUpdateService extends IntentService {
                 }
                 System.out.println("正在 下载中  "+progress);
             }
-
             @Override
             public void onSuccess(ResponseInfo responseInfo) {
                 autoInstallApk(ApkUpdateService.this,apkFile);
@@ -88,86 +80,22 @@ public class ApkUpdateService extends IntentService {
                 }
                 System.out.println("下载成功");
             }
-
-
             @Override
             public void onFailure(HttpException error, String msg) {
-
-                System.out.println("下载失败");
-            }
-
-
-        });
-        if(true)return;
-        InputStream in = null;
-        FileOutputStream out = null;
-        try {
-            URL url = new URL(urlStr);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(false);
-            urlConnection.setConnectTimeout(10 * 1000);
-            urlConnection.setReadTimeout(10 * 1000);
-//			urlConnection.setRequestProperty("Connection", "Keep-Alive");
-//			urlConnection.setRequestProperty("Charset", "UTF-8");
-//			urlConnection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-
-            urlConnection.connect();
-            long bytetotal = urlConnection.getContentLength();
-            long bytesum = 0;
-            int byteread = 0;
-            in = urlConnection.getInputStream();
-//            File dir = StorageUtils.getCacheDirectory(this);
-//            String apkName = urlStr.substring(urlStr.lastIndexOf("/") + 1, urlStr.length());
-//            File apkFile = new File(dir, apkName);
-            out = new FileOutputStream(apkFile);
-            byte[] buffer = new byte[BUFFER_SIZE];
-
-            int oldProgress = 0;
-
-            while ((byteread = in.read(buffer)) != -1) {
-                bytesum += byteread;
-                out.write(buffer, 0, byteread);
-
-                int progress = (int) (bytesum * 100L / bytetotal);
-                // 如果进度与之前进度相等，则不更新，如果更新太频繁，否则会造成界面卡顿
-                if (progress != oldProgress) {
+                if(msg.equals("maybe the file has downloaded completely")){
+                    autoInstallApk(ApkUpdateService.this,apkFile);
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                        updateProgress(progress);
-                    }else{
-                        NotificationUtils.showNotification(getString(getApplicationInfo().labelRes),this.getString(R.string.download_progress, progress),0,channelId,progress,100);
-                    }
-                }
-                oldProgress = progress;
-            }
-            autoInstallApk(this,apkFile);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 //                Notification noti = mBuilder.build();
 //                noti.flags = Notification.FLAG_AUTO_CANCEL;
 //                mNotifyManager.notify(0, noti);
-            }else{
+                    }else{
 //                NotificationUtils.showNotification(getString(getApplicationInfo().labelRes),"点击安装",0,channelId);
-                NotificationUtils.cancleNotification(0);
-            }
-
-        } catch (Exception e) {
-            Log.e(TAG, "download apk file error", e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        NotificationUtils.cancleNotification(0);
+                    }
                 }
+                System.out.println("下载失败");
             }
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        });
     }
 
     private void autoInstallApk(Context context,File file) {

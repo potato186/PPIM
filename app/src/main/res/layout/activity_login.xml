@@ -82,7 +82,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="100dp"
                 android:background="@null"
-                android:hint="填写手机号"
+                android:hint="@string/hint_input_phone"
                 android:inputType="number"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:textSize="@dimen/registe_font_size" />
@@ -118,7 +118,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="100dp"
                 android:background="@null"
-                android:hint="密码"
+                android:hint="请填写密码"
                 android:inputType="textPassword"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:textSize="@dimen/registe_font_size" />

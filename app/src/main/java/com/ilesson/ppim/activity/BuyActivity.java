@@ -484,7 +484,12 @@ public class BuyActivity extends BaseActivity {
 //                produce = waresDetialData.getProduce();
                 selections = waresDetialData.getOptions();
                 produce = waresDetialData.getProduce();
-                invoiceInfos = waresDetialData.getInvoice();
+                invoiceInfos = new ArrayList<>();
+                for (InvoiceInfo info : waresDetialData.getInvoice()) {
+                    info.setMediumName(getResources().getString(R.string.elec_invoice));
+                    info.setMedium(INVOICE_ELECT);
+                    invoiceInfos.add(info);
+                }
 //                List<Selections> data = new ArrayList<>();
 //                data.addAll(selections);
 //                data.addAll(selections);

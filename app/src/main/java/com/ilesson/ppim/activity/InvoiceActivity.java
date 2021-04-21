@@ -48,6 +48,8 @@ public class InvoiceActivity extends BaseActivity {
     private EditText emailText;
     @ViewInject(R.id.company_layout)
     private View companyLayout;
+    @ViewInject(R.id.tax_layout)
+    private View taxLayout;
     @ViewInject(R.id.person_name_layout)
     private View personLayout;
     @ViewInject(R.id.email_layout)
@@ -114,10 +116,10 @@ public class InvoiceActivity extends BaseActivity {
             } else {
                 personalInvoice(personalInvoice);
             }
-            if (INVOICE_ELECT.equals(modifyInfo.getMedium())) {
-                electInvoice(electInvoice);
-            } else {
+            if (INVOICE_PAPER.equals(modifyInfo.getMedium())) {
                 paperInvoice(paperInvoice);
+            } else {
+                electInvoice(electInvoice);
             }
         } else {
             modifyInfo = new InvoiceInfo();
@@ -169,6 +171,7 @@ public class InvoiceActivity extends BaseActivity {
         setUnSelectedStyle(companyInvoice);
         personLayout.setVisibility(View.VISIBLE);
         companyLayout.setVisibility(View.GONE);
+        taxLayout.setVisibility(View.GONE);
         modifyInfo.setType(INVOICE_PERSON);
         modifyInfo.setTypeName(getResources().getString(R.string.personal));
     }
@@ -179,6 +182,7 @@ public class InvoiceActivity extends BaseActivity {
         setUnSelectedStyle(personalInvoice);
         personLayout.setVisibility(View.GONE);
         companyLayout.setVisibility(View.VISIBLE);
+        taxLayout.setVisibility(View.VISIBLE);
         modifyInfo.setType(INVOICE_COMPANY);
         modifyInfo.setTypeName(getResources().getString(R.string.enterprise));
     }

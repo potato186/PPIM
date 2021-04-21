@@ -227,7 +227,7 @@
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:inputType="number"
-            android:hint="@string/input_phone_num"
+            android:hint="@string/hint_input_phone"
             android:textSize="@dimen/registe_font_size" />
 
         <View
@@ -263,7 +263,7 @@
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:inputType="number"
-            android:hint="填验证码"
+            android:hint="@string/hint_input_vcode"
             android:textSize="@dimen/registe_font_size" />
 
         <TextView

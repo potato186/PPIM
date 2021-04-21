@@ -504,7 +504,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        stoped=false;
         if (resultCode == PAY_SUCCESS) {
             String money = data.getStringExtra(PAY_MONEY);
             String desc = data.getStringExtra(PAY_DECS);
@@ -862,7 +862,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     invoiceInfo.setEmail(eName);
                 }
             }
-        } else {
         }
         invoiceTag = order.getInvoicetag();
         invoiceMedium = order.getInv_eptype();
@@ -902,15 +901,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 }
                 invoiceInfo.setType(tag);
                 String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium)?INVOICE_PAPER:INVOICE_ELECT;
-//                String mediumName = medium.equals(INVOICE_ELECT)?getResources().getString(R.string.elec_invoice):getResources().getString(R.string.paper_invoice);
-//                invoiceInfo.setMedium(medium);
-//                invoiceInfo.setMediumName(mediumName);
                 if (TextUtils.isEmpty(invoiceInfo.getName())||(medium.equals(INVOICE_ELECT)&&TextUtils.isEmpty(invoiceInfo.getEmail()))) {
                     noInvoiceLayout.setVisibility(View.VISIBLE);
                     setInvoice(invoiceInfo);
                 } else {
-//                    invoiceInfo.setMedium(INVOICE_ELECT);
-//                    invoiceInfo.setMediumName(getResources().getString(R.string.elec_invoice));
                     showInvoiceView(invoiceInfo);
                 }
             } else {
@@ -1153,16 +1147,26 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             floatBtn.clearAnimation();
         }
     }
-
+    private boolean stoped;
     @Override
     public void onStop() {
         super.onStop();
+        stoped = true;
         if (recording) {
             stop(false);
             if (!xunfei) {
                 stopTencenVoice();
             }
         }
+        if (ttsHelper.isSpeaking()) {
+            ttsHelper.stop();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        stoped=false;
     }
 
     private IWXAPI api;
@@ -1211,6 +1215,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private String postPlace="";
 
     public void request(final String key, final boolean voice) {
+        if(stoped){
+            return;
+        }
         if (key==null||key.length() > 100) {
             return;
         }
@@ -1288,7 +1295,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         } else {
                             ttsModify.setVisibility(View.GONE);
                         }
-                        String help = order.getHelp();
+                        String help = order.getHelp().trim();
                         if (!TextUtils.isEmpty(help)) {
                             helpTextView.setText(help);
                             helpTextView.setVisibility(View.VISIBLE);

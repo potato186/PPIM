@@ -105,7 +105,7 @@
                 android:inputType="number"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:background="@null"
-                android:hint="填写手机号"
+                android:hint="@string/hint_input_phone"
                 android:textSize="@dimen/registe_font_size" />
 
             <View
@@ -141,7 +141,7 @@
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:background="@null"
                 android:inputType="number"
-                android:hint="填验证码"
+                android:hint="@string/hint_input_vcode"
                 android:textSize="@dimen/registe_font_size" />
 
             <TextView
@@ -200,14 +200,16 @@
                 android:background="@color/gray_bg_color" />
         </RelativeLayout>
         <TextView
-            android:id="@+id/pwd_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
-            android:text="@string/pwd_rule6"
+            android:id="@+id/pwd_tips"
             android:textSize="14sp"
-            android:textColor="@color/theme_color"
+            android:text="@string/pwd_rule6"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/rc_new_message_divider_text_color"
             />
         <!--<RelativeLayout
             android:layout_width="match_parent"

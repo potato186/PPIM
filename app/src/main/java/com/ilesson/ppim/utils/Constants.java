@@ -48,4 +48,5 @@ public interface Constants {
     public static final int REQ_PERM_EXTERNAL_STORAGE = 11004; // 读写文件
 
     public static final String INTENT_EXTRA_KEY_QR_SCAN = "qr_scan_result";
+    int VISIBLE_THRESHOLD = 3;
 }

@@ -1,9 +1,12 @@
+/*
 package com.ilesson.ppim.activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
@@ -47,11 +52,13 @@ import io.rong.imlib.model.Conversation;
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 
+*/
 /**
  * Created by potato on 2020/3/10.
- */
+ *//*
+
 @ContentView(R.layout.activity_wares_order_list)
-public class WareOrderListActivity extends BaseActivity {
+public class WareOrdersListActivity extends BaseActivity {
 
 
     private String token;
@@ -226,12 +233,14 @@ public class WareOrderListActivity extends BaseActivity {
             this.datas = data;
         }
 
-        /**
+        */
+/**
          * a
          * 更新加载更多状态
          *
          * @param status
-         */
+         *//*
+
         public void changeMoreStatus(int status) {
             mLoadMoreStatus = status;
             notifyDataSetChanged();
@@ -263,7 +272,7 @@ public class WareOrderListActivity extends BaseActivity {
             if (holder instanceof ItemViewHolder) {
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
                 WaresOrder order = datas.get(position);
-                Glide.with(WareOrderListActivity.this).load(order.getIcon()).into(itemViewHolder.pic);
+                Glide.with(WareOrdersListActivity.this).load(order.getIcon()).into(itemViewHolder.pic);
                 itemViewHolder.waresName.setText(order.getName());
                 itemViewHolder.waresNum.setText(String.format(getResources().getString(R.string.num_format), order.getNum()));
                 itemViewHolder.waresInfo.setText(order.getSubDesc());
@@ -357,7 +366,7 @@ public class WareOrderListActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         WaresOrder order = datas.get(getLayoutPosition());
-                        Intent intent = new Intent(WareOrderListActivity.this, WaresOrderDetailctivity.class);
+                        Intent intent = new Intent(WareOrdersListActivity.this, WaresOrderDetailctivity.class);
                         intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
                         startActivity(intent);
                     }
@@ -370,7 +379,7 @@ public class WareOrderListActivity extends BaseActivity {
 //                        new IMUtils().requestShopServer(null,order.getId());
 
                         String serverId = TextUtil.getServerId(order.getShopkeeper());
-                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE, serverId, String.format(getResources().getString(R.string.custom_server), order.getName()));
+                        RongIM.getInstance().startConversation(WareOrdersListActivity.this, Conversation.ConversationType.PRIVATE, serverId, String.format(getResources().getString(R.string.custom_server), order.getName()));
 //                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE,order.getShopkeeper(),order.getName()+getString(R.string.custom_server));
                     }
                 });
@@ -378,7 +387,7 @@ public class WareOrderListActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         WaresOrder order = datas.get(getLayoutPosition());
-                        Intent intent = new Intent(WareOrderListActivity.this, WaresLogistcDetailctivity.class);
+                        Intent intent = new Intent(WareOrdersListActivity.this, WaresLogistcDetailctivity.class);
                         intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
                         startActivity(intent);
                     }
@@ -474,4 +483,64 @@ public class WareOrderListActivity extends BaseActivity {
         });
     }
 
+     class DataAdapter extends BaseQuickAdapter<WaresOrder, BaseViewHolder> {
+        private Context context;
+        public DataAdapter(Context context, @Nullable List<WaresOrder> data) {
+            super(R.layout.ware_order_item, data);
+            this.context=context;
+        }
+
+        @Override
+        protected void convert(BaseViewHolder helper, WaresOrder order) {
+//            helper.setText(R.id.MyTV1,item.getTitle());     //通过id
+//            ImageView view = helper.getView(R.id.IMage1);
+//            Glide.with(context).load(item.getImage()).into(view);
+//            helper.addOnClickListener(R.id.IMage1);    //添加子元素点击事件
+            Glide.with(WareOrdersListActivity.this).load(order.getIcon()).into((ImageView) helper.getView(R.id.wares_img));
+            helper.setText(R.id.wares_name,order.getName()).setText(R.id.num,String.format(getResources().getString(R.string.num_format), order.getNum()))
+            .setText(R.id.wares_info,order.getSubDesc());
+            TextView waresPrice = helper.getView(R.id.);
+            if (!TextUtils.isEmpty(order.getFei())) {
+                helper.setText(R.id.express_fee_price,String.format(getResources().getString(R.string.express_fee), BigDecimalUtil.format(Double.valueOf(order.getFei()) / 100)));
+            }
+            if (order.getTrade_no().startsWith("ex")) {
+                String text = String.format(getResources().getString(R.string.score_price), Integer.valueOf(order.getPerPrice()));
+                int length = order.getPrice().length();
+                SpannableStringBuilder style = new SpannableStringBuilder(text);
+                style.setSpan(new RelativeSizeSpan(1.2f), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    itemViewHolder.price.setText(style);
+                helper.setText(R.id.unit_price,text);
+                helper.setText(R.id.order_info,R.string.score_exchange_order);
+                itemViewHolder.waresPrice.setVisibility(View.GONE);
+                itemViewHolder.allPrice.setText(String.format(getResources().getString(R.string.all_pay_score), Integer.valueOf(order.getPrice())));
+            } else {
+                itemViewHolder.waresPrice.setVisibility(View.VISIBLE);
+                double price = Double.valueOf(order.getNum()) * Double.valueOf(order.getPerPrice());
+                itemViewHolder.waresPrice.setText(String.format(getResources().getString(R.string.wares_price), BigDecimalUtil.format(price / 100)));
+                itemViewHolder.unitPrice.setText(String.format(getResources().getString(R.string.rmb_format), BigDecimalUtil.format(Double.valueOf(order.getPerPrice()) / 100)));
+                itemViewHolder.orderInfo.setText(R.string.buy_order);
+                String allPrice = String.format(getResources().getString(R.string.all_fee), BigDecimalUtil.format(Double.valueOf((double) price / 100)) + "");
+                itemViewHolder.allPrice.setText(allPrice);
+            }
+
+            if (TextUtils.isEmpty(order.getPostdate())) {
+                itemViewHolder.checkLogistc.setVisibility(View.GONE);
+                itemViewHolder.state.setText(R.string.no_post);
+                itemViewHolder.confirm.setVisibility(View.GONE);
+            } else {
+                itemViewHolder.state.setText(R.string.has_post);
+                itemViewHolder.checkLogistc.setVisibility(View.VISIBLE);
+                itemViewHolder.confirm.setVisibility(View.VISIBLE);
+            }
+            if (!TextUtils.isEmpty(order.getConfirm_post())) {
+                itemViewHolder.state.setText(R.string.confirm_take_post);
+                itemViewHolder.confirm.setVisibility(View.GONE);
+            } else {
+                if (!TextUtils.isEmpty(order.getPostdate())) {
+                    itemViewHolder.confirm.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
 }
+*/
