@@ -221,7 +221,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
-                    android:text="数量"
+                    android:text="@string/quantity"
                     android:textSize="16sp"
                     android:layout_below="@+id/tag1"
                     android:gravity="center"

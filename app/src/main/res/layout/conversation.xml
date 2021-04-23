@@ -337,6 +337,7 @@
                                     android:layout_width="100dp"
                                     android:layout_height="38dp"
                                     android:layout_marginTop="5dp"
+                                    android:layout_gravity="center_horizontal"
                                     android:background="@drawable/general_theme_corner20_selector"
                                     android:gravity="center"
                                     android:text="@string/order_go_pay"

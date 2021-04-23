@@ -111,6 +111,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/logistics_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -196,7 +197,7 @@
                     <TextView
                         android:layout_width="@dimen/order_item_left_item_width"
                         android:layout_height="wrap_content"
-                        android:text="@string/phone_num"
+                        android:text="@string/phone_num_"
                         android:textSize="16sp"
                         />
                     <TextView

@@ -66,7 +66,7 @@ public class WareDetailActivity extends BaseActivity {
     private ScrollListView detailRecylerview;
     @ViewInject(R.id.result_image)
     private ImageView resultImageView;
-        @ViewInject(R.id.product_name)
+    @ViewInject(R.id.product_name)
     private TextView productName;
     @ViewInject(R.id.banner)
     private Banner banner;

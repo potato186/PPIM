@@ -64,20 +64,41 @@
             <string name="logist_num_tip">快递单号:</string>
             <string name="hint_logist_num_tip">请填写快递单号</string>
             <string name="confirm_post">确定发货</string>-->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/input_logist_info"
-                android:textColor="@color/gray_text333_color"
-                android:textSize="17sp"
-                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/input_logist_info"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="17sp"
+                    android:layout_centerVertical="true"
+                    />
+                <RelativeLayout
+                    android:id="@+id/scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/general_tran_gray_btn_selector">
+
+                    <TextView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerInParent="true"
+                        android:background="@mipmap/scan_qr_icon" />
+                </RelativeLayout>
+            </RelativeLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/logist_name_tip"
                 android:textColor="@color/helptext_color"
                 android:textSize="15sp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 />
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -128,6 +149,149 @@
                     android:textSize="16sp" />
             </RelativeLayout>
         </LinearLayout>
+            <LinearLayout
+                android:id="@+id/logistics_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_white_corner5"
+                android:padding="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:id="@+id/pay_time_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:layout_width="@dimen/order_item_left_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="产品类型"
+                        android:textSize="16sp"
+                        />
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_item_left_margin"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray_text333_color"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/order_item_top_margin"
+                    >
+                    <TextView
+                        android:layout_width="@dimen/order_item_left_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/quantity"
+                        android:textSize="16sp"
+                        />
+                    <TextView
+                        android:id="@+id/num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_item_left_margin"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray_text333_color"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/order_num_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/order_item_top_margin"
+                    >
+                    <TextView
+                        android:layout_width="@dimen/order_item_left_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/order_num"
+                        android:textSize="16sp"
+                        />
+                    <TextView
+                        android:id="@+id/order_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_item_left_margin"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray_text333_color"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/consignee_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/order_item_top_margin"
+                    >
+                    <TextView
+                        android:layout_width="@dimen/order_item_left_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/consignee"
+                        android:textSize="16sp"
+                        />
+                    <TextView
+                        android:id="@+id/consignee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_item_left_margin"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray_text333_color"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/phone_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/order_item_top_margin"
+                    >
+                    <TextView
+                        android:layout_width="@dimen/order_item_left_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/phone_num_"
+                        android:textSize="16sp"
+                        />
+                    <TextView
+                        android:id="@+id/phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_item_left_margin"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray_text333_color"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/consignee_address_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/order_item_top_margin"
+                    >
+
+                    <TextView
+                        android:layout_width="@dimen/order_item_left_item_width"
+                        android:layout_height="wrap_content"
+                        android:text="@string/consignee_address"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/order_item_left_margin"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray_text333_color"
+                        />
+                </LinearLayout>
+            </LinearLayout>
             <RelativeLayout
                 android:id="@+id/invoice_layout"
                 android:layout_width="match_parent"

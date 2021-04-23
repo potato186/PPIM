@@ -566,8 +566,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     key=postPlace+key;
                 }
             }
-            request(key, false);
-            requestText.setText(key);
+            if(!key.contains("改地址")){
+                request(key, false);
+                requestText.setText(key);
+            }
         }
     }
 
@@ -1198,6 +1200,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 //                    showContent.setVisibility(View.GONE);
                     ttsView.setVisibility(View.GONE);
                     toPay.setVisibility(View.VISIBLE);
+                    if (lastOrder != null) {
+                        showOrderState(lastOrder);
+                    }
                 } else {
                     api.sendReq(req);
                 }
@@ -1497,7 +1502,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 
     private SmartOrder currentOrder;
 
-    private void showContent(SmartOrder order) {
+    private void showContent(final SmartOrder order) {
         currentOrder = order;
         showContent.setVisibility(View.VISIBLE);
         waresIntroView.setVisibility(View.GONE);
@@ -1557,6 +1562,12 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 resultImageView.setImageBitmap(resource);
                 resultImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 resultImageView.setVisibility(View.VISIBLE);
+            }
+        });
+        resultImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImagePreviewActivity.startPreview(ConversationActivity.this,order.getImgurl());
             }
         });
     }

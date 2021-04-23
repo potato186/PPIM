@@ -1,5 +1,10 @@
 package zonglian.ilesson.com.ppim;
 
+import com.google.gson.Gson;
+import com.ilesson.ppim.entity.LogistBase;
+import com.ilesson.ppim.entity.LogistReg;
+import com.ilesson.ppim.utils.Constants;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -7,6 +12,18 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.function.BinaryOperator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.ilesson.ppim.activity.ModifyLogisticActivity.json;
 import static org.junit.Assert.assertEquals;
 
 ;
@@ -49,8 +66,91 @@ public class ExampleUnitTest {
     }
     @Test
     public void main12(){
-        String time = "亲，每箱 12 包，每包 400 克，300 元/箱。";
-        System.out.println(time.replace(" ",""));
+        LogistBase logistBase = new Gson().fromJson(json, LogistBase.class);
+//        String no = "552040947081913";
+//        String no = "777039877137211";
+        String no = "SF1322209583703";
+        List<LogistReg> companyReturnList = logistBase.getCompanyReturnList();
+        for (int i =0;i<companyReturnList.size();i++) {
+            LogistReg logistReg = companyReturnList.get(i);
+            Pattern p = Pattern.compile(logistReg.getReg_mail_no());  //正则表达式
+            Matcher m = p.matcher(no);
+            if(m.matches()){
+                System.out.println(logistReg.getName());
+            }
+        }
     }
 
+    private static final String TAG = "ExampleUnitTest";
+    @Test
+    public void loadData() throws Exception {
+        //https://pp.fangnaokeji.com:9443/pp/express?action=query&no=4607490744122
+        URL localURL = new URL(Constants.BASE_URL + Constants.EXPRESS+"?action=query&no=YT9535522647381");
+        URLConnection connection = localURL.openConnection();
+        HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
+
+        httpURLConnection.setRequestProperty("Accept-Charset", "utf-8");
+        httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        String token = "A01479421152D14FF6393863449A40969C2EE3C722BEEE1BA060CD521A6C8B27";
+        httpURLConnection.setRequestProperty("produce","pp");
+        httpURLConnection.setRequestProperty("channel","1001");
+        httpURLConnection.setRequestProperty("token",token);
+        httpURLConnection.setRequestProperty("authorization",token);
+        httpURLConnection.setRequestProperty("version","1");
+        InputStream inputStream = null;
+        InputStreamReader inputStreamReader = null;
+        BufferedReader reader = null;
+        StringBuffer resultBuffer = new StringBuffer();
+        String tempLine = null;
+
+        if (httpURLConnection.getResponseCode() >= 300) {
+            throw new Exception("HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+        }
+
+        try {
+            inputStream = httpURLConnection.getInputStream();
+            inputStreamReader = new InputStreamReader(inputStream);
+            reader = new BufferedReader(inputStreamReader);
+
+            while ((tempLine = reader.readLine()) != null) {
+                resultBuffer.append(tempLine);
+            }
+            System.out.println(resultBuffer.toString());
+        } finally {
+
+            if (reader != null) {
+                reader.close();
+            }
+
+            if (inputStreamReader != null) {
+                inputStreamReader.close();
+            }
+
+            if (inputStream != null) {
+                inputStream.close();
+            }
+
+        }
+
+
+    }
+    @Test
+    public void test4() {
+        // 无返回值lambda函数体中用法
+        Runnable r1 = () -> {
+            System.out.println("hello lambda1");
+            System.out.println("hello lambda2");
+            System.out.println("hello lambda3");
+        };
+        r1.run();
+
+        // 有返回值lambda函数体中用法
+        BinaryOperator<Integer> binary = (x, y) -> {
+            int a = x * 2;
+            int b = y + 2;
+            return a + b;
+        };
+        System.out.println(binary.apply(1, 2));// 3
+
+    }
 }

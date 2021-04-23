@@ -104,6 +104,10 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateHidden"
             />
+        <activity android:name=".activity.ProgressActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:launchMode="singleTop"
+            />
         <activity android:name=".activity.UserDetailActivity" />
         <activity android:name="com.google.zxing.activity.CaptureActivity"
             android:theme="@style/AppTheme.white"/>

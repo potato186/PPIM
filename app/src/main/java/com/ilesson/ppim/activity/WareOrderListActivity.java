@@ -353,42 +353,28 @@ public class WareOrderListActivity extends BaseActivity {
                 waresInfo = itemView.findViewById(R.id.wares_info);
                 checkLogistc = itemView.findViewById(R.id.check_logistc);
                 allPrice.setTextColor(getResources().getColor(R.color.gray_text333_color));
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WaresOrder order = datas.get(getLayoutPosition());
-                        Intent intent = new Intent(WareOrderListActivity.this, WaresOrderDetailctivity.class);
-                        intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
-                        startActivity(intent);
-                    }
+                itemView.setOnClickListener(v -> {
+                    WaresOrder order = datas.get(getLayoutPosition());
+                    Intent intent = new Intent(WareOrderListActivity.this, WaresOrderDetailctivity.class);
+                    intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
+                    startActivity(intent);
                 });
-                callServer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WaresOrder order = datas.get(getLayoutPosition());
+                callServer.setOnClickListener(v -> {
+                    WaresOrder order = datas.get(getLayoutPosition());
 //                        serverId = base.getData();
 //                        new IMUtils().requestShopServer(null,order.getId());
 
-                        String serverId = TextUtil.getServerId(order.getShopkeeper());
-                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE, serverId, String.format(getResources().getString(R.string.custom_server), order.getName()));
+                    String serverId = TextUtil.getServerId(order.getShopkeeper());
+                    RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE, serverId, String.format(getResources().getString(R.string.custom_server), order.getName()));
 //                        RongIM.getInstance().startConversation(WareOrderListActivity.this, Conversation.ConversationType.PRIVATE,order.getShopkeeper(),order.getName()+getString(R.string.custom_server));
-                    }
                 });
-                checkLogistc.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WaresOrder order = datas.get(getLayoutPosition());
-                        Intent intent = new Intent(WareOrderListActivity.this, WaresLogistcDetailctivity.class);
-                        intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
-                        startActivity(intent);
-                    }
+                checkLogistc.setOnClickListener(v -> {
+                    WaresOrder order = datas.get(getLayoutPosition());
+                    Intent intent = new Intent(WareOrderListActivity.this, WaresLogistcDetailctivity.class);
+                    intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
+                    startActivity(intent);
                 });
-                confirm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showConfirm(confirm, datas.get(getLayoutPosition()));
-                    }
-                });
+                confirm.setOnClickListener(v -> showConfirm(confirm, datas.get(getLayoutPosition())));
             }
 
         }
@@ -403,7 +389,7 @@ public class WareOrderListActivity extends BaseActivity {
         }
     }
 
-    private void showConfirm(final View confirm, final WaresOrder order) {
+    private void showConfirm(View confirm, WaresOrder order) {
         View view = getLayoutInflater().inflate(R.layout.confirm_take_delivery_dialog, null);
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(view);
@@ -414,23 +400,15 @@ public class WareOrderListActivity extends BaseActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setAttributes(p);
         Glide.with(getApplicationContext()).load(order.getIcon()).into((ImageView) view.findViewById(R.id.wares_img));
-        view.findViewById(R.id.left_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        view.findViewById(R.id.right_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmOrder(confirm, order);
-                dialog.dismiss();
-            }
+        view.findViewById(R.id.left_btn).setOnClickListener(v -> dialog.dismiss());
+        view.findViewById(R.id.right_btn).setOnClickListener(v -> {
+            confirmOrder(confirm, order);
+            dialog.dismiss();
         });
         dialog.show();
     }
 
-    private void confirmOrder(final View confirm, final WaresOrder order) {
+    private void confirmOrder(View confirm, WaresOrder order) {
         //确认收货：https://pp.fangnaokeji.com:9443/pp/order?action=confirm&oid=689
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
         params.addBodyParameter("action", "confirm_post");

@@ -75,7 +75,7 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginRight="5dp"
                     android:padding="8dp"
-                    android:visibility="gone"
+                    android:text="fjdkls"
                     android:background="@drawable/background_white_corner5"
                     android:textSize="16sp" />
                 <TextView

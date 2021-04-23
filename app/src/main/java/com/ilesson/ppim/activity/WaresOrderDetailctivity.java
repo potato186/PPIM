@@ -1,5 +1,8 @@
 package com.ilesson.ppim.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -126,6 +129,9 @@ public class WaresOrderDetailctivity extends BaseActivity {
         if(shopOrder){
             callServer.setText(R.string.call_user);
         }
+        if (order==null) {
+            return;
+        }
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
         waresName.setText(order.getName());
         waresPrice.setText(getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100));
@@ -226,6 +232,33 @@ public class WaresOrderDetailctivity extends BaseActivity {
     private void back_btn(View view) {
         finish();
     }
+    @Event(value = R.id.invoice_layout,type=View.OnLongClickListener.class)
+    private boolean  invoice_layout(View view) {
+        StringBuilder stringBuilder = new StringBuilder(order.getInvoice_name());
+        if(INVOICE_ELECT.equals(order.getInvoice_medium())){
+            stringBuilder.append(order.getInvoice_email());
+        }
+        if(INVOICE_COMPANY.equals(order.getInvoice_type())){
+            stringBuilder.append(order.getInvoice_number());
+        }
+        copy(stringBuilder.toString());
+        return true;
+    }
+    @Event(value = R.id.logistics_layout,type=View.OnLongClickListener.class)
+    private boolean  logistics_layout(View view) {
+        copy(order.getUname()+order.getUphone()+order.getUaddress());
+        return true;
+    }
+    private void copy(String content){
+        //获取剪贴板管理器：
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        // 创建普通字符型ClipData
+        ClipData mClipData = ClipData.newPlainText("Label", content);
+        // 将ClipData内容放到系统剪贴板里。
+        cm.setPrimaryClip(mClipData);
+        showToast(R.string.clipboard_tip);
+    }
+
     @Event(value = R.id.check_logistc)
     private void check_logistc(View view) {
         Intent intent = new Intent(this,WaresLogistcDetailctivity.class);
@@ -241,7 +274,7 @@ public class WaresOrderDetailctivity extends BaseActivity {
             name = order.getUname();
         }else{
             targetId = order.getShopkeeper();
-            name = order.getShopname()+getResources().getString(R.string.custom_server);
+            name = order.getName();
         }
         if(!TextUtils.isEmpty(targetId)){
             new IMUtils().requestShopServer(null, order.getId());

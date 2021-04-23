@@ -480,8 +480,6 @@ public class BuyActivity extends BaseActivity {
                     addressInfo = addressInfos.get(0);
                 }
                 showAdress();
-//                List<Produces> produces = scoreData.getProduces();
-//                produce = waresDetialData.getProduce();
                 selections = waresDetialData.getOptions();
                 produce = waresDetialData.getProduce();
                 invoiceInfos = new ArrayList<>();
@@ -490,17 +488,6 @@ public class BuyActivity extends BaseActivity {
                     info.setMedium(INVOICE_ELECT);
                     invoiceInfos.add(info);
                 }
-//                List<Selections> data = new ArrayList<>();
-//                data.addAll(selections);
-//                data.addAll(selections);
-//                data.addAll(selections);
-//                for (int i = 0; i < data.size(); i++) {
-//                    Random random = new Random();
-//                    String name = arr[random.nextInt(arr.length)];
-//                    data.get(i).setName(name);
-//                }
-                RefreshAdapter adapter = new RefreshAdapter(selections);
-//                recyclerView.setAdapter(adapter);
                 List<String> texts = new ArrayList<>();
                 for (Options options : selections) {
                     texts.add(options.getName().replace("\n",""));

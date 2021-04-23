@@ -516,6 +516,14 @@ public class ChatInfoActivity extends BaseActivity{
                 super(itemView);
                 imageView = itemView.findViewById(R.id.icon);
                 name = itemView.findViewById(R.id.name);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
+                        intent.putExtra(FriendDetailActivity.USER_ID,datas.get(getLayoutPosition()).getPhone());
+                        startActivity(intent);
+                    }
+                });
             }
         }
     }
