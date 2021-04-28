@@ -13,6 +13,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.ilesson.ppim.activity.FriendDetailActivity;
 import com.ilesson.ppim.activity.ModifyFontActivity;
@@ -22,7 +23,11 @@ import com.ilesson.ppim.contactcard.message.ContactMessageItemProvider;
 import com.ilesson.ppim.custom.ComposeItemProvider;
 import com.ilesson.ppim.custom.ComposeMessage;
 import com.ilesson.ppim.custom.CustomizeMessage;
+import com.ilesson.ppim.custom.ExpressItemProvider;
+import com.ilesson.ppim.custom.ExpressMessage;
 import com.ilesson.ppim.custom.MyExtensionModule;
+import com.ilesson.ppim.custom.NewOrderItemProvider;
+import com.ilesson.ppim.custom.NewOrderMessage;
 import com.ilesson.ppim.custom.OrderConfirmMessage;
 import com.ilesson.ppim.custom.OrderNotifyItemProvider;
 import com.ilesson.ppim.custom.PPFileItemProvider;
@@ -66,8 +71,6 @@ import io.rong.imkit.DefaultExtensionModule;
 import io.rong.imkit.IExtensionModule;
 import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
-import io.rong.imlib.model.Message;
 
 /**
  * Created by potato on 2020/3/5.
@@ -101,34 +104,31 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         MyHttpManager.registerInstance();
         MultiDex.install(this);
         ilessonApp = this;
-        RongIM.getInstance().setOnReceiveMessageListener(new RongIMClient.OnReceiveMessageListener() {
-            @Override
-            public boolean onReceived(Message message, int left) {
-                Log.d("message", "IlessonApp onReceived: ="+message.getContent());
-                if(message.getObjectName().equals("custom:pay_to_me")){
-                    EventBus.getDefault().post(new TransferMessage());
-                }
-                else if(message.getObjectName().equals("custom:pay")){
-                    PPayMessage payMessage = (PPayMessage) message.getContent();
-                    String content = payMessage.getContent();
-                    String[] arr = content.split("\\|");
-                    String currency = arr[2];
-                    TransferMessage transferMessage = new TransferMessage();
-                    transferMessage.setExtra(currency);
-                    EventBus.getDefault().post(transferMessage);
-
-                }
-                else if(message.getObjectName().equals("custom:user_pay")){
-                    TransferMessage transferMessage = (TransferMessage) message.getContent();
-                    EventBus.getDefault().post(transferMessage);
-                }
-                else if(message.getObjectName().equals("custom:friend_request")){
-                    EventBus.getDefault().post(new FriendRequest(message.getSenderUserId()));
-                }else if(message.getObjectName().equals("custom:friend_accept")){
-                    EventBus.getDefault().post(new FriendAccept());
-                }
-                return false;
+        RongIM.getInstance().setOnReceiveMessageListener((message, left) -> {
+            Log.d("message", "IlessonApp onReceived: ="+message.getContent());
+            if(message.getObjectName().equals("custom:pay_to_me")){
+                EventBus.getDefault().post(new TransferMessage());
             }
+            else if(message.getObjectName().equals("custom:pay")){
+                PPayMessage payMessage = (PPayMessage) message.getContent();
+                String content = payMessage.getContent();
+                String[] arr = content.split("\\|");
+                String currency = arr[2];
+                TransferMessage transferMessage = new TransferMessage();
+                transferMessage.setExtra(currency);
+                EventBus.getDefault().post(transferMessage);
+
+            }
+            else if(message.getObjectName().equals("custom:user_pay")){
+                TransferMessage transferMessage = (TransferMessage) message.getContent();
+                EventBus.getDefault().post(transferMessage);
+            }
+            else if(message.getObjectName().equals("custom:friend_request")){
+                EventBus.getDefault().post(new FriendRequest(message.getSenderUserId()));
+            }else if(message.getObjectName().equals("custom:friend_accept")){
+                EventBus.getDefault().post(new FriendAccept());
+            }
+            return false;
         });
         QbSdk.initX5Environment(this, new QbSdk.PreInitCallback() {
             @Override
@@ -142,11 +142,8 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
             }
         });
         setMyExtensionModule();
-        RongIM.setLocationProvider(new RongIM.LocationProvider() {
-            @Override
-            public void onStartLocation(Context context, LocationCallback locationCallback) {
+        RongIM.setLocationProvider((context, locationCallback) -> {
 
-            }
         });
         RongIM.registerMessageType(CustomizeMessage.class);
 //        RongIM.getInstance().registerMessageTemplate(new CustomizeMessageItemProvider());
@@ -163,11 +160,15 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         RongIM.registerMessageTemplate(new RedReceiverItemProvider());
         RongIM.registerMessageTemplate(new WaresGroupIntroItemProvider());
         RongIM.registerMessageTemplate(new OrderNotifyItemProvider());
+        RongIM.registerMessageTemplate(new ExpressItemProvider());
+        RongIM.registerMessageTemplate(new NewOrderItemProvider());
+        RongIM.registerMessageType(NewOrderMessage.class);
         RongIM.registerMessageType(RedBackMessage.class);
         RongIM.registerMessageType(ComposeMessage.class);
         RongIM.registerMessageType(ContactMessage.class);
         RongIM.registerMessageType(WaresGroupMessage.class);
         RongIM.registerMessageType(OrderConfirmMessage.class);
+        RongIM.registerMessageType(ExpressMessage.class);
         RongIM.registerMessageTemplate(new ContactMessageItemProvider(new IContactCardClickListener() {
             @Override
             public void onContactCardClick(View view, ContactMessage content) {
@@ -412,5 +413,37 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
             }
         }
     }
+    private TextView textView;
 
+    public TextView getTextView() {
+        return textView;
+    }
+
+    public void setTextView(TextView textView) {
+        this.textView = textView;
+    }
+    private Map<Integer,String> itemMap;
+
+    public Map<Integer, String> getItemMap() {
+        return itemMap;
+    }
+
+    public void setItemMap(Map<Integer, String> map) {
+        this.itemMap = map;
+    }
+    private boolean commonBuy;
+
+    public boolean isCommonBuy() {
+        return commonBuy;
+    }
+
+    public void setCommonBuy(boolean commonBuy) {
+        this.commonBuy = commonBuy;
+    }
+
+    public boolean isActivityTop(Class cls){
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        String name = manager.getRunningTasks(1).get(0).topActivity.getClassName();
+        return name.equals(cls.getName());
+    }
 }

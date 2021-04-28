@@ -6,16 +6,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        >
 
-        <CheckBox
+        <TextView
             android:id="@+id/checkbox"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:focusable="false"
-            android:button="@mipmap/unselect" />
+            android:layout_marginLeft="10dp"
+            />
 
         <com.ilesson.ppim.view.RoundImageView
             android:id="@+id/contact_icon"

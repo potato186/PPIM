@@ -1,10 +1,5 @@
 package zonglian.ilesson.com.ppim;
 
-import com.google.gson.Gson;
-import com.ilesson.ppim.entity.LogistBase;
-import com.ilesson.ppim.entity.LogistReg;
-import com.ilesson.ppim.utils.Constants;
-
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -18,12 +13,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
 import java.util.function.BinaryOperator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.ilesson.ppim.activity.ModifyLogisticActivity.json;
 import static org.junit.Assert.assertEquals;
 
 ;
@@ -66,26 +57,15 @@ public class ExampleUnitTest {
     }
     @Test
     public void main12(){
-        LogistBase logistBase = new Gson().fromJson(json, LogistBase.class);
-//        String no = "552040947081913";
-//        String no = "777039877137211";
-        String no = "SF1322209583703";
-        List<LogistReg> companyReturnList = logistBase.getCompanyReturnList();
-        for (int i =0;i<companyReturnList.size();i++) {
-            LogistReg logistReg = companyReturnList.get(i);
-            Pattern p = Pattern.compile(logistReg.getReg_mail_no());  //正则表达式
-            Matcher m = p.matcher(no);
-            if(m.matches()){
-                System.out.println(logistReg.getName());
-            }
-        }
     }
 
     private static final String TAG = "ExampleUnitTest";
     @Test
     public void loadData() throws Exception {
         //https://pp.fangnaokeji.com:9443/pp/express?action=query&no=4607490744122
-        URL localURL = new URL(Constants.BASE_URL + Constants.EXPRESS+"?action=query&no=YT9535522647381");
+        //https://pp.fangnaokeji.com:9443/pp/produce?action=selection&id=6
+//        URL localURL = new URL(Constants.BASE_URL + Constants.EXPRESS+"?action=query&no=YT9535522647381");
+        URL localURL = new URL("https://pp.fangnaokeji.com:9443/pp/order?action=info&oid=1309");
         URLConnection connection = localURL.openConnection();
         HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
 
@@ -96,7 +76,7 @@ public class ExampleUnitTest {
         httpURLConnection.setRequestProperty("channel","1001");
         httpURLConnection.setRequestProperty("token",token);
         httpURLConnection.setRequestProperty("authorization",token);
-        httpURLConnection.setRequestProperty("version","1");
+        httpURLConnection.setRequestProperty("version","2");
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
         BufferedReader reader = null;

@@ -378,6 +378,22 @@
                 android:paddingBottom="7dp"
                 android:layout_gravity="center_vertical"
                 />
+            <TextView
+                android:id="@+id/topost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/to_post"
+                android:textSize="16sp"
+                android:background="@drawable/general_red_theme_corner20_selector"
+                android:textColor="@color/white"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:layout_gravity="center_vertical"
+                />
         </LinearLayout>
 
     </RelativeLayout>

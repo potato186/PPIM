@@ -181,6 +181,50 @@
                     />
             </RelativeLayout>
             <RelativeLayout
+                android:id="@+id/nike_layout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/white_gray_btn_selector">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/nike_in_group"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/right_arrow" />
+                <TextView
+                    android:id="@+id/nike_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="30dp"
+                    android:text="@string/nike"
+                    android:singleLine="true"
+                    android:gravity="center_vertical|right"
+                    android:ems="10"
+                    android:textColor="@color/color_666666"
+                    android:textSize="16sp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_theme"
+                    android:layout_alignParentBottom="true"
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/shop_list_layout"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

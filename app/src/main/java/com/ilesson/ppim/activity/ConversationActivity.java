@@ -37,17 +37,21 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.iflytek.cloud.SpeechUtility;
+import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.custom.ComposeMessage;
 import com.ilesson.ppim.entity.AddressInfo;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.GroupBase;
+import com.ilesson.ppim.entity.HideProgress;
 import com.ilesson.ppim.entity.InvoiceInfo;
 import com.ilesson.ppim.entity.NoteInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.PayOrder;
 import com.ilesson.ppim.entity.PaySuccess;
+import com.ilesson.ppim.entity.ShowProgress;
 import com.ilesson.ppim.entity.SmartOrder;
+import com.ilesson.ppim.entity.WaresOrder;
 import com.ilesson.ppim.fragment.ConversationFragment;
 import com.ilesson.ppim.service.FavoriteHelper;
 import com.ilesson.ppim.utils.BigDecimalUtil;
@@ -129,6 +133,7 @@ import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PAPER;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
 import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_MEDIUM;
 import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_NAME;
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
 import static com.ilesson.ppim.activity.PayScoreActivity.PAY_DECS;
 import static com.ilesson.ppim.activity.PayScoreActivity.PAY_MONEY;
@@ -651,6 +656,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         shopGroup = false;
     }
 
+    private String nikeName;
+    private String groupIcon;
     public void requestGroupInfo() {
         ///pp/group?action=info&token=%s&group=%s
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN, "");
@@ -678,6 +685,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     title = groupBase.getGroup().getName();
                     groupSize = groupBase.getSize();
                     isOwner = groupBase.isOwner();
+                    nikeName = groupBase.getMy().getName();
+                    groupIcon = groupBase.getGroup().getIcon();
                     showTitle();
                     final List<UserInfo> users = new ArrayList<>();
                     for (PPUserInfo info : list) {
@@ -685,12 +694,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         UserInfo user = new UserInfo(info.getPhone(), info.getName(), portraitUri);
                         users.add(user);
                     }
-                    RongIM.getInstance().setGroupMembersProvider(new RongIM.IGroupMembersProvider() {
-                        @Override
-                        public void getGroupMembers(String groupId, RongIM.IGroupMemberCallback callback) {
-
-                            callback.onGetGroupMembersResult(users); // 调用 callback 的 onGetGroupMembersResult 回传群组信息
-                        }
+                    RongIM.getInstance().setGroupMembersProvider((groupId, callback) -> {
+                        callback.onGetGroupMembersResult(users); // 调用 callback 的 onGetGroupMembersResult 回传群组信息
                     });
                 } else {
                     Toast.makeText(ConversationActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
@@ -791,6 +796,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 Intent intent = new Intent(this, ChatInfoActivity.class);
                 intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
                 intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
+                intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
+                intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
                 intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
                 startActivityForResult(intent, 0);
                 break;
@@ -1187,6 +1194,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     }.getType());
             if (base.getCode() == 0) {
                 PayOrder order = base.getData();
+                IlessonApp.getInstance().setCommonBuy(false);
+                trade = order.getTrade();
                 req.appId = order.getAppid();
                 req.partnerId = order.getPartnerid();
                 req.prepayId = order.getPrepayid();
@@ -1716,6 +1725,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         showShopTheme(false);
         shopCarView.setVisibility(View.GONE);
         shopCarNum.setVisibility(View.GONE);
+        if(!IlessonApp.getInstance().isCommonBuy()){
+            new IMUtils().loadTrade(ConversationActivity.this,trade,false);
+        }
     }
 
     public void onEventMainThread(AddressInfo var) {
@@ -1942,4 +1954,84 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         return stringBuffer.toString();
     }
 
+    public void onEventMainThread(ShowProgress showProgress){
+        showProgress();
+    }
+    public void onEventMainThread(HideProgress hideProgress){
+        hideProgress();
+    }
+
+    private void loadOrder(String id,int type) {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
+        params.addParameter("action", "info");
+        params.addParameter("oid", id);
+        String phone = SPUtils.get(USER_PHONE, "");
+        params.addParameter("phone", phone);
+        Log.d(TAG, "loadData: " + params.toString());
+        showProgress();
+        x.http().post(params, new Callback.CacheCallback<String>() {
+            @Override
+            public boolean onCache(String result) {
+                WaresOrder order = readOrderJson(result,type);
+                if(null==order||TextUtils.isEmpty(order.getName())){
+                    return true;
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, " onSuccess: " + result);
+                readOrderJson(result,type);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+                hideProgress();
+            }
+        });
+    }
+
+    public static final int SHOPKEEPER_DETAIL=1;
+    public static final int TO_POST=2;
+    public static final int CHECK_LOGISTIC=3;
+    private WaresOrder readOrderJson(String json, int type) {
+        BaseCode<WaresOrder> base = new Gson().fromJson(
+                json,
+                new TypeToken<BaseCode<WaresOrder>>() {
+                }.getType());
+        if(base==null||base.getCode()!=0){
+            return null;
+        }
+        WaresOrder order = base.getData();
+        Intent intent = new Intent(this, WaresOrderDetailctivity.class);
+        intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
+        switch (type){
+            case SHOPKEEPER_DETAIL:
+                intent.putExtra(WaresOrderDetailctivity.SHOP_ORDER,true);
+                break;
+            case TO_POST:
+                intent.setClass(this, ModifyLogisticActivity.class);
+                break;
+            case CHECK_LOGISTIC:
+                intent.setClass(this, WaresLogistcDetailctivity.class);
+                break;
+        }
+        startActivity(intent);
+        return order;
+    }
+    private String trade;
 }

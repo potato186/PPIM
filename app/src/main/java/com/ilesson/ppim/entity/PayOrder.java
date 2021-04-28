@@ -12,6 +12,15 @@ public class PayOrder {
     private String prepayid;
     private String noncestr;
     private String timestamp;
+    private String trade;
+
+    public String getTrade() {
+        return trade;
+    }
+
+    public void setTrade(String trade) {
+        this.trade = trade;
+    }
 
     public void setAppid(String appid) {
         this.appid = appid;

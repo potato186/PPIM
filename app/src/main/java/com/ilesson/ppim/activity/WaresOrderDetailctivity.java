@@ -10,30 +10,40 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.PostState;
 import com.ilesson.ppim.entity.WaresOrder;
 import com.ilesson.ppim.utils.BigDecimalUtil;
+import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.Dateuitls;
 import com.ilesson.ppim.utils.IMUtils;
+import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.utils.TextUtil;
 
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
-import java.util.HashMap;
-
+import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
 
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_COMPANY;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
 import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 
 
 /**
@@ -85,6 +95,8 @@ public class WaresOrderDetailctivity extends BaseActivity {
     public TextView checkLogistc;
     @ViewInject(R.id.state)
     public TextView state;
+    @ViewInject(R.id.topost)
+    public TextView topost;
 
     @ViewInject(R.id.tax_num)
     public View taxLayout;
@@ -117,22 +129,38 @@ public class WaresOrderDetailctivity extends BaseActivity {
     public TextView callServer;
     public static final String ORDER_DETAIL = "order_detail";
     public static final String SHOP_ORDER = "shop_order";
+    public static final String ORDER_ID = "order_id";
     private WaresOrder order;
     private boolean shopOrder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBarLightMode(this,true);
+        EventBus.getDefault().register(this);
         order = (WaresOrder) getIntent().getSerializableExtra(ORDER_DETAIL);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         shopOrder = getIntent().getBooleanExtra(SHOP_ORDER,false);
         if(shopOrder){
             callServer.setText(R.string.call_user);
         }
-        if (order==null) {
+        if(order==null){
+            String oid = getIntent().getStringExtra(ORDER_ID);
+            loadData(oid);
+        }else {
+            showContent();
+        }
+    }
+    public void onEventMainThread(PostState postState) {
+        WaresOrder order = postState.getOrder();
+        if(null!=order&&!TextUtils.isEmpty(order.getPostno())){
+            topost.setVisibility(View.GONE);
+            state.setText(R.string.has_post);
+        }
+    }
+    private void showContent(){
+        if(order==null){
             return;
         }
-        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
         waresName.setText(order.getName());
         waresPrice.setText(getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getPrice()) / 100));
 //        waresQuantity.setText(order.getInfo());
@@ -146,6 +174,9 @@ public class WaresOrderDetailctivity extends BaseActivity {
         if(TextUtils.isEmpty(order.getPostno())){
             logisticsNoView.setVisibility(View.GONE);
             state.setText(R.string.no_post);
+            if(shopOrder){
+                topost.setVisibility(View.VISIBLE);
+            }
         }else{
             logisticsNo.setText(order.getPostno());
             logisticsNoView.setVisibility(View.VISIBLE);
@@ -226,29 +257,78 @@ public class WaresOrderDetailctivity extends BaseActivity {
             invoiceLayout.setVisibility(View.GONE);
         }
     }
-
     private static final String TAG = "WaresOrderDetailctivity";
+
+    private void loadData(String id) {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
+        params.addParameter("action", "info");
+        params.addParameter("oid", id);
+        String phone = SPUtils.get(USER_PHONE, "");
+        params.addParameter("phone", phone);
+        Log.d(TAG, "loadData: " + params.toString());
+        showProgress();
+        x.http().post(params, new Callback.CacheCallback<String>() {
+            @Override
+            public boolean onCache(String result) {
+                readJson(result);
+                return false;
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, " onSuccess: " + result);
+                readJson(result);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+                hideProgress();
+            }
+        });
+    }
+    private void readJson(String json) {
+        BaseCode<WaresOrder> base = new Gson().fromJson(
+                json,
+                new TypeToken<BaseCode<WaresOrder>>() {
+                }.getType());
+        if (base.getCode() == 0) {
+            order = base.getData();
+            showContent();
+        }
+    }
     @Event(value = R.id.back_btn)
     private void back_btn(View view) {
         finish();
     }
-    @Event(value = R.id.invoice_layout,type=View.OnLongClickListener.class)
-    private boolean  invoice_layout(View view) {
-        StringBuilder stringBuilder = new StringBuilder(order.getInvoice_name());
-        if(INVOICE_ELECT.equals(order.getInvoice_medium())){
-            stringBuilder.append(order.getInvoice_email());
-        }
-        if(INVOICE_COMPANY.equals(order.getInvoice_type())){
-            stringBuilder.append(order.getInvoice_number());
-        }
-        copy(stringBuilder.toString());
-        return true;
-    }
-    @Event(value = R.id.logistics_layout,type=View.OnLongClickListener.class)
-    private boolean  logistics_layout(View view) {
-        copy(order.getUname()+order.getUphone()+order.getUaddress());
-        return true;
-    }
+//    @Event(value = R.id.invoice_layout,type=View.OnLongClickListener.class)
+//    private boolean  invoice_layout(View view) {
+//        StringBuilder stringBuilder = new StringBuilder(order.getInvoice_name());
+//        if(INVOICE_ELECT.equals(order.getInvoice_medium())){
+//            stringBuilder.append(order.getInvoice_email());
+//        }
+//        if(INVOICE_COMPANY.equals(order.getInvoice_type())){
+//            stringBuilder.append(order.getInvoice_number());
+//        }
+//        copy(stringBuilder.toString());
+//        return true;
+//    }
+//    @Event(value = R.id.logistics_layout,type=View.OnLongClickListener.class)
+//    private boolean  logistics_layout(View view) {
+//        copy(order.getUname()+order.getUphone()+order.getUaddress());
+//        return true;
+//    }
     private void copy(String content){
         //获取剪贴板管理器：
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -265,6 +345,12 @@ public class WaresOrderDetailctivity extends BaseActivity {
         intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL,order);
         startActivity(intent);
     }
+    @Event(value = R.id.topost)
+    private void topost(View view) {
+        Intent intent = new Intent(this,ModifyLogisticActivity.class);
+        intent.putExtra(ORDER_DETAIL,order);
+        startActivityForResult(intent,0);
+    }
     @Event(value = R.id.call_server)
     private void call_server(View view) {
         String targetId = null;
@@ -274,14 +360,20 @@ public class WaresOrderDetailctivity extends BaseActivity {
             name = order.getUname();
         }else{
             targetId = order.getShopkeeper();
-            name = order.getName();
+            name = String.format(getResources().getString(R.string.custom_server),order.getName());
         }
         if(!TextUtils.isEmpty(targetId)){
             new IMUtils().requestShopServer(null, order.getId());
             String id = TextUtil.getServerId(targetId);
-            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,id,String.format(getResources().getString(R.string.custom_server),name));
+            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,id,name);
 
 //            RongIM.getInstance().startConversation(this, Conversation.ConversationType.PRIVATE,targetId,name);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

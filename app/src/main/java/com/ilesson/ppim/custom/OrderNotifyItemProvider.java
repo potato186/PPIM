@@ -109,15 +109,12 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
         if (!TextUtils.isEmpty(waresIntro.getIcon())) {
             Glide.with(v.getContext()).load(waresIntro.getIcon()).into(holder.imageView);
         }
-        holder.callServer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new IMUtils().requestShopServer(null, waresIntro.getShopkeeper());
-                String serverId = TextUtil.getServerId(waresIntro.getShopkeeper());
-                RongIM.getInstance().startConversation(v.getContext(), Conversation.ConversationType.PRIVATE,serverId,String.format(v.getContext().getResources().getString(R.string.custom_server),waresIntro.getName()));
+        holder.callServer.setOnClickListener(v12 -> {
+            new IMUtils().requestShopServer(null, waresIntro.getShopkeeper());
+            String serverId = TextUtil.getServerId(waresIntro.getShopkeeper());
+            RongIM.getInstance().startConversation(v12.getContext(), Conversation.ConversationType.PRIVATE,serverId,String.format(v12.getContext().getResources().getString(R.string.custom_server),waresIntro.getName()));
 
 //                RongIM.getInstance().startConversation(v.getContext(), Conversation.ConversationType.PRIVATE, waresIntro.getShopkeeper(), waresIntro.getName() + v.getContext().getResources().getString(R.string.custom_server));
-            }
         });
         String state = SPUtils.get(SPUtils.get(USER_PHONE,"")+waresIntro.getOid(),"");
         if(TextUtils.isEmpty(state)){
@@ -127,14 +124,11 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
             holder.confirm.setBackgroundResource(R.drawable.background_gray_corner20);
             holder.confirm.setEnabled(false);
         }
-        holder.confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!TextUtils.isEmpty(SPUtils.get(SPUtils.get(USER_PHONE,"")+waresIntro.getOid(),""))){
-                    return;
-                }
-                new IMUtils().confirmOrder(holder.confirm,waresIntro.getOid());
+        holder.confirm.setOnClickListener(v1 -> {
+            if(!TextUtils.isEmpty(SPUtils.get(SPUtils.get(USER_PHONE,"")+waresIntro.getOid(),""))){
+                return;
             }
+            new IMUtils().confirmOrder(holder.confirm,waresIntro.getOid());
         });
     }
 

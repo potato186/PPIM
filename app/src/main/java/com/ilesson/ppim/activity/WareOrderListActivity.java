@@ -40,6 +40,7 @@ import org.xutils.x;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
@@ -70,7 +71,7 @@ public class WareOrderListActivity extends BaseActivity {
     private boolean loading;
     private boolean noNext;
     private WaresOrder footData;
-
+    private Map<Integer,String> confirmMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +85,7 @@ public class WareOrderListActivity extends BaseActivity {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdapter);
         footData = new WaresOrder();
+        confirmMap = new HashMap<>();
 //        swipeLayout.setEnabled(false);
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this, 3));
@@ -91,12 +93,7 @@ public class WareOrderListActivity extends BaseActivity {
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, PPScreenUtils.dip2px(this, 10));
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this, 3));
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadData(true);
-            }
-        });
+        swipeLayout.setOnRefreshListener(() -> loadData(true));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -300,9 +297,14 @@ public class WareOrderListActivity extends BaseActivity {
                     itemViewHolder.confirm.setVisibility(View.VISIBLE);
                 }
                 if (!TextUtils.isEmpty(order.getConfirm_post())) {
+                    confirmMap.put(position,"true");
+
+                }
+                if(!TextUtils.isEmpty(confirmMap.get(position))){
                     itemViewHolder.state.setText(R.string.confirm_take_post);
                     itemViewHolder.confirm.setVisibility(View.GONE);
-                } else {
+                    itemViewHolder.checkLogistc.setVisibility(View.GONE);
+                }else{
                     if (!TextUtils.isEmpty(order.getPostdate())) {
                         itemViewHolder.confirm.setVisibility(View.VISIBLE);
                     }

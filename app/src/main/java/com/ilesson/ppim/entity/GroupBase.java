@@ -12,7 +12,7 @@ public class GroupBase {
     private List<PPUserInfo> members;
     private boolean isOwner;
     private int size;
-
+    private Myself my;
     public GroupInfo getGroup() {
         return group;
     }
@@ -43,5 +43,13 @@ public class GroupBase {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public Myself getMy() {
+        return my;
+    }
+
+    public void setMy(Myself my) {
+        this.my = my;
     }
 }

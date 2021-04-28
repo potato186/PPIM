@@ -54,15 +54,7 @@ public class MyHttpManager implements HttpManager {
         }else{
             Toast.makeText(IlessonApp.getInstance(), R.string.no_net,Toast.LENGTH_LONG).show();
         }
-        String token = SPUtils.get(TOKEN, "");
-        if(null != entity){
-            entity.addHeader("produce","pp");
-            entity.addHeader("channel","1001");
-            entity.addHeader("token",token);
-            entity.addHeader("authorization",token);
-            entity.addHeader("version","1");
-            entity.setConnectTimeout(60*1000);
-        }
+        setRequestHeader(entity);
         entity.setMethod(method);
         Callback.Cancelable cancelable = null;
         if (callback instanceof Callback.Cancelable) {
@@ -89,17 +81,21 @@ public class MyHttpManager implements HttpManager {
         return requestSync(method, entity, callback);
     }
 
-    @Override
-    public <T> T requestSync(HttpMethod method, RequestParams entity, Callback.TypedCallback<T> callback) throws Throwable {
+    private void setRequestHeader(RequestParams entity){
         if(null != entity){
             String token = SPUtils.get(TOKEN, "");
             entity.addHeader("produce","pp");
             entity.addHeader("channel","1001");
             entity.addHeader("token",token);
             entity.addHeader("authorization",token);
-            entity.addHeader("version","1");
+            entity.addHeader("version","2");
             entity.setConnectTimeout(60*1000);
         }
+    }
+
+    @Override
+    public <T> T requestSync(HttpMethod method, RequestParams entity, Callback.TypedCallback<T> callback) throws Throwable {
+        setRequestHeader(entity);
         entity.setMethod(method);
         HttpTask<T> task = new HttpTask<T>(entity, null, callback);
         return x.task().startSync(task);

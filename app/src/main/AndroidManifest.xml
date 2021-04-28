@@ -88,7 +88,8 @@
         <activity android:name=".activity.SearchActivity"
             android:windowSoftInputMode="stateVisible"/>
         <activity android:name=".activity.EditExchangeActivity" />
-        <activity android:name=".activity.WaresOrderDetailctivity" />
+        <activity android:name=".activity.WaresOrderDetailctivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".activity.WaresLogistcDetailctivity" />
         <activity android:name=".activity.ExchangeInfoActivity" />
         <activity android:name=".activity.CustomerActivity" />
@@ -138,7 +139,8 @@
         <activity android:name=".activity.BuyActivity" />
         <activity android:name=".activity.WareOrderListActivity" />
         <activity android:name=".activity.WaresOrderManagerListActivity" />
-        <activity android:name=".activity.ModifyLogisticActivity" />
+        <activity android:name=".activity.ModifyLogisticActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".activity.ShopKeeperOrderListActivity" />
         <activity android:name=".activity.PayPwdActivity" />
         <activity android:name=".activity.PrivateActivity" />
@@ -183,6 +185,9 @@
             android:theme="@style/AppTheme.blk" />
         <activity
             android:name=".activity.AboutActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.ModifyNikeNameActivity"
             android:theme="@style/AppTheme.white" />
         <activity
             android:name=".activity.FileReaderActivity"

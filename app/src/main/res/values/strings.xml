@@ -16,6 +16,7 @@
     <string name="pp_trans">PP转消费积分</string>
     <string name="phone_num">手机号</string>
     <string name="quantity">数量</string>
+    <string name="quantity_">数量:%1$s%2$s</string>
     <string name="input_phone_num">填写手机号</string>
     <string name="text_isr_abnf_hint_2">\t上传内容为：\n\t#ABNF 1.0 gb2312;\n\tlanguage zh-CN;\n\tmode voice;\n\troot $main;\n\t$main = $place ;</string>
     <string name="xunfei_appid">appid=57df4b44</string>
@@ -52,10 +53,12 @@
     <string name="school">学校</string>
     <string name="order_info">订单信息</string>
     <string name="order_detail">订单详情</string>
+    <string name="back_to_market">返回集市</string>
     <string name="order_num">订单号码</string>
+    <string name="order_num_">订单号</string>
     <string name="order_time">订单时间</string>
     <string name="order_modify">修改订单</string>
-    <string name="to_post">去发货</string>
+    <string name="to_post">  去发货  </string>
     <string name="modify_address">修改地址</string>
     <string name="create_address">添加收货地址</string>
     <string name="choose_address_tag">请选择标签</string>
@@ -66,6 +69,7 @@
     <string name="confirm_take_post">已签收</string>
     <string name="custom_confirm_take_post">买家已签收</string>
     <string name="order_manager">商家订单管理</string>
+    <string name="nike_in_group">我在群里的昵称</string>
     <string name="logistics_num">物流单号</string>
     <string name="logistics_state">物流状态</string>
     <string name="logistics_info">物流信息</string>
@@ -78,12 +82,13 @@
     <string name="rmb">¥</string>
     <string name="enter">进店</string>
     <string name="consignee">收货人</string>
+    <string name="consignee_">收件人姓名</string>
     <string name="username">姓名</string>
     <string name="phone">电话</string>
     <string name="adress_info">我的地址</string>
     <string name="input_logist_info">填写物流信息</string>
     <string name="logist_name_tip">快递公司名称:</string>
-    <string name="hint_logist_name_tip">请填写快递公司名称</string>
+    <string name="hint_logist_name_tip">请填写快递公司名称(可不填)</string>
     <string name="logist_num_tip">快递单号:</string>
     <string name="hint_logist_num_tip">请填写快递单号</string>
     <string name="has_send_invoice_tip">请确定已开发票</string>
@@ -208,11 +213,14 @@
     <string name="grade_">年级:%1$d年级</string>
     <string name="express_fee">运费 ¥%1$s</string>
     <string name="all_fee">实付:¥%1$s</string>
+    <string name="all_fee_">实付款:¥%1$s</string>
     <string name="wares_price">总价 ¥%1$s</string>
     <string name="num_">字数:%1$d</string>
     <string name="group_members">聊天成员(%1$d)</string>
     <string name="delete">删除</string>
     <string name="order_tips">亲,请您核对订单信息</string>
+    <string name="order_express_tips">亲,您的订单已发货!</string>
+    <string name="new_order_tips">亲,您有新的订单!</string>
     <string name="chat_info">聊天信息(%1$d)</string>
     <string name="font_resize_standard">标准</string>
     <string name="trans_to_person">转消费积分给个人</string>
@@ -256,6 +264,7 @@
     <string name="compose_tips1">写作文测性格</string>
     <string name="compose_tips2">写好作文提交批改后,能根据作文内容测出作者性格。</string>
     <string name="pay_success">支付成功</string>
+    <string name="pay_success_process">订单正在处理中…</string>
     <string name="error_pwd">两次密码不一致</string>
     <string name="input_six_length_pwd">请输入6位数密码</string>
     <string name="input_six_length_pwd_again">请再次输入6位数密码</string>

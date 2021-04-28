@@ -25,6 +25,7 @@ import com.ilesson.ppim.entity.PostState;
 import com.ilesson.ppim.entity.WaresOrder;
 import com.ilesson.ppim.utils.BigDecimalUtil;
 import com.ilesson.ppim.utils.Constants;
+import com.ilesson.ppim.utils.Dateuitls;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
@@ -47,7 +48,6 @@ import io.rong.imlib.model.Conversation;
 
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
-import static com.ilesson.ppim.activity.WaresOrderManagerListActivity.WARESORDER;
 
 /**
  * Created by potato on 2020/3/10.
@@ -92,16 +92,21 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION, PPScreenUtils.dip2px(this,10));
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this,3));
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadData(true);
-            }
-        });
+        swipeLayout.setOnRefreshListener(() -> loadData(true));
         loadData(true);
     }
     public void onEventMainThread(PostState postState){
-        loadData(true);
+        WaresOrder order = postState.getOrder();
+        for (int i=0;i<mList.size();i++) {
+            WaresOrder waresOrder = mList.get(i);
+            if(order.getTransaction_id().equals(waresOrder.getTransaction_id())){
+                waresOrder.setPostno(order.getPostno());
+                waresOrder.setPostname(order.getPostname());
+                waresOrder.setPay_date(Dateuitls.getFormatOrderTime(System.currentTimeMillis()));
+                mAdapter.notifyItemChanged(i);
+                return;
+            }
+        }
     }
     private static final String TAG = "OrderListActivity";
     @Event(value = R.id.back_btn)
@@ -255,7 +260,7 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                     itemViewHolder.allPrice.setText(allPrice);
                 }
 
-                if(TextUtils.isEmpty(order.getPostdate())){
+                if(TextUtils.isEmpty(order.getPostno())){
                     itemViewHolder.checkLogistc.setVisibility(View.GONE);
                     itemViewHolder.confirm.setVisibility(View.VISIBLE);
                     itemViewHolder.state.setText(R.string.no_post);
@@ -267,6 +272,7 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                 }
                 if(!TextUtils.isEmpty(order.getConfirm_post())){
                     itemViewHolder.state.setText(R.string.custom_confirm_take_post);
+                    itemViewHolder.checkLogistc.setVisibility(View.GONE);
                 }
             }
         }
@@ -314,42 +320,30 @@ public class ShopKeeperOrderListActivity extends BaseActivity {
                 checkLogistc = itemView.findViewById(R.id.check_logistc);
                 allPrice.setTextColor(getResources().getColor(R.color.gray_text333_color));
                 callServer.setText(R.string.call_user);
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WaresOrder order = datas.get(getLayoutPosition());
-                        Intent intent = new Intent(ShopKeeperOrderListActivity.this,WaresOrderDetailctivity.class);
-                        intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL,order);
-                        intent.putExtra(WaresOrderDetailctivity.SHOP_ORDER,true);
-                        startActivity(intent);
-                    }
+                itemView.setOnClickListener(v -> {
+                    WaresOrder order = datas.get(getLayoutPosition());
+                    Intent intent = new Intent(ShopKeeperOrderListActivity.this,WaresOrderDetailctivity.class);
+                    intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL,order);
+                    intent.putExtra(WaresOrderDetailctivity.SHOP_ORDER,true);
+                    startActivity(intent);
                 });
-                callServer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WaresOrder order = datas.get(getLayoutPosition());
+                callServer.setOnClickListener(v -> {
+                    WaresOrder order = datas.get(getLayoutPosition());
 //                        serverId = base.getData();
 //                        new IMUtils().requestShopServer(null,order.getId());
-                        RongIM.getInstance().startConversation(ShopKeeperOrderListActivity.this, Conversation.ConversationType.PRIVATE,order.getUser(),order.getUname());
-                    }
+                    RongIM.getInstance().startConversation(ShopKeeperOrderListActivity.this, Conversation.ConversationType.PRIVATE,order.getUser(),order.getUname());
                 });
-                checkLogistc.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        WaresOrder order = datas.get(getLayoutPosition());
-                        Intent intent = new Intent(ShopKeeperOrderListActivity.this,WaresLogistcDetailctivity.class);
-                        intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL,order);
-                        startActivity(intent);
-                    }
+                checkLogistc.setOnClickListener(v -> {
+                    WaresOrder order = datas.get(getLayoutPosition());
+                    Intent intent = new Intent(ShopKeeperOrderListActivity.this,WaresLogistcDetailctivity.class);
+                    intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL,order);
+                    startActivity(intent);
                 });
-                confirm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(ShopKeeperOrderListActivity.this,ModifyLogisticActivity.class);
-                        WaresOrder order = mList.get(getLayoutPosition());
-                        intent.putExtra(WARESORDER,order);
-                        startActivityForResult(intent,0);
-                    }
+                confirm.setOnClickListener(v -> {
+                    Intent intent = new Intent(ShopKeeperOrderListActivity.this,ModifyLogisticActivity.class);
+                    WaresOrder order = mList.get(getLayoutPosition());
+                    intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL,order);
+                    startActivityForResult(intent,0);
                 });
             }
 

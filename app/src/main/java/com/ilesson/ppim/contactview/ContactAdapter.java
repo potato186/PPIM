@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -123,7 +122,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     .cacheInMemory(true).cacheOnDisk(true);
             ImageLoader.getInstance().displayImage(resultList.get(position).getUserInfo().getIcon(), ((ContactHolder) holder).imageView,
                     builder.build());
-            ((ContactHolder) holder).checkBox.setChecked(isSelected.get(position));
+            ((ContactHolder) holder).checkBox.setBackgroundResource(isSelected.get(position)?R.mipmap.selected:R.mipmap.unselect);
         }
     }
 
@@ -142,7 +141,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         CharacterHolder(View view) {
             super(view);
-
             mTextView = (TextView) view.findViewById(R.id.character);
         }
     }
@@ -150,14 +148,14 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public class ContactHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
         ImageView imageView;
-        CheckBox checkBox;
+        TextView checkBox;
         ContactHolder(View view) {
             super(view);
 
             mTextView = (TextView) view.findViewById(R.id.contact_name);
             imageView = view.findViewById(R.id.contact_icon);
             checkBox = view.findViewById(R.id.checkbox);
-            final CheckBox box = checkBox;
+//            final CheckBox box = checkBox;
             if(showCheck){
                 checkBox.setVisibility(View.VISIBLE);
             }else{
@@ -171,12 +169,14 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     if(showCheck){
                         boolean isChecked = isSelected.get(position);
                         isSelected.put(position, !isChecked);
-                        box.setChecked(!isChecked);
+//                        box.setChecked(!isChecked);
                         if(!isChecked){
                             selects.add(info);
-                            box.setButtonDrawable(R.mipmap.selected);
+                            checkBox.setBackgroundResource(R.mipmap.selected);
+//                            box.setButtonDrawable(R.mipmap.selected);
                         }else{
-                            box.setButtonDrawable(R.mipmap.unselect);
+//                            box.setButtonDrawable(R.mipmap.unselect);
+                            checkBox.setBackgroundResource(R.mipmap.unselect);
                             selects.remove(info);
                         }
                         if(onSelectChanger!=null){

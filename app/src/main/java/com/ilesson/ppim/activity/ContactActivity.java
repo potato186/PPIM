@@ -138,6 +138,7 @@ public class ContactActivity extends BaseActivity {
 
             @Override
             public void onSuccess(int type,String id,String names) {
+                finish();
                 imUtils.sendTextMsg(groupId,"欢迎"+names+"进入群聊");
                 RongIM.getInstance().startGroupChat(ContactActivity.this, groupId, groupName);
             }
@@ -360,22 +361,19 @@ public class ContactActivity extends BaseActivity {
     }
     private List<PPUserInfo> selects=new ArrayList<>();
     private void setAdapterLinstener(){
-        adapter.setOnSelectChanger(new ContactAdapter.OnSelectChanger() {
-            @Override
-            public void onSelected(List<PPUserInfo> members) {
-                selects = members;
-                if(members.isEmpty()){
-                    if(type==REMOVE_GROUP_TYPE){
-                        confirm.setText(R.string.delete);
-                    }else{
-                        confirm.setText(R.string.rc_confirm);
-                    }
+        adapter.setOnSelectChanger(members -> {
+            selects = members;
+            if(members.isEmpty()){
+                if(type==REMOVE_GROUP_TYPE){
+                    confirm.setText(R.string.delete);
                 }else{
-                    if(type==REMOVE_GROUP_TYPE){
-                        confirm.setText(String.format(getResources().getString(R.string.delete_state),members.size()));
-                    }else{
-                        confirm.setText(String.format(getResources().getString(R.string.select_state),members.size()));
-                    }
+                    confirm.setText(R.string.rc_confirm);
+                }
+            }else{
+                if(type==REMOVE_GROUP_TYPE){
+                    confirm.setText(String.format(getResources().getString(R.string.delete_state),members.size()));
+                }else{
+                    confirm.setText(String.format(getResources().getString(R.string.select_state),members.size()));
                 }
             }
         });

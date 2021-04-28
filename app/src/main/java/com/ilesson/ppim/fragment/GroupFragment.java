@@ -163,30 +163,36 @@ public class GroupFragment extends BaseFragment {
             }
         }
     }
-    private void joinGroup(final BusinessGroup group) {
+    private void joinGroup(BusinessGroup group) {
         mainActivity.showProgress();
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.SHOP);
         params.addParameter("action","shop_join");
         params.addParameter("group",group.getGroup());
+        params.addParameter("phone",phone);
         Log.d(TAG, "loadData: " + params.toString());
-        x.http().post(params, new Callback.CommonCallback<String>() {
+        x.http().post(params, new Callback.CacheCallback<String>() {
+            @Override
+            public boolean onCache(String result) {
+                BaseCode baseCode = new Gson().fromJson(result,BaseCode.class);
+                if(null==baseCode||baseCode.getCode()!=0){
+                    return false;
+                }
+                interGroup(group);
+                return true;
+            }
+
             @Override
             public void onSuccess(String result) {
                 Log.d(TAG, "onSuccess: " + result);
-                BaseCode base = new Gson().fromJson(
-                        result,
-                        new TypeToken<BaseCode>() {
-                        }.getType());
-                if(base.getCode()==0){
-//                    SPUtils.put(phone+group.getGroup(),true);
-//                    interGroup(group);
+                BaseCode baseCode = new Gson().fromJson(result,BaseCode.class);
+                if(baseCode.getCode()==0){
+                    interGroup(group);
                 }
             }
 
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
-                interGroup(group);
                 ex.printStackTrace();
             }
 
@@ -305,12 +311,8 @@ public class GroupFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         BusinessGroup group = resultList.get(getLayoutPosition());
-//                        boolean joined = SPUtils.get(phone+group.getGroup(),false);
-//                        if(joined){
-                            interGroup(group);
-//                        }else{
-//                            joinGroup(group);
-//                        }
+                        boolean joined = SPUtils.get(phone+group.getGroup(),false);
+                        joinGroup(group);
                     }
                 });
             }
@@ -349,7 +351,7 @@ public class GroupFragment extends BaseFragment {
     }
 
     private void interGroup(BusinessGroup group){
-        joinGroup(group);
+//        joinGroup(group);
         shopGroup = true;
         RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.GROUP,group.getGroup(),group.getName());
     }

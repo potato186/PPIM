@@ -51,7 +51,9 @@ import static com.ilesson.ppim.activity.ContactActivity.INVATE_GROUP_TYPE;
 import static com.ilesson.ppim.activity.ContactActivity.REMOVE_GROUP_TYPE;
 import static com.ilesson.ppim.activity.ContactActivity.REMOVE_RESULT;
 import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_CONTENT;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_GROUP;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_NIKE_IN_GROUP;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
 import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
 import static com.ilesson.ppim.activity.MoreMemberActivity.GROUP_MEMBER;
@@ -67,6 +69,8 @@ public class ChatInfoActivity extends BaseActivity{
     private TextView titleTextView;
     @ViewInject(R.id.group_name)
     private TextView groupName;
+    @ViewInject(R.id.nike_name)
+    private TextView nikeNameView;
     @ViewInject(R.id.delete)
     private TextView delete;
     @ViewInject(R.id.shop_list_layout)
@@ -84,11 +88,15 @@ public class ChatInfoActivity extends BaseActivity{
     private static final String TAG = "ChatInfoActivity";
     public static final String GROUP_ID = "group_id";
     public static final String GROUP_NAME = "group_name";
+    public static final String GROUP_ICON = "group_icon";
+    public static final String NIKE_NAME = "nike_name";
     public static final String ISOWNER = "isOwner";
     private String name;
+    private String nikeName="";
     private String groupId;
     private boolean modifyed;
     private PPUserInfo addUser,deleteUser;
+    private String groupIcon;
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -96,26 +104,19 @@ public class ChatInfoActivity extends BaseActivity{
         groupId = getIntent().getStringExtra(GROUP_ID);
         name = getIntent().getStringExtra(GROUP_NAME);
         isOwner = getIntent().getBooleanExtra(ISOWNER,false);
+        nikeName = SPUtils.get(NIKE_NAME,"");
+        groupIcon = getIntent().getStringExtra(GROUP_ICON);
         if(isOwner){
             delete.setVisibility(View.VISIBLE);
-            shopList.setVisibility(View.VISIBLE);
+            if(groupId.contains("market")){
+                shopList.setVisibility(View.VISIBLE);
+            }
         }
+
+        nikeNameView.setText(nikeName);
         groupName.setText(name);
         datas = new ArrayList<>();
         adapter = new DataAdapter(datas);
-//        gridView.setAdapter(adapter);
-//        gridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                PPUserInfo userInfo = datas.get(position);
-//                Intent intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//            }
-//        });
         recylerView.setLayoutManager(new GridLayoutManager(this,5));
 
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
@@ -166,11 +167,23 @@ public class ChatInfoActivity extends BaseActivity{
     }
     @Event(R.id.group_name_layout)
     private void group_name(View view){
+        if(!isOwner&&groupId.contains("market")){
+            return;
+        }
         Intent intent = new Intent(ChatInfoActivity.this,ModifyNameActivity.class);
         intent.putExtra(GROUP_ID, groupId);
         intent.putExtra(MODIFY_TYPE, MODIFY_GROUP);
         intent.putExtra(ChatInfoActivity.GROUP_NAME, name);
-        startActivityForResult(intent,0);
+        startActivityForResult(intent,MODIFY_GROUP);
+    }
+    @Event(R.id.nike_layout)
+    private void nike_layout(View view){
+        Intent intent = new Intent(ChatInfoActivity.this,ModifyNikeNameActivity.class);
+        intent.putExtra(GROUP_ID, groupId);
+        intent.putExtra(GROUP_ICON, groupIcon);
+        intent.putExtra(MODIFY_TYPE, MODIFY_NIKE_IN_GROUP);
+        intent.putExtra(MODIFY_CONTENT, nikeName);
+        startActivityForResult(intent,MODIFY_NIKE_IN_GROUP);
     }
     @Event(R.id.quit)
     private void quit(View view){
@@ -242,10 +255,25 @@ public class ChatInfoActivity extends BaseActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode== MODIFY_SUCCESS){
-            name = data.getStringExtra(MODIFY_RESULT);
-            groupName.setText(name);
-            modifyed = true;
-            return;
+            if(requestCode==MODIFY_GROUP){
+                name = data.getStringExtra(MODIFY_RESULT);
+                groupName.setText(name);
+                modifyed = true;
+                return;
+            }
+            if(requestCode==MODIFY_NIKE_IN_GROUP){
+                String name = data.getStringExtra(MODIFY_RESULT);
+                nikeNameView.setText(name);
+                for (int i = 0; i < datas.size(); i++) {
+                    PPUserInfo ppUserInfo = datas.get(i);
+                    if(ppUserInfo.getPhone().equals(myPhone)){
+                        ppUserInfo.setName(name);
+                        adapter.notifyItemChanged(i);
+                        return;
+                    }
+                }
+                return;
+            }
         }
         if(resultCode== REMOVE_RESULT){
             ArrayList<PPUserInfo> hasMembers =  (ArrayList<PPUserInfo>) data.getSerializableExtra(HAS_MEMBERS);
@@ -398,10 +426,10 @@ public class ChatInfoActivity extends BaseActivity{
         params.addParameter("action", "list");
         params.addParameter("token", token);
         params.addParameter("page", 0);
-        params.addParameter("size", 3000);
+        params.addParameter("size", 20);
         params.addParameter("group", groupId);
         showProgress();
-        Log.d(TAG, "exitGroup: " + params.toString());
+        Log.d(TAG, "requestGroupInfo: " + params.toString());
         x.http().post(params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -493,6 +521,10 @@ public class ChatInfoActivity extends BaseActivity{
                 }else{
                     Glide.with(ChatInfoActivity.this).asBitmap().load(userInfo.getIcon()).into(itemViewHolder.imageView);
                     itemViewHolder.name.setText(userInfo.getName());
+                    if(userInfo.getPhone().equals(myPhone)){
+                        nikeName = userInfo.getName();
+                        nikeNameView.setText(nikeName);
+                    }
                 }
             }
         }

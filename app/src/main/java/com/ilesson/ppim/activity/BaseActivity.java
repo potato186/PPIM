@@ -30,6 +30,7 @@ import org.xutils.x;
 import java.util.ArrayList;
 
 import static com.ilesson.ppim.IlessonApp.FONT_SCALE;
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 
 public class BaseActivity extends FragmentActivity {
 
@@ -311,7 +312,7 @@ public class BaseActivity extends FragmentActivity {
 //                .setCancelable(false)
 //                .show();
 //    }
-
+    public String myPhone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -321,6 +322,9 @@ public class BaseActivity extends FragmentActivity {
 //        }
         x.view().inject(this);
         mContext = this;
+        if(TextUtils.isEmpty(myPhone)){
+            myPhone = SPUtils.get(USER_PHONE,"");
+        }
 //        StatService.setDebugOn(true);
 //        StatService.setSendLogStrategy(this, SendStrategyEnum.APP_START, 1, false);
 //        StatService.onPageStart(this,"启动");

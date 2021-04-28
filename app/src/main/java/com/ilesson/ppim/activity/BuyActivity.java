@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.AddressInfo;
 import com.ilesson.ppim.entity.BaseCode;
@@ -31,8 +32,10 @@ import com.ilesson.ppim.entity.Produce;
 import com.ilesson.ppim.entity.Produces;
 import com.ilesson.ppim.entity.Shop;
 import com.ilesson.ppim.entity.WaresDetialData;
+import com.ilesson.ppim.entity.WaresOrder;
 import com.ilesson.ppim.utils.BigDecimalUtil;
 import com.ilesson.ppim.utils.Constants;
+import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
@@ -333,7 +336,6 @@ public class BuyActivity extends BaseActivity {
     }
 
     private void loadData(int id) {
-        //https://pp.fangnaokeji.com:9443/pp/produce?action=selection&id=6
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.PRODUCE);
         params.addParameter("action", "selection");
         params.addParameter("id", id);
@@ -427,7 +429,7 @@ public class BuyActivity extends BaseActivity {
     }
     private IWXAPI api;
     private PayReq req;
-
+    private String trade;
     private void pay(String result) {
         if (null == api) {
             api = WXAPIFactory.createWXAPI(this, getString(R.string.wx_key));
@@ -441,6 +443,8 @@ public class BuyActivity extends BaseActivity {
                     }.getType());
             if (base.getCode() == 0) {
                 PayOrder order = base.getData();
+                IlessonApp.getInstance().setCommonBuy(true);
+                trade = order.getTrade();
                 req.appId = order.getAppid();
                 req.partnerId = order.getPartnerid();
                 req.prepayId = order.getPrepayid();
@@ -607,8 +611,9 @@ public class BuyActivity extends BaseActivity {
         showAdress();
     }
     public void onEventMainThread(PaySuccess var) {
-        startActivity(new Intent(this,WareOrderListActivity.class));
-        finish();
+        if(IlessonApp.getInstance().isCommonBuy()){
+            new IMUtils().loadTrade(BuyActivity.this,trade,true);
+        }
     }
     class RefreshAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         List<Options> datas = new ArrayList<>();
@@ -695,6 +700,49 @@ public class BuyActivity extends BaseActivity {
         private TextView lastItem;
     }
 
+    private void loadTrade() {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
+        params.addParameter("action", "info");
+        params.addParameter("trade", trade);
+        showProgress();
+        Log.d(TAG, "loadData: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, " onSuccess: " + result);
+                BaseCode<WaresOrder> base = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode<WaresOrder>>() {
+                        }.getType());
+                if(base==null||base.getCode()!=0){
+                    return;
+                }
+                WaresOrder order = base.getData();
+                Intent intent = new Intent(BuyActivity.this, PayResultActivity.class);
+                intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+                hideProgress();
+            }
+        });
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

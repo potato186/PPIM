@@ -1,6 +1,8 @@
 package com.ilesson.ppim.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -11,6 +13,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.activity.PayResultActivity;
+import com.ilesson.ppim.activity.WaresOrderDetailctivity;
 import com.ilesson.ppim.custom.RedPacketMessage;
 import com.ilesson.ppim.custom.TransactionMessage;
 import com.ilesson.ppim.custom.TransferMessage;
@@ -18,6 +22,7 @@ import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.GroupInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.RongUserInfo;
+import com.ilesson.ppim.entity.WaresOrder;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -28,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.rong.imkit.RongIM;
+import io.rong.imkit.model.GroupUserInfo;
 import io.rong.imlib.IRongCallback;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
@@ -80,27 +86,60 @@ public class IMUtils {
             }
 
         });
-        RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
-
-            @Override
-
-            public UserInfo getUserInfo(String userId) {
-                searchUserInfo(token, userId);
-                return null;
-
-            }
+        RongIM.setUserInfoProvider(userId -> {
+            searchUserInfo(token, userId);
+            return null;
 
         }, true);
 
-        RongIM.setGroupInfoProvider(new RongIM.GroupInfoProvider() {
-            @Override
-            public Group getGroupInfo(String s) {
-                searchGroupInfo(token, s);
-                return null;
-            }
+        RongIM.setGroupInfoProvider(s -> {
+            searchGroupInfo(token, s);
+            return null;
+        },true);
+        RongIM.setGroupUserInfoProvider((s, s1) -> {
+            searchGroupUserInfo(token,s,s1);
+            return null;
         },true);
     }
 
+    public void searchGroupUserInfo(String token, String groupId,String userId) {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.RONG_URL);
+        params.addParameter("action", "group_user");
+        params.addParameter("token", token);
+        params.addParameter("group", groupId);
+        params.addParameter("target", userId);
+        Log.d(TAG, "searchUserInfo: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "searchGroupUserInfo: =" + result);
+                BaseCode<RongUserInfo> base = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode<RongUserInfo>>() {
+                        }.getType());
+                if (base.getCode() == 0) {
+                    RongUserInfo info = base.getData();
+//                    String test = "https://pp.fangnaokeji.com:9443/pp/images/demo/shop_01.png";
+//                    Group group = new Group(userId, info.getName(), Uri.parse(test));
+                    GroupUserInfo groupUserInfo = new GroupUserInfo(groupId,userId,info.getName());
+                    RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
+                }
+            }
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+            }
+        });
+    }
     public void searchGroupInfo(String token, final String userId) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.RONG_URL);
         params.addBodyParameter("action", "group");
@@ -525,6 +564,51 @@ public class IMUtils {
                 }
             }
 
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+            }
+        });
+
+    }
+
+    public void loadTrade(Activity activity,String trade,boolean finish) {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
+        params.addParameter("action", "info");
+        params.addParameter("trade", trade);
+        Log.d(TAG, "loadData: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, " onSuccess: " + result);
+                BaseCode<WaresOrder> base = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode<WaresOrder>>() {
+                        }.getType());
+                if(base==null||base.getCode()!=0){
+                    return;
+                }
+                WaresOrder order = base.getData();
+                Intent intent = new Intent(activity, PayResultActivity.class);
+                intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
+                activity.startActivity(intent);
+                if(finish){
+                    activity.finish();
+                }
+            }
 
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {

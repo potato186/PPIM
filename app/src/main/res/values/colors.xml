@@ -82,7 +82,7 @@
     <color name="color_303132">#303132</color>
     <color name="code_color">#EEB601</color>
     <color name="gray_theme">#EDEDED</color>
-    <color name="gray_theme1">#EDEDED</color>
+    <color name="gray_theme1">#aaEDEDED</color>
     <color name="menu_bg">#4C4C4C</color>
     <color name="menu_bg_click">#884C4C4C</color>
     <color name="shop_dialog_bg">#884C4C4C</color>

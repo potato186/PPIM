@@ -53,6 +53,8 @@ public class ModifyNameActivity extends BaseActivity{
     public static final int MODIFY_GROUP=1;
     public static final int MODIFY_REAL_NAME=2;
     public static final int MODIFY_SYMBL=3;
+    public static final int MODIFY_NIKE_IN_GROUP=4;
+    public static final String MODIFY_CONTENT="modify_content";
     public static final String MODIFY_TYPE="modify_type";
     public static final String MODIFY_RESULT="modify_result";
     private int type;
@@ -65,22 +67,32 @@ public class ModifyNameActivity extends BaseActivity{
         setStatusBarLightMode(this,true);
         type = getIntent().getIntExtra(MODIFY_TYPE,0);
         groupId = getIntent().getStringExtra(GROUP_ID);
-        String name = getIntent().getStringExtra(GROUP_NAME);
+        String gName = getIntent().getStringExtra(GROUP_NAME);
+        String name = getIntent().getStringExtra(MODIFY_CONTENT);
         String text="";
-        if(type==MODIFY_GROUP){
-            title.setText(R.string.modify_group_name);
-            groupName.setVisibility(View.VISIBLE);
-            text = name;
-        }else if(type==MODIFY_NAME){
-            text = SPUtils.get(USER_NAME,"");
-        }else if(type==MODIFY_REAL_NAME){
-            text = SPUtils.get(REAL_NAME,"");
-            realName = text;
-            title.setText(R.string.modify_real_name);
-        }else{
-            text = SPUtils.get(NAME_SYMBL,"");
-            nameSymbl = text;
-            title.setText(R.string.modify_real_name_symbol);
+        switch (type){
+            case MODIFY_GROUP:
+                title.setText(R.string.modify_group_name);
+                groupName.setVisibility(View.VISIBLE);
+                text = gName;
+                break;
+            case MODIFY_NAME:
+                text = SPUtils.get(USER_NAME,"");
+                break;
+            case MODIFY_REAL_NAME:
+                text = SPUtils.get(REAL_NAME,"");
+                realName = text;
+                title.setText(R.string.modify_real_name);
+                break;
+            case MODIFY_SYMBL:
+                text = SPUtils.get(NAME_SYMBL,"");
+                nameSymbl = text;
+                title.setText(R.string.modify_real_name_symbol);
+                break;
+            case MODIFY_NIKE_IN_GROUP:
+                text =name;
+                title.setText(R.string.nike_in_group);
+                break;
         }
         nikeEdit.setText(text);
         nikeEdit.setSelection(text.length());
@@ -116,6 +128,10 @@ public class ModifyNameActivity extends BaseActivity{
         }
         if(type==MODIFY_GROUP){
             modifyGroup(name);
+            return;
+        }
+        if(type==MODIFY_NIKE_IN_GROUP){
+            modifyGroupUserNike(name);
             return;
         }
         modify(name);
@@ -185,10 +201,10 @@ public class ModifyNameActivity extends BaseActivity{
     private void modifyGroup(final String name) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
         String token = SPUtils.get(LOGIN_TOKEN,"");
-        params.addQueryStringParameter("token", token);
-        params.addQueryStringParameter("action", "rename");
-        params.addQueryStringParameter("group", groupId);
-        params.addQueryStringParameter("name", name);
+        params.addParameter("token", token);
+        params.addParameter("action", "rename");
+        params.addParameter("group", groupId);
+        params.addParameter("name", name);
         params.setMultipart(true);
         showProgress();
         Log.d(TAG, "loadData: " + params.toString());
@@ -204,6 +220,53 @@ public class ModifyNameActivity extends BaseActivity{
                     Intent intent = new Intent();
                     intent.putExtra(MODIFY_RESULT,name);
                     SPUtils.put(LoginActivity.USER_NAME,name);
+                    setResult(MODIFY_SUCCESS,intent);
+                    finish();
+                }else{
+                    Toast.makeText(ModifyNameActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+                hideProgress();
+            }
+        });
+    }
+    private void modifyGroupUserNike(String name) {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
+        String token = SPUtils.get(LOGIN_TOKEN,"");
+        params.addParameter("token", token);
+        params.addParameter("action", "modify_my_name");
+        params.addParameter("group", groupId);
+        params.addParameter("name", name);
+        params.setMultipart(true);
+        showProgress();
+        Log.d(TAG, "loadData: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "onSuccess: " + result);
+                BaseCode base = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode>() {
+                        }.getType());
+                if(base.getCode()==0){
+                    Intent intent = new Intent();
+                    intent.putExtra(MODIFY_RESULT,name);
                     setResult(MODIFY_SUCCESS,intent);
                     finish();
                 }else{
