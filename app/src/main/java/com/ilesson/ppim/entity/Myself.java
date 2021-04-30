@@ -1,6 +1,8 @@
 package com.ilesson.ppim.entity;
 
-public class Myself {
+import java.io.Serializable;
+
+public class Myself implements Serializable {
     private String id;
     private String name;
     private String icon;

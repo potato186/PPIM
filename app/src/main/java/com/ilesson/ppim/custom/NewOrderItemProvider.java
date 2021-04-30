@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -139,12 +140,20 @@ public class NewOrderItemProvider extends IContainerItemProvider.MessageProvider
             holder.postTime.setText(Dateuitls.getOrderPayTime(waresIntro.getPayDate()));
         }
         if (!TextUtils.isEmpty(waresIntro.getMoney())) {
-            String text = String.format(v.getContext().getResources().getString(R.string.all_fee_),BigDecimalUtil.format(Double.valueOf(waresIntro.getMoney()) / 100));
-            SpannableStringBuilder style = new SpannableStringBuilder(text);
-            style.setSpan(new ForegroundColorSpan(v.getContext().getResources().getColor(R.color.helptext_color)), 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            style.setSpan(new ForegroundColorSpan(Color.RED), 4, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            style.setSpan(new RelativeSizeSpan(1.2f), 4, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.price.setText(style);
+            if(waresIntro.getTradeNo().startsWith("pp")){
+                String text = String.format(v.getContext().getResources().getString(R.string.all_fee_),BigDecimalUtil.format(Double.valueOf(waresIntro.getMoney()) / 100));
+                SpannableStringBuilder style = new SpannableStringBuilder(text);
+                style.setSpan(new ForegroundColorSpan(v.getContext().getResources().getColor(R.color.helptext_color)), 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                style.setSpan(new ForegroundColorSpan(Color.RED), 4, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                style.setSpan(new RelativeSizeSpan(1.2f), 4, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.price.setText(style);
+            }else {
+                String text = String.format(v.getContext().getResources().getString(R.string.score_price), Integer.valueOf(waresIntro.getMoney()));
+                int length = waresIntro.getMoney().length();
+                SpannableStringBuilder style = new SpannableStringBuilder(text);
+                style.setSpan(new RelativeSizeSpan(1.2f), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.price.setText(style);
+            }
         }
         Map<Integer,String> map = IlessonApp.getInstance().getItemMap();
         if(map==null){
@@ -245,7 +254,11 @@ public class NewOrderItemProvider extends IContainerItemProvider.MessageProvider
                 json,
                 new TypeToken<BaseCode<WaresOrder>>() {
                 }.getType());
-        if(base==null||base.getCode()!=0){
+        if(base==null){
+            return null;
+        }
+        if(!cache&&base.getCode()!=0){
+            Toast.makeText(context,base.getMessage(),Toast.LENGTH_SHORT).show();
             return null;
         }
         WaresOrder order = base.getData();

@@ -426,7 +426,7 @@ public class ChatInfoActivity extends BaseActivity{
         params.addParameter("action", "list");
         params.addParameter("token", token);
         params.addParameter("page", 0);
-        params.addParameter("size", 20);
+        params.addParameter("size", 200);
         params.addParameter("group", groupId);
         showProgress();
         Log.d(TAG, "requestGroupInfo: " + params.toString());

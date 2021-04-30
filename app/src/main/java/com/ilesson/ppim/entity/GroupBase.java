@@ -1,12 +1,13 @@
 package com.ilesson.ppim.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by potato on 2020/4/24.
  */
 
-public class GroupBase {
+public class GroupBase implements Serializable {
 
     private GroupInfo group;
     private List<PPUserInfo> members;

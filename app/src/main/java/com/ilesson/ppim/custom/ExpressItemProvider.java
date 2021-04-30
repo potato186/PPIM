@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -150,7 +151,7 @@ public class ExpressItemProvider extends IContainerItemProvider.MessageProvider<
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public boolean onCache(String result) {
-                WaresOrder order = readJson(cotnext,result,detail);
+                WaresOrder order = readJson(cotnext,result,detail,true);
                 if(null==order||TextUtils.isEmpty(order.getName())){
                     return false;
                 }
@@ -160,7 +161,7 @@ public class ExpressItemProvider extends IContainerItemProvider.MessageProvider<
             @Override
             public void onSuccess(String result) {
                 Log.d(TAG, " onSuccess: " + result);
-                readJson(cotnext,result,detail);
+                readJson(cotnext,result,detail,false);
             }
 
             @Override
@@ -181,12 +182,16 @@ public class ExpressItemProvider extends IContainerItemProvider.MessageProvider<
             }
         });
     }
-    private WaresOrder readJson(Context cotnext,String json,boolean detail) {
+    private WaresOrder readJson(Context cotnext,String json,boolean detail,boolean cache) {
         BaseCode<WaresOrder> base = new Gson().fromJson(
                 json,
                 new TypeToken<BaseCode<WaresOrder>>() {
                 }.getType());
-        if(base==null||base.getCode()!=0){
+        if(base==null){
+            return null;
+        }
+        if(!cache&&base.getCode()!=0){
+            Toast.makeText(context,base.getMessage(),Toast.LENGTH_SHORT).show();
             return null;
         }
         WaresOrder order = base.getData();

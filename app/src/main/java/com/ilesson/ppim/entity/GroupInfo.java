@@ -1,10 +1,12 @@
 package com.ilesson.ppim.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by potato on 2020/4/23.
  */
 
-public class GroupInfo {
+public class GroupInfo implements Serializable {
     private String id;
     private String name;
     private String icon;

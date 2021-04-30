@@ -98,6 +98,7 @@ public class LoginActivity extends BaseActivity {
 
     @Event(value = R.id.close)
     private void back_btn(View view) throws DbException {
+        System.exit(0);
         finish();
     }
     @Event(value = R.id.login)

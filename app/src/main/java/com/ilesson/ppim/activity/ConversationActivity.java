@@ -546,6 +546,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             if (null != lastOrder) {
                 lastOrder.setInvoicetag(tag);
             }
+            invoiceTag = tag;
             invoiceMedium = INVOICE_PAPER.equals(invoiceInfo.getMedium())?getResources().getString(R.string.paper_type):"";
             if(null!=lastOrder){
                 lastOrder.setInv_eptype(invoiceMedium);
@@ -658,6 +659,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 
     private String nikeName;
     private String groupIcon;
+    private GroupBase groupBase;
     public void requestGroupInfo() {
         ///pp/group?action=info&token=%s&group=%s
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN, "");
@@ -680,7 +682,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         new TypeToken<BaseCode<GroupBase>>() {
                         }.getType());
                 if (base.getCode() == 0) {
-                    GroupBase groupBase = base.getData();
+                    groupBase = base.getData();
                     List<PPUserInfo> list = groupBase.getMembers();
                     title = groupBase.getGroup().getName();
                     groupSize = groupBase.getSize();
@@ -797,6 +799,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
                 intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
                 intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
+//                intent.putExtra(ChatInfoActivity.GROUP_INFO, groupBase);
                 intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
                 intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
                 startActivityForResult(intent, 0);
@@ -1251,7 +1254,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
 
 //       showProgress();
-        Log.d(TAG, "search: " + params.toString());
+        Log.d(TAG, "loadData: " + params.toString());
         x.http().post(params, new Callback.CommonCallback<String>() {
             @SuppressLint("StringFormatMatches")
             @Override

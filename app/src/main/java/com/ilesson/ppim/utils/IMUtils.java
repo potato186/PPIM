@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -598,7 +599,11 @@ public class IMUtils {
                         result,
                         new TypeToken<BaseCode<WaresOrder>>() {
                         }.getType());
-                if(base==null||base.getCode()!=0){
+                if(base==null){
+                    return;
+                }
+                if(base.getCode()!=0){
+                    Toast.makeText(activity,base.getMessage(),Toast.LENGTH_SHORT).show();
                     return;
                 }
                 WaresOrder order = base.getData();
