@@ -78,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/windowBackground"
+            android:visibility="gone"
             android:scrollbars="none">
 
             <LinearLayout
@@ -196,6 +197,7 @@
             android:layout_height="1dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:visibility="gone"
             android:background="@color/divider" />
 
         <RelativeLayout
@@ -214,6 +216,7 @@
                 android:layout_marginRight="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="16dp"
+                android:visibility="gone"
                 android:src="@drawable/ic_photo_library_black_24dp" />
 
             <LinearLayout

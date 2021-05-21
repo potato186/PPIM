@@ -2,15 +2,20 @@ package com.ilesson.ppim.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spannable;
@@ -22,6 +27,7 @@ import android.view.KeyEvent;
 import android.view.SearchEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -67,7 +73,7 @@ import com.ilesson.ppim.utils.Tool;
 import com.ilesson.ppim.view.DragView;
 import com.ilesson.ppim.view.IfeyVoiceWidget1;
 import com.ilesson.ppim.view.RoundImageView;
-import com.ilesson.ppim.view.WaveLineView;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.aai.AAIClient;
 import com.tencent.aai.audio.data.AudioRecordDataSource;
@@ -89,7 +95,9 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
+import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.io.Serializable;
@@ -141,62 +149,108 @@ import static com.ilesson.ppim.activity.SettingActivity.XUNFEI;
 import static com.ilesson.ppim.activity.VoiceTxtActivity.CHATMODE;
 import static com.ilesson.ppim.custom.MyExtensionModule.shopGroup;
 import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
-
+@ContentView(R.layout.conversation)
 public class ConversationActivity extends BaseActivity implements RongIM.LocationProvider, RongIM.ConversationBehaviorListener, View.OnClickListener {
     public static String title;
+    @ViewInject(R.id.title_name)
+    private TextView titleTextView;
     public String groupName;
     public String mTargetId;
+    @ViewInject(R.id.menu)
+    private View menu;
+    @ViewInject(R.id.play_tts)
     public View playView;
+    @ViewInject(R.id.shop_car_view)
     public View shopCarView;
+    @ViewInject(R.id.order_num)
     public View shopCarNum;
+    @ViewInject(R.id.address_layout)
     public View addressLayout;
+    @ViewInject(R.id.floatBtn)
     public DragView floatBtn;
+    @ViewInject(R.id.request_text)
     public TextView requestText;
+    @ViewInject(R.id.help_text)
     public TextView helpTextView;
+    @ViewInject(R.id.tts)
     public TextView ttsView;
+    @ViewInject(R.id.to_pay)
     public TextView toPay;
+    @ViewInject(R.id.to_set_address)
     public TextView toSetAddress;
+    @ViewInject(R.id.username)
     public TextView userName;
+    @ViewInject(R.id.address_view)
     public TextView addressView;
+    @ViewInject(R.id.phone_view)
     public TextView phoneView;
+    @ViewInject(R.id.result_text)
     public TextView resultText;
+    @ViewInject(R.id.wares_name)
     public TextView waresName;
+    @ViewInject(R.id.num)
     public TextView waresNum;
+    @ViewInject(R.id.unit_price)
     public TextView unitPrice;
+    @ViewInject(R.id.express_fee_price)
     public TextView express;
+    @ViewInject(R.id.all_price)
     public TextView allPrice;
+    @ViewInject(R.id.tts_modify)
     public TextView ttsModify;
+    @ViewInject(R.id.wares_price)
     public TextView waresPrice;
+    @ViewInject(R.id.wares_info)
     public TextView waresInfo;
+    @ViewInject(R.id.wares_quantity)
     public TextView waresQuantity;
+    @ViewInject(R.id.invoice_type)
     public TextView invoiceType;
+    @ViewInject(R.id.voice_type)
     public TextView invoiceType1;
+    @ViewInject(R.id.title_type)
     public TextView invoiceTitleType;
+    @ViewInject(R.id.title_type_name)
     public TextView invoiceTitleName;
+    @ViewInject(R.id.company_num)
     public TextView invoiceNum;
+    @ViewInject(R.id.invoice_price)
     public TextView invoicePrice;
+    @ViewInject(R.id.invoice_email)
     public TextView invoiceEmail;
-    public ImageView imageRecord;
+//    @ViewInject(R.id.voice_icon)
+//    public ImageView imageRecord;
+    @ViewInject(R.id.result_image)
     public ImageView resultImageView;
+    @ViewInject(R.id.wares_img)
     public RoundImageView roundImageView;
+    @ViewInject(R.id.shop_layout)
     public View shopLayout;
+    @ViewInject(R.id.wares_intro_view)
     public View waresIntroView;
+    @ViewInject(R.id.tax_num)
     public View taxNumLayout;
+    @ViewInject(R.id.show_content)
     public View showContent;
-    public WaveLineView waveLineView;
+    @ViewInject(R.id.voice_layout)
     public View voiceLayout;
+    @ViewInject(R.id.invoice_layout)
     public View invoiceLayout;
+    @ViewInject(R.id.no_invoice)
     public View noInvoiceLayout;
-    public View waveLayout;
+    @ViewInject(R.id.email_layout)
     public View emailLayout;
+//        playView.setOnClickListener(this);
+//        menu.setOnClickListener(this);
+//        shopCarView.setOnClickListener(this);
     private TTSHelper ttsHelper;
     private boolean playTts;
     public String currentKey;
     private String helpText;
     private int screenWidth;
     boolean isFromPush = false;
-    private TextView titleTextView;
-    private View menu;
+
+
     private IMUtils imUtils;
     private ConversationFragment conversationFragment;
     public IfeyVoiceWidget1 ifeyBtn;
@@ -246,6 +300,74 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         outState.putInt("theme", themeId);
     }
 
+    @Event(R.id.shop_car_view)
+    private void shop_car_view(View v) {
+        shopCarEvent();
+    }
+    @Event(R.id.modify)
+    private void modify(View v) {
+        setInvoice(invoiceInfo);
+    }
+    @Event(R.id.no_invoice)
+    private void no_invoice(View v) {
+        setInvoice(null);
+    }
+    @Event(R.id.play_tts)
+    private void play_tts(View v) {
+        playTTsEvent();
+    }
+    @Event(R.id.back_btn)
+    private void back_btn(View v) {
+        out();
+    }
+    @Event(R.id.to_pay)
+    private void to_pay(View v) {
+        if (null != api && null != req) {
+            api.sendReq(req);
+        }
+    }
+    @Event(R.id.close)
+    private void close(View v) {
+//        shopLayout.setVisibility(View.GONE);
+//        stop(false);
+        closeVoice();
+    }
+    @Event(R.id.to_set_address)
+    private void to_set_address(View v) {
+            startActivityForResult(new Intent(ConversationActivity.this, AddressActivity.class), 0);
+    }
+    @Event(R.id.show_content)
+    private void show_content(View v) {
+        if (currentOrder != null && !TextUtils.isEmpty(currentOrder.getLink())) {
+            Intent intent1 = new Intent(ConversationActivity.this, PWebActivity.class);
+            intent1.putExtra(PWebActivity.URL, currentOrder.getLink());
+            startActivity(intent1);
+        }
+    }
+    @Event(R.id.shop_car)
+    private void shop_car(View v) {
+        if (waresIntroView.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        waresIntroView.setVisibility(View.VISIBLE);
+        ttsView.setVisibility(View.GONE);
+        requestText.setVisibility(View.GONE);
+        resultImageView.setVisibility(View.GONE);
+//                showContent.setVisibility(View.GONE);
+        helpTextView.setVisibility(View.VISIBLE);
+        helpTextView.setText(helpText);
+    }
+    @Event(R.id.menu)
+    private void menu(View v) {
+        Intent intent = new Intent(this, ChatInfoActivity.class);
+        intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
+        intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
+        intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
+//                intent.putExtra(ChatInfoActivity.GROUP_INFO, groupBase);
+        intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
+        intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
+        startActivityForResult(intent, 0);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -258,65 +380,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         Intent intent = getIntent();
         mTargetId = intent.getData().getQueryParameter("targetId");
         title = intent.getData().getQueryParameter("title");
-        setContentView(R.layout.conversation);
         xunfei = SPUtils.get(SettingActivity.VOICE_NAME, XUNFEI).equals(XUNFEI) ? true : false;
         conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_conversation);
-        titleTextView = findViewById(R.id.title_name);
-        menu = findViewById(R.id.menu);
-        playView = findViewById(R.id.play_tts);
-        ttsModify = findViewById(R.id.tts_modify);
-        shopCarNum = findViewById(R.id.order_num);
-        shopCarView = findViewById(R.id.shop_car_view);
-        playView.setOnClickListener(this);
-        menu.setOnClickListener(this);
-        shopCarView.setOnClickListener(this);
 
-        requestText = findViewById(R.id.request_text);
-        helpTextView = findViewById(R.id.help_text);
-        ttsView = findViewById(R.id.tts);
-        waresNum = findViewById(R.id.num);
-        toPay = findViewById(R.id.to_pay);
-        voiceLayout = findViewById(R.id.voice_layout);
-        toSetAddress = findViewById(R.id.to_set_address);
-        addressLayout = findViewById(R.id.address_layout);
-        userName = findViewById(R.id.username);
-        addressView = findViewById(R.id.address_view);
-        phoneView = findViewById(R.id.phone_view);
-        resultText = findViewById(R.id.result_text);
-        waresName = findViewById(R.id.wares_name);
-        waresInfo = findViewById(R.id.wares_info);
-        waresPrice = findViewById(R.id.wares_price);
-        unitPrice = findViewById(R.id.unit_price);
-        express = findViewById(R.id.express_fee_price);
-        allPrice = findViewById(R.id.all_price);
-        waresQuantity = findViewById(R.id.wares_quantity);
-        imageRecord = findViewById(R.id.voice_icon);
-        roundImageView = findViewById(R.id.wares_img);
-        resultImageView = findViewById(R.id.result_image);
-        shopLayout = findViewById(R.id.shop_layout);
-        waresIntroView = findViewById(R.id.wares_intro_view);
-        showContent = findViewById(R.id.show_content);
-        floatBtn = findViewById(R.id.floatBtn);
-        waveLineView = findViewById(R.id.waveLineView);
-        waveLayout = findViewById(R.id.waveLayout);
-        noInvoiceLayout = findViewById(R.id.no_invoice);
-        invoiceLayout = findViewById(R.id.invoice_layout);
-        invoiceType = findViewById(R.id.invoice_type);
-        invoiceType1 = findViewById(R.id.voice_type);
-        invoiceTitleType = findViewById(R.id.title_type);
-        invoiceTitleName = findViewById(R.id.title_type_name);
-        invoicePrice = findViewById(R.id.invoice_price);
-        invoiceNum = findViewById(R.id.company_num);
-        invoiceEmail = findViewById(R.id.invoice_email);
-        emailLayout = findViewById(R.id.email_layout);
-        taxNumLayout = findViewById(R.id.tax_num);
-        noInvoiceLayout.setOnClickListener(this);
-        toPay.setOnClickListener(this);
-        toSetAddress.setOnClickListener(this);
-        showContent.setOnClickListener(this);
-        findViewById(R.id.back_btn).setOnClickListener(this);
-        findViewById(R.id.close).setOnClickListener(this);
-        findViewById(R.id.modify).setOnClickListener(this);
+//        noInvoiceLayout.setOnClickListener(this);
+//        toPay.setOnClickListener(this);
+//        toSetAddress.setOnClickListener(this);
+//        showContent.setOnClickListener(this);
+//        findViewById(R.id.back_btn).setOnClickListener(this);
+//        findViewById(R.id.close).setOnClickListener(this);
+//        findViewById(R.id.modify).setOnClickListener(this);
         init();
         IntentFilter intentFilter = new IntentFilter(FINISH_CURRENT);
         registerReceiver(receiver, intentFilter);
@@ -448,10 +521,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     if (recording) {
                         stop(false);
                     } else {
-                        clickVoice();
+                        toSpeech();
                     }
                 }
-//                stop();
             }
 
             @Override
@@ -466,7 +538,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 SPUtils.put(FLOATY, t);
             }
         });
-        toSpeech();
         final EditText editTag = findViewById(R.id.editTag);
         editTag.postDelayed(new Runnable() {
             @Override
@@ -474,6 +545,33 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 editTag.requestFocus();
             }
         }, 500);
+        setListenerToRootView();
+        initSpeech();
+    }
+    private boolean show;
+    private void setListenerToRootView() {
+        final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+
+                int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
+                Log.d(TAG, "onGlobalLayout: "+heightDiff);
+                if (heightDiff > PPScreenUtils.getScreenHeight(ConversationActivity.this)/3) { // if more than 100 pixels, its probably a keyboard...
+                    if(!show){
+                        setVoiceBtnLocationOnSoftInput();
+                    }
+                    show=true;
+                }else{
+                    if(show){
+                        setVoiceBtnLocation();
+                    }
+                    show=false;
+                }
+            }
+        });
     }
 
     @Override
@@ -645,13 +743,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
         finish();
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (ttsHelper.isSpeaking()) {
-            ttsHelper.stop();
-        }
         unregisterReceiver(receiver);
         EventBus.getDefault().unregister(this);
         shopGroup = false;
@@ -779,65 +873,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.shop_car_view:
-                shopCarEvent();
-                break;
-            case R.id.modify:
-                setInvoice(invoiceInfo);
-                break;
-            case R.id.no_invoice:
-                setInvoice(null);
-                break;
-            case R.id.play_tts:
-                playTTsEvent();
-                break;
-            case R.id.back_btn:
-                out();
-                break;
-            case R.id.menu:
-                Intent intent = new Intent(this, ChatInfoActivity.class);
-                intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
-                intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
-                intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
-//                intent.putExtra(ChatInfoActivity.GROUP_INFO, groupBase);
-                intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
-                intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
-                startActivityForResult(intent, 0);
-                break;
-            case R.id.to_pay:
-                if (null != api && null != req) {
-                    api.sendReq(req);
-                }
-                break;
-            case R.id.close:
-                shopLayout.setVisibility(View.GONE);
-//                waveLayout.setVisibility(View.INVISIBLE);
-                stop(false);
-                break;
-            case R.id.to_set_address:
-//                if (!ButtonUtils.isFastDoubleClick(R.id.to_set_address)) {
-                startActivityForResult(new Intent(ConversationActivity.this, AddressActivity.class), 0);
-//                }
-                break;
-            case R.id.show_content:
-                if (currentOrder != null && !TextUtils.isEmpty(currentOrder.getLink())) {
-                    Intent intent1 = new Intent(ConversationActivity.this, PWebActivity.class);
-                    intent1.putExtra(PWebActivity.URL, currentOrder.getLink());
-                    startActivity(intent1);
-                }
-                break;
-            case R.id.shop_car:
-                if (waresIntroView.getVisibility() == View.VISIBLE) {
-                    return;
-                }
-                waresIntroView.setVisibility(View.VISIBLE);
-                ttsView.setVisibility(View.GONE);
-                requestText.setVisibility(View.GONE);
-                resultImageView.setVisibility(View.GONE);
-//                showContent.setVisibility(View.GONE);
-                helpTextView.setVisibility(View.VISIBLE);
-                helpTextView.setText(helpText);
-                break;
+
         }
     }
 
@@ -1021,7 +1057,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         });
     }
 
-    private int[] imgs = {R.mipmap.speak0, R.mipmap.speak1, R.mipmap.speak2, R.mipmap.speak3, R.mipmap.speak4, R.mipmap.speak5, R.mipmap.speak6, R.mipmap.speak7, R.mipmap.speak8};
+    private int[] imgs = {R.mipmap.speak0, R.mipmap.speak1, R.mipmap.speak2, R.mipmap.speak3, R.mipmap.speak4, R.mipmap.speak5, R.mipmap.speak6, R.mipmap.speak7, R.mipmap.speak7};
     private int current = 0;
     private Handler handler = new Handler() {
         @Override
@@ -1066,9 +1102,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     };
 
     private void setVoiceBtnLocation() {
-        int x = SPUtils.get(FLOATX, PPScreenUtils.dip2px(ConversationActivity.this, 60));
         int maxX = PPScreenUtils.getScreenWidth(ConversationActivity.this) - PPScreenUtils.dip2px(ConversationActivity.this, 120);
         int maxY = PPScreenUtils.getScreenHeight(ConversationActivity.this) - PPScreenUtils.dip2px(ConversationActivity.this, 120);
+        int x = SPUtils.get(FLOATX, maxX);
         int y = SPUtils.get(FLOATY, maxY);
         if (x > maxX) {
             x = maxX;
@@ -1079,11 +1115,20 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) floatBtn.getLayoutParams();
         layoutParams.leftMargin = x;
         layoutParams.topMargin = y;
-//        layoutParams.rightMargin = -250;
-//        layoutParams.bottomMargin = -250;
         floatBtn.setLayoutParams(layoutParams);
         floatBtn.requestFocus();
-//        floatBtn.setLocation(x, y);
+    }
+
+    private void setVoiceBtnLocationOnSoftInput() {
+        int x = SPUtils.get(FLOATX, PPScreenUtils.dip2px(ConversationActivity.this, 60));
+        int maxX = PPScreenUtils.getScreenWidth(ConversationActivity.this) - PPScreenUtils.dip2px(ConversationActivity.this, 120);
+        if (x > maxX) {
+            x = maxX;
+        }
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) floatBtn.getLayoutParams();
+        layoutParams.leftMargin = x;
+        layoutParams.topMargin = PPScreenUtils.getScreenHeight(this)/2-PPScreenUtils.dip2px(this,100);
+        floatBtn.setLayoutParams(layoutParams);
     }
 
     private void showPlayState() {
@@ -1128,7 +1173,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private boolean recording;
 
     private void start() {
-        textBuilder = new StringBuilder();
         if (xunfei) {
             ifeyBtn.start();
         } else {
@@ -1159,20 +1203,32 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             floatBtn.clearAnimation();
         }
     }
+    @Event(value = R.id.bg_layout)
+    private void bg_layout(View v) {
+        closeVoice();
+    }
+    @Event(value = R.id.shop_layout)
+    private void shop_layout(View v) {
+    }
+    private void closeVoice(){
+        shopLayout.setVisibility(View.GONE);
+        stopVoice();
+    }
+
+    private void stopVoice(){
+        if (recording) {
+            stop(false);
+        }
+        if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
+            ttsHelper.stop();
+        }
+    }
     private boolean stoped;
     @Override
     public void onStop() {
         super.onStop();
         stoped = true;
-        if (recording) {
-            stop(false);
-            if (!xunfei) {
-                stopTencenVoice();
-            }
-        }
-        if (ttsHelper.isSpeaking()) {
-            ttsHelper.stop();
-        }
+        stopVoice();
     }
 
     @Override
@@ -1583,19 +1639,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             }
         });
     }
-
     private void initSpeech() {
-        ttsHelper = new TTSHelper(ConversationActivity.this);
+        ttsHelper = new TTSHelper(this);
         ttsHelper.setOnTTSFinish(new TTSHelper.OnTTSFinish() {
             @Override
             public void onTTSFinish(int type) {
-                if (type == 6) {
-                    modifyAddress();
-                } else if (type == 5) {
-                    getServer();
-                } else if (type == 8 || type == 9 || type == 10) {
-                    toOrderList();
-                }
             }
 
             @Override
@@ -1603,29 +1651,76 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 
             }
         });
-        SpeechUtility.createUtility(ConversationActivity.this,
+        SpeechUtility.createUtility(this,
                 getResources().getString(R.string.xunfei_appid));
         initIfey();
     }
 
     public void toSpeech() {
-        ifeyBtn = new IfeyVoiceWidget1(ConversationActivity.this);
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Consumer<Boolean>() {
-            public void accept(Boolean aBoolean) {
-                if (aBoolean) {
-                    initSpeech();
-                } else {
-                    Toast.makeText(ConversationActivity.this, R.string.no_permission, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.requestEach(Manifest.permission.RECORD_AUDIO)
+                .subscribe(new Consumer<Permission>() {
+                    @Override
+                    public void accept(Permission permission) throws Exception {
+                        if (permission.granted) {
+                            // 用户已经同意该权限
+                            if (recording) {
+                                Log.d(TAG, "record_view: stop();");
+                                stop(true);
+                            } else {
+                                start();
+                            }
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时。还会提示请求权限的对话框
+//                            finish();
+                        } else {
+                            getPermission();
+                            // 用户拒绝了该权限，而且选中『不再询问』那么下次启动时，就不会提示出来了，
+                        }
+                    }
+                });
+//                .subscribe(new Consumer<Boolean>() {
+//            public void accept(Boolean aBoolean) {
+//                if (aBoolean) {
+//                    initSpeech();
+//                } else {
+//                    Toast.makeText(ConversationActivity.this, R.string.no_permission, Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+    }
+    public void getPermission(){
+        AlertDialog.Builder alertDialog=null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alertDialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            alertDialog = new AlertDialog.Builder(this);
+        }
+        alertDialog.setTitle("权限设置")
+                .setMessage("应用缺乏录音权限，是否前往手动授予该权限？")
+                .setPositiveButton("前往", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .create();
+        alertDialog.show();
+    }
 
     private StringBuilder stringBuilder = new StringBuilder();
 
     private void initIfey() {
+        ifeyBtn = new IfeyVoiceWidget1(this);
         ifeyBtn.initIfey(new IfeyVoiceWidget1.MessageListener() {
 
             @Override
@@ -1656,7 +1751,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         ifeyBtn.setOnVolumeChangeListener(new IfeyVoiceWidget1.OnVolumeChangeListener() {
             @Override
             public void onVolumeChanged(int progress, short[] data) {
-//                Log.d(TAG, "onVolumeChanged: >>"+progress);
+                Log.d(TAG, "onVolumeChanged: >>"+progress);
                 showVolume(progress);
             }
         });
@@ -1677,7 +1772,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 
     private int last = 0;
     private int index = 0;
-    private StringBuilder textBuilder;
     Animation anim;
 
 
@@ -1698,11 +1792,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         content = content.replace("，", "").replace("。", "").replace("！", "").replace("？", "");
         requestText.setText(content);
         request(content, true);
-    }
-
-    @Event(R.id.voice_icon)
-    private void record_view(View view) throws Exception {
-        clickVoice();
     }
 
     public void clickVoice() {

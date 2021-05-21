@@ -146,9 +146,10 @@
                 android:layout_centerInParent="true"
                 >
                 <TextView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:background="@mipmap/call_server_icon"
+                    android:layout_gravity="center_vertical"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -164,18 +165,39 @@
                     />
             </LinearLayout>
         </RelativeLayout>
-
-        <TextView
+        <RelativeLayout
+            android:id="@+id/buy_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="8"
-            android:id="@+id/buy_btn"
-            android:text="@string/buy_now"
-            android:textColor="@color/white"
+            android:orientation="horizontal"
             android:layout_alignParentRight="true"
             android:background="@drawable/general_red_theme_selector"
-            android:gravity="center"
-            android:textSize="16sp"
-            />
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true"
+                >
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@mipmap/buy_car"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buy_now"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
 </RelativeLayout>

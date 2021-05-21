@@ -322,7 +322,7 @@
                 android:textSize="18sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/background_theme_corner20"
+                android:background="@drawable/general_red_theme_corner20_selector"
                 android:layout_marginBottom="50dp"
                 />
         </LinearLayout>

@@ -18,5 +18,11 @@
     <item
         android:drawable="@drawable/shop_dialog5"
         android:duration="200"/>
+    <item
+        android:drawable="@drawable/shop_dialog6"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/shop_dialog7"
+        android:duration="200"/>
 
 </animation-list>

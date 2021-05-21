@@ -27,6 +27,7 @@ public interface Constants {
     String MONEY_URL="/money";
     String FAV="/fav";
     String ORDER="/order";
+    String TALK="/talk";
     String PRODUCE="/produce";
     String SCORE="/score";
     String EXPRESS="/express";

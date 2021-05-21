@@ -6,8 +6,8 @@ android {
         applicationId "com.ilesson.ppim"
         minSdkVersion 18
         targetSdkVersion 26
-        versionCode 2150
-        versionName "2.1.5"
+        versionCode 2130
+        versionName "2.1.7"
         multiDexEnabled = true
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"

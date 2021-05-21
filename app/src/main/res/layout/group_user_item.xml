@@ -8,13 +8,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.ilesson.ppim.view.RoundImageView
+
+        <io.rong.imkit.widget.AsyncImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/icon"
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:scaleType="centerCrop"
-            />
-
+            app:RCCornerRadius="22dp"
+            app:RCDefDrawable="@drawable/rc_default_portrait"
+            app:RCShape="circle" />
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"

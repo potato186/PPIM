@@ -104,6 +104,7 @@ public class TTSHelper {
 
 	private static final String TAG = "TTSHelper";
 	public void start(final int type, Context context, String text) {
+		Log.d(TAG, "start: ");
 		if(null==mTts){
 			mTts = SpeechSynthesizer.createSynthesizer(context, mTtsInitListener);
 		}
@@ -179,6 +180,7 @@ public class TTSHelper {
 	}
 
 	public void stop() {
+		Log.d(TAG, "stop: ");
 		if (mTts != null) {
 			mTts.stopSpeaking();
 		}

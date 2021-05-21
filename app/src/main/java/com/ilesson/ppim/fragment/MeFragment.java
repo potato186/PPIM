@@ -13,17 +13,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ilesson.ppim.R;
-import com.ilesson.ppim.activity.ScoreListActivity;
 import com.ilesson.ppim.activity.LoginActivity;
 import com.ilesson.ppim.activity.MainActivity;
 import com.ilesson.ppim.activity.MyCollectActivity;
+import com.ilesson.ppim.activity.ScoreListActivity;
 import com.ilesson.ppim.activity.SettingActivity;
 import com.ilesson.ppim.activity.UserDetailActivity;
-import com.ilesson.ppim.entity.UpdateInfo;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.utils.WxShareUtils;
-import com.ilesson.ppim.view.RoundImageView;
+import com.ilesson.ppim.view.CircleImageView;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 
 import org.devio.takephoto.model.InvokeParam;
@@ -33,8 +33,6 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import io.rong.eventbus.EventBus;
-import io.rong.imageloader.core.DisplayImageOptions;
-import io.rong.imageloader.core.ImageLoader;
 
 
 /**
@@ -46,7 +44,7 @@ public class MeFragment extends BaseFragment {
     private MainActivity mainActivity;
 
     @ViewInject(R.id.user_icon)
-    public RoundImageView userIcon;
+    public CircleImageView userIcon;
     @ViewInject(R.id.user_nike)
     private TextView userNike;
     @ViewInject(R.id.user_phone)
@@ -61,19 +59,8 @@ public class MeFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUserInfo();
-        EventBus.getDefault().register(this);
-//        takePhoto = getTakePhoto();
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(LoginActivity.LOGIN_ACTION);
-
     }
 
-    //    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            setUserInfo();
-//        }
-//    };
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e("BaseFragment", "onCreateView");
@@ -81,9 +68,6 @@ public class MeFragment extends BaseFragment {
         return x.view().inject(this, inflater, container);
     }
 
-    public void onEventMainThread(UpdateInfo message) {
-        setUserInfo();
-    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -95,10 +79,12 @@ public class MeFragment extends BaseFragment {
             return;
         }
         if (!TextUtils.isEmpty(icon)) {
-            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-            builder.cacheInMemory(true).cacheOnDisk(true);
-            ImageLoader.getInstance().displayImage(icon, userIcon,
-                    builder.build());
+//            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+//            builder.cacheInMemory(true).cacheOnDisk(true);
+//            ImageLoader.getInstance().displayImage(icon, userIcon,
+//                    builder.build());
+//            userIcon.setAvatar(icon,R.mipmap.default_icon);
+            Glide.with(getActivity()).load(icon).into(userIcon);
         }
         String name = SPUtils.get(LoginActivity.USER_NAME, "");
         userNike.setText(name);

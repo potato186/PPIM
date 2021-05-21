@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -19,6 +20,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 
@@ -72,6 +75,19 @@ public class BaseActivity extends FragmentActivity {
             return true;
         }
         return false;
+    }
+    public void initStatusBar() {
+        Window window = this.getWindow();
+        //获取当前手机SDK版本号大于或等于Build.VERSION_CODES.KITKAT（安卓4.4）时：
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //允许页面可以拉伸到顶部状态栏并且定义顶部状态栏透名
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);//是设置状态栏为全透明。
+//            window.setNavigationBarColor(Color.TRANSPARENT); //设置虚拟键为透明
+            //设置全屏显示,
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
     }
     public static final int DIALOG_LONDING = 0x01;
     public static final int DIALOG_PROGRESS = 0x02;

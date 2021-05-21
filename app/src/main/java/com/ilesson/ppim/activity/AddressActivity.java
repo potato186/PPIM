@@ -422,7 +422,7 @@ public class AddressActivity extends BaseActivity {
 
         if (changed) {
             save.setTextColor(getResources().getColor(R.color.white));
-            save.setBackgroundResource(R.drawable.background_theme_corner20);
+            save.setBackgroundResource(R.drawable.general_theme_corner20_selector);
             save.setEnabled(true);
         } else {
             save.setTextColor(getResources().getColor(R.color.color_999999));

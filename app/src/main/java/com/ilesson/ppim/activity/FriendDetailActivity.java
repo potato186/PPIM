@@ -19,7 +19,7 @@ import com.ilesson.ppim.entity.RongUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.view.RoundImageView;
+import com.ilesson.ppim.view.CircleImageView;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -42,7 +42,7 @@ import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 public class FriendDetailActivity extends BaseActivity {
 
     @ViewInject(R.id.user_icon)
-    private RoundImageView iconView;
+    private CircleImageView iconView;
     @ViewInject(R.id.user_name)
     private TextView nameView;
     @ViewInject(R.id.add)
@@ -73,7 +73,7 @@ public class FriendDetailActivity extends BaseActivity {
     }
     private void showData(){
         if(ppUserInfo.getUri()==null){
-            Glide.with(this).load(ppUserInfo.getIcon()).into(iconView);
+            Glide.with(getApplicationContext()).load(ppUserInfo.getIcon()).into(iconView);
         }else{
             Glide.with(this).load(ppUserInfo.getUri()).into(iconView);
         }

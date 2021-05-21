@@ -36,6 +36,7 @@
     <color name="update_cancel_color">#d3d3d3</color>
     <color name="update_cancel_gray_color">#88d3d3d3</color>
     <color name="gray_text_color">#999999</color>
+    <color name="gray_text_color1">#b1b1b1</color>
     <color name="registe_text_color">#aa333333</color>
     <color name="second_blk_text">#575757</color>
     <color name="gray_text333_color">#333333</color>
@@ -77,7 +78,8 @@
     <color name="color_group_click">#4D94FE</color>
     <color name="color_chat_bg">#00A0EA</color>
     <color name="color_zoo_bg">#CFF0F7</color>
-    <color name="theme_color">#FF900B</color>
+    <color name="theme_color">#eb0c6e</color>
+    <color name="theme_end_color">#652d8f</color>
     <color name="color_66989FC3">#66989FC3</color>
     <color name="color_303132">#303132</color>
     <color name="code_color">#EEB601</color>
@@ -86,14 +88,15 @@
     <color name="menu_bg">#4C4C4C</color>
     <color name="menu_bg_click">#884C4C4C</color>
     <color name="shop_dialog_bg">#884C4C4C</color>
-    <color name="theme_focus_color">#aaFF900B</color>
-    <color name="theme_back_color">#66FF900B</color>
-    <color name="theme_text_color">#FF7200</color>
+    <color name="theme_focus_color">#aaeb0c6e</color>
+    <color name="theme_end_focus_color">#aa652d8f</color>
+    <color name="theme_back_color">#66eb0c6e</color>
+    <color name="theme_text_color">@color/theme_color</color>
     <color name="welcom_bg">#0d74f2</color>
     <color name="red">#f00</color>
     <color name="red_top">#F25542</color>
-    <color name="multiple_image_select_primary">#FF900B</color>
-    <color name="multiple_image_select_primaryDark">#FF900B</color>
+    <color name="multiple_image_select_primary">@color/theme_color</color>
+    <color name="multiple_image_select_primaryDark">@color/theme_color</color>
 
     <color name="viewfinder_frame">#90FFFFFF</color>
     <color name="result_point_color">#C0FFFF00</color>

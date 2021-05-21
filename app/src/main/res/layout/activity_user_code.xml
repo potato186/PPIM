@@ -52,7 +52,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             >
-            <com.ilesson.ppim.view.RoundImageView
+           <com.ilesson.ppim.view.CircleImageView
                 android:id="@+id/user_icon"
                 android:layout_width="55dp"
                 android:layout_height="55dp"

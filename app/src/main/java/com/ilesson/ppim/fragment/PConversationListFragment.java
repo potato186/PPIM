@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.LoginActivity;
+import com.ilesson.ppim.adapter.ConversationListAdapter;
 import com.ilesson.ppim.custom.MyExtensionModule;
 import com.ilesson.ppim.utils.IMUtils;
 
@@ -44,7 +45,6 @@ import io.rong.imkit.utilities.OptionsPopupDialog;
 import io.rong.imkit.voiceMessageDownload.AutoDownloadEntry;
 import io.rong.imkit.voiceMessageDownload.HQVoiceMsgDownloadManager;
 import io.rong.imkit.widget.RongSwipeRefreshLayout;
-import io.rong.imkit.widget.adapter.ConversationListAdapter;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.ConversationStatus;

@@ -8,13 +8,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.FriendDetailActivity;
 import com.ilesson.ppim.activity.PayScoreActivity;
 import com.ilesson.ppim.entity.PPUserInfo;
+import com.ilesson.ppim.view.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,8 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import io.rong.eventbus.EventBus;
-import io.rong.imageloader.core.DisplayImageOptions;
-import io.rong.imageloader.core.ImageLoader;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
 
@@ -117,12 +116,13 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((CharacterHolder) holder).mTextView.setText(resultList.get(position).getUserInfo().getName());
         } else if (holder instanceof ContactHolder) {
             ((ContactHolder) holder).mTextView.setText(resultList.get(position).getUserInfo().getName());
-            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-            builder.showImageOnLoading(R.mipmap.default_icon)
-                    .cacheInMemory(true).cacheOnDisk(true);
-            ImageLoader.getInstance().displayImage(resultList.get(position).getUserInfo().getIcon(), ((ContactHolder) holder).imageView,
-                    builder.build());
-            ((ContactHolder) holder).checkBox.setBackgroundResource(isSelected.get(position)?R.mipmap.selected:R.mipmap.unselect);
+//            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+//            builder.showImageOnLoading(R.mipmap.default_icon)
+//                    .cacheInMemory(true).cacheOnDisk(true);
+//            ImageLoader.getInstance().displayImage(resultList.get(position).getUserInfo().getIcon(), ((ContactHolder) holder).imageView,
+//                    builder.build());
+            Glide.with(mContext).load(resultList.get(position).getUserInfo().getIcon()).into(((ContactHolder) holder).imageView);
+            ((ContactHolder) holder).checkBox.setBackgroundResource(isSelected.get(position)?R.mipmap.checked:R.mipmap.unselect);
         }
     }
 
@@ -147,7 +147,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class ContactHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
-        ImageView imageView;
+        CircleImageView imageView;
         TextView checkBox;
         ContactHolder(View view) {
             super(view);
@@ -172,7 +172,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 //                        box.setChecked(!isChecked);
                         if(!isChecked){
                             selects.add(info);
-                            checkBox.setBackgroundResource(R.mipmap.selected);
+                            checkBox.setBackgroundResource(R.mipmap.checked);
 //                            box.setButtonDrawable(R.mipmap.selected);
                         }else{
 //                            box.setButtonDrawable(R.mipmap.unselect);
@@ -197,22 +197,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             });
-//            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-////                    PPUserInfo info = resultList.get(getLayoutPosition()).getUserInfo();
-//                    if(isChecked){
-////                        selects.add(info);
-//                        box.setButtonDrawable(R.mipmap.selected);
-//                    }else{
-//                        box.setButtonDrawable(R.mipmap.unselect);
-////                        selects.remove(info);
-//                    }
-////                    if(onSelectChanger!=null){
-////                        onSelectChanger.onSelected(selects);
-////                    }
-//                }
-//            });
         }
     }
 

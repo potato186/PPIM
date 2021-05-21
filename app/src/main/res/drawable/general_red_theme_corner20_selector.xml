@@ -3,17 +3,29 @@
 
 <!-- pressed -->
 <item android:state_pressed="true"><shape android:shape="rectangle">
-    <solid android:color="@color/theme_focus_color"/>
+    <gradient
+        android:angle="135"
+        android:startColor="@color/theme_end_focus_color"
+        android:endColor="@color/theme_focus_color"
+        />
     <corners android:radius="20dp" />
 </shape></item>
 <!-- focus -->
 <item android:state_focused="true"><shape android:shape="rectangle">
-    <solid android:color="@color/theme_focus_color"/>
+    <gradient
+        android:angle="135"
+        android:startColor="@color/theme_end_focus_color"
+        android:endColor="@color/theme_focus_color"
+        />
     <corners android:radius="20dp" />
 </shape></item>
 <!-- default -->
 <item><shape android:shape="rectangle">
-    <solid android:color="@color/theme_color"/>
+    <gradient
+        android:angle="135"
+        android:startColor="@color/theme_end_color"
+        android:endColor="@color/theme_color"
+        />
     <corners android:radius="20dp" />
 </shape></item>
 

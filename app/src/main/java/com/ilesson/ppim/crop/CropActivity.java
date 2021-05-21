@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -40,6 +39,7 @@ public class CropActivity extends BaseActivity {
         mImgUri = intent.getParcelableExtra(CROP_IMG_URI);
         bindViews();
         FontUtils.setFont(mRootLayout);
+        mCropView.setCropMode(CropImageView.CropMode.SQUARE);
         mCropView.startLoad(mImgUri, mLoadCallback);
 //        if (savedInstanceState == null) {
 //            getSupportFragmentManager().beginTransaction().add(R.id.container, MainFragment.getInstance(uri)).commit();

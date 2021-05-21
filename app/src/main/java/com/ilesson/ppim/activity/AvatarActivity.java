@@ -84,23 +84,15 @@ public class AvatarActivity extends BaseActivity
     private String userIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        getTakePhoto().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
         token = SPUtils.get(LOGIN_TOKEN, "");
         userIcon = SPUtils.get(USER_ICON, "");
-//        requestSdcard();
         showImage(userIcon);
+
     }
 
     private static final int ICON_CAMREA = 1023;
     private static final int ICON_LOCAL_PIC = 1024;
-    public void requestSdcard() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Consumer<Boolean>() {
-            public void accept(Boolean aBoolean) {
-            }
-        });
-    }
     public void startCamrea() {
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
@@ -220,19 +212,9 @@ public class AvatarActivity extends BaseActivity
     public static final int MODIFY_SUCCESS = 23;
 
     private void setInfo() {
-//        if(hasModify){
-//            Intent intent = new Intent();
-//            intent.putExtra(USER_ICON, userIcon);
-//            setResult(MODIFY_SUCCESS, intent);
-//        }
         finish();
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        getTakePhoto().onSaveInstanceState(outState);
-//        super.onSaveInstanceState(outState);
-//    }
     public static final int RESULT_CODE=22;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -264,84 +246,6 @@ public class AvatarActivity extends BaseActivity
             modify(iconPath);
         }
     }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        //以下代码为处理Android6.0、7.0动态权限所需
-//        PermissionManager.TPermissionType type=PermissionManager.onRequestPermissionsResult(requestCode,permissions,grantResults);
-//        PermissionManager.handlePermissionsResult(this,type,invokeParam,this);
-//    }
-    /**
-     * 获取TakePhoto实例
-     *
-     * @return
-     */
-//    public TakePhoto getTakePhoto() {
-//        if (takePhoto == null) {
-//            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
-//        }
-//        return takePhoto;
-//    }
-//
-//    @Override
-//    public void takeSuccess(TResult result) {
-//        modify(result.getImage().getCompressPath());
-//        Log.i(TAG, "takeSuccess：" + result.getImage().getCompressPath());
-//
-//    }
-//
-//    @Override
-//    public void takeFail(TResult result, String msg) {
-//        modify(result.getImage().getCompressPath());
-//    }
-//
-//    @Override
-//    public void takeCancel() {
-////        Log.i(TAG, getResources().getString(org.devio.takephoto.R.string.msg_operation_canceled));
-//    }
-//    @Override
-//    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
-//        PermissionManager.TPermissionType type=PermissionManager.checkPermission(TContextWrap.of(this),invokeParam.getMethod());
-//        if(PermissionManager.TPermissionType.WAIT.equals(type)){
-//            this.invokeParam=invokeParam;
-//        }
-//        return type;
-//    }
-//    private void fromCamera(boolean flag_camera) {
-//        dissPopWindow();
-//        File file = new File(Environment.getExternalStorageDirectory(), "/temp/" + System.currentTimeMillis() + ".jpg");
-//        if (!file.getParentFile().exists()) {
-//            //noinspection ResultOfMethodCallIgnored
-//            file.getParentFile().mkdirs();
-//        }
-//        Uri imageUri = Uri.fromFile(file);
-//        configCompress(takePhoto);
-//        configTakePhotoOption(takePhoto);
-//
-//        if (flag_camera) {
-//            takePhoto.onPickFromCapture(imageUri);
-////            takePhoto.onPickFromCaptureWithCrop(imageUri);
-//        } else {
-//            takePhoto.onPickFromGallery();
-////            takePhoto.onPickMultipleWithCrop(1, getCropOptions());
-//        }
-//    }
-
-//    private void configCompress(TakePhoto takePhoto) {
-//        CompressConfig config = new CompressConfig.Builder().setMaxSize(1024 * 1000 * 10)
-//                .setMaxPixel(300)
-//                .enableReserveRaw(false)
-//                .create();
-//        takePhoto.onEnableCompress(config, false);
-//    }
-//
-//    private void configTakePhotoOption(TakePhoto takePhoto) {
-//        TakePhotoOptions.Builder builder = new TakePhotoOptions.Builder();
-//        builder.setWithOwnGallery(true);
-//
-//        takePhoto.setTakePhotoOptions(builder.create());
-//    }
 
     private CropOptions getCropOptions() {
         int height = 300;
@@ -393,19 +297,7 @@ public class AvatarActivity extends BaseActivity
                 popupWindow.dismiss();
             }
         });
-        // 按下android回退物理键 PopipWindow消失解决
-
     }
-//
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
-//            if(popupWindow!=null&&popupWindow.isShowing()){
-//                popupWindow.dismiss();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     private void dissPopWindow(){
         if(null!=popupWindow){

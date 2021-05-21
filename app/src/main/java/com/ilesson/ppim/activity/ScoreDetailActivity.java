@@ -69,7 +69,8 @@ public class ScoreDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarLightMode(this,true);
+//        setStatusBarLightMode(this,true);
+        initStatusBar();
         builder.cacheInMemory(true).cacheOnDisk(true);
         token = SPUtils.get(LOGIN_TOKEN,"");
         myId = SPUtils.get(USER_PHONE,"");

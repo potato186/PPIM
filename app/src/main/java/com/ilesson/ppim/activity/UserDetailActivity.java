@@ -15,14 +15,16 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.SetIcon;
 import com.ilesson.ppim.entity.UpdateInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.view.RoundImageView;
+import com.ilesson.ppim.view.CircleImageView;
 
 import org.devio.takephoto.app.TakePhoto;
 import org.devio.takephoto.model.InvokeParam;
@@ -38,8 +40,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import io.rong.eventbus.EventBus;
-import io.rong.imageloader.core.DisplayImageOptions;
-import io.rong.imageloader.core.ImageLoader;
 
 import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
 import static com.ilesson.ppim.activity.LoginActivity.NAME_SYMBL;
@@ -55,7 +55,7 @@ import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
 @ContentView(R.layout.act_user_info)
 public class UserDetailActivity extends BaseActivity{
     @ViewInject(R.id.user_icon)
-    public RoundImageView userIcon;
+    public CircleImageView userIcon;
     @ViewInject(R.id.user_nike)
     private TextView userNike;
     @ViewInject(R.id.user_phone)
@@ -103,6 +103,7 @@ public class UserDetailActivity extends BaseActivity{
         }
         userBirth.setText(birthday);
         setUserInfo();
+        EventBus.getDefault().register(this);
     }
 
     private void setSexText(){
@@ -113,6 +114,9 @@ public class UserDetailActivity extends BaseActivity{
         }else{
             userSex.setText(R.string.unknown);
         }
+    }
+    public void onEventMainThread(SetIcon setIcon){
+        Glide.with(getApplicationContext()).load(setIcon.getIcon()).into(userIcon);
     }
     @Event(R.id.back)
     private void back(View view){
@@ -166,10 +170,7 @@ public class UserDetailActivity extends BaseActivity{
 //            return;
 //        }
         if (!TextUtils.isEmpty(icon)) {
-            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-            builder.cacheInMemory(true).cacheOnDisk(true);
-            ImageLoader.getInstance().displayImage(icon, userIcon,
-                    builder.build());
+            Glide.with(getApplicationContext()).load(icon).into(userIcon);
         }
         String name = SPUtils.get(LoginActivity.USER_NAME, "");
         userNike.setText(name);
@@ -221,17 +222,6 @@ public class UserDetailActivity extends BaseActivity{
 
     private TextView mandrain1;
     private TextView cantonese1;
-//    private ImageView mandrain2;
-//    private ImageView cantonese2;
-//    private void setTtsLanguage(boolean ttsCantonese){
-//        if(ttsCantonese){
-//            setSelectedState(cantonese2);
-//            setUnSelectedState(mandrain2);
-//        }else{
-//            setSelectedState(mandrain2);
-//            setUnSelectedState(cantonese2);
-//        }
-//    }
     private void setInputLanguage(boolean inputCantonese){
         if(inputCantonese){
             setSelectedState(cantonese1);
@@ -304,26 +294,6 @@ public class UserDetailActivity extends BaseActivity{
                 setInputLanguage(true);
             }
         });
-//        mandrain2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(!ttsCantonese){
-//                    return;
-//                }
-//                ttsCantonese=false;
-//                setTtsLanguage(false);
-//            }
-//        });
-//        cantonese2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(ttsCantonese){
-//                    return;
-//                }
-//                ttsCantonese=true;
-//                setTtsLanguage(true);
-//            }
-//        });
         view.findViewById(R.id.right_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -420,7 +390,7 @@ public class UserDetailActivity extends BaseActivity{
 //                .setType(new boolean[]{true, true, true})//设置年月日时分秒是否显示 true:显示 false:隐藏
 //                .setLabel("年", "月", "日")
                 .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-//                .setDividerColor(0xFF24AD9D)//设置分割线颜色
+                .setDividerColor(0xFFeb0c6e)//设置分割线颜色
                 .isCyclic(false)//是否循环显示日期 例如滑动到31日自动转到1日 有个问题：不能实现日期和月份联动
                 .setTitleText(getResources().getString(R.string.select_birthday))
                 .setCancelColor(getResources().getColor(R.color.helptext_color))
@@ -504,44 +474,12 @@ public class UserDetailActivity extends BaseActivity{
             }
         });
     }
-    private void modifyR() {
-        //list&token=%s&page=%s&size=%s
-        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.USER_URL);
-        params.addBodyParameter("action", "mod_birthday");
-        params.addBodyParameter("birthday", birthday);
-        Log.d(TAG, "loadData: " + params.toString());
-        showProgress();
-        x.http().post(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Log.d(TAG, "ExchangeActivity onSuccess: " + result);
-                BaseCode base = new Gson().fromJson(result,BaseCode.class);
-                if(base.getCode()==0){
-                    SPUtils.put(BIRTH,birthday);
-                }else{
-                    showToast(base.getMessage());
-                }
-            }
-
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                ex.printStackTrace();
-            }
-
-
-            @Override
-            public void onCancelled(CancelledException cex) {
-                cex.printStackTrace();
-            }
-
-
-            @Override
-            public void onFinished() {
-                hideProgress();
-            }
-        });
-    }
 
     private static final String TAG = "UserDetailActivity";
-    
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

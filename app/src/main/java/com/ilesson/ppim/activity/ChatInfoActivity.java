@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
@@ -26,7 +25,6 @@ import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.view.RoundImageView;
 import com.ilesson.ppim.view.ScrollListView;
 import com.ilesson.ppim.view.SwitchButton;
 
@@ -43,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
+import io.rong.imkit.widget.AsyncImageView;
 import io.rong.imlib.model.Conversation;
 
 import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
@@ -519,7 +518,8 @@ public class ChatInfoActivity extends BaseActivity{
                 }else if("remove".equals(userInfo.getName())){
                     itemViewHolder.imageView.setImageResource(R.drawable.remove_selector);
                 }else{
-                    Glide.with(ChatInfoActivity.this).asBitmap().load(userInfo.getIcon()).into(itemViewHolder.imageView);
+//                    Glide.with(ChatInfoActivity.this).asBitmap().load(userInfo.getIcon()).into(itemViewHolder.imageView);
+                    itemViewHolder.imageView.setAvatar(userInfo.getIcon(),R.mipmap.default_icon);
                     itemViewHolder.name.setText(userInfo.getName());
                     if(userInfo.getPhone().equals(myPhone)){
                         nikeName = userInfo.getName();
@@ -541,7 +541,7 @@ public class ChatInfoActivity extends BaseActivity{
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            private RoundImageView imageView;
+            private AsyncImageView imageView;
             private TextView name;
 
             public ItemViewHolder(@NonNull View itemView) {

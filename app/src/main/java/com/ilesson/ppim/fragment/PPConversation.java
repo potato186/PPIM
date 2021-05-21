@@ -119,7 +119,7 @@ public class PPConversation extends ConversationFragment implements View.OnClick
         waresName=activity.waresName;
         waresPrice=activity.waresPrice;
         waresQuantity=activity.waresQuantity;
-        imageRecord=activity.imageRecord;
+//        imageRecord=activity.imageRecord;
         resultImageView=activity.resultImageView;
         roundImageView=activity.roundImageView;
         shopLayout=activity.shopLayout;
@@ -489,23 +489,23 @@ public class PPConversation extends ConversationFragment implements View.OnClick
             public void onVolumeChanged(int progress, short[] data) {
 //                Log.d(TAG, "onVolumeChanged: "+progress);
                 switch (progress / 2) {
-                    case 0:
-                    case 1:
-                        imageRecord.setImageResource(R.mipmap.mai01);
-                        break;
-                    case 2:
-                    case 3:
-                        imageRecord.setImageResource(R.mipmap.mai02);
-                        break;
-                    case 4:
-                    case 5:
-                        imageRecord.setImageResource(R.mipmap.mai03);
-                        break;
-                    case 6:
-                    case 7:
-                    case 8:
-                        imageRecord.setImageResource(R.mipmap.mai04);
-                        break;
+//                    case 0:
+//                    case 1:
+//                        imageRecord.setImageResource(R.mipmap.mai01);
+//                        break;
+//                    case 2:
+//                    case 3:
+//                        imageRecord.setImageResource(R.mipmap.mai02);
+//                        break;
+//                    case 4:
+//                    case 5:
+//                        imageRecord.setImageResource(R.mipmap.mai03);
+//                        break;
+//                    case 6:
+//                    case 7:
+//                    case 8:
+//                        imageRecord.setImageResource(R.mipmap.mai04);
+//                        break;
                 }
             }
         });

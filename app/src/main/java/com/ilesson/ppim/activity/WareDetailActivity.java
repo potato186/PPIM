@@ -138,9 +138,6 @@ public class WareDetailActivity extends BaseActivity {
     }
 
     private void loadData() {
-        //1.商品详情：https://pp.fangnaokeji.com:9443/pp/produce?action=detail&id=6
-        //2.订单信息：https://pp.fangnaokeji.com:9443/pp/produce?action=selection&id=6
-        //3.发起下单: https://pp.fangnaokeji.com:9443/pp/produce?
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.PRODUCE);
         params.addBodyParameter("action", "detail");
         params.addBodyParameter("produce", groupId);

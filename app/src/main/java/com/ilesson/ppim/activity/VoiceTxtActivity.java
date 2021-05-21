@@ -278,6 +278,7 @@ public class VoiceTxtActivity extends BaseActivity {
     @Event(R.id.close)
     private void close(View view) throws Exception {
         finish();
+        overridePendingTransition(0, 0);
     }
 
     @Event(R.id.request_text)

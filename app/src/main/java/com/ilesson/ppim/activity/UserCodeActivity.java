@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
@@ -18,7 +19,7 @@ import com.ilesson.ppim.entity.RongUserInfo;
 import com.ilesson.ppim.utils.BitmapUtils;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.view.RoundImageView;
+import com.ilesson.ppim.view.CircleImageView;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -28,7 +29,6 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import io.rong.imageloader.core.DisplayImageOptions;
-import io.rong.imageloader.core.ImageLoader;
 
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
 import static com.ilesson.ppim.activity.LoginActivity.USER_ICON;
@@ -42,7 +42,7 @@ public class UserCodeActivity extends BaseActivity {
     @ViewInject(R.id.code)
     private ImageView imageView;
     @ViewInject(R.id.user_icon)
-    private RoundImageView userIcon;
+    private CircleImageView userIcon;
     @ViewInject(R.id.user_name)
     private TextView userName;
     @ViewInject(R.id.title)
@@ -75,54 +75,6 @@ public class UserCodeActivity extends BaseActivity {
             String name = SPUtils.get(USER_NAME,"");
             showGourpInfo(icon,name);
         }
-//        Glide.with(this).asBitmap().load(result).into(new SimpleTarget<Bitmap>() {
-//            @Override
-//            public void onResourceReady(@NonNull final Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//                imageView.setImageBitmap(resource);
-//                imageView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        BitmapUtils.saveImage(UserCodeActivity.this,resource);
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-//                super.onLoadFailed(errorDrawable);
-//            }
-//        });
-        /*Glide.with(this)
-                .load(result)
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        final Bitmap bitmap = ((BitmapDrawable)resource).getBitmap();
-                        imageView.setImageBitmap(bitmap);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                BitmapUtils.saveImage(UserCodeActivity.this,bitmap);
-                            }
-                        });
-                    }
-
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-
-                    }
-
-
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        super.onLoadFailed(errorDrawable);
-                        Log.d(TAG, "onLoadFailed: "+errorDrawable);
-
-                    }
-                });*/
-
 
         x.image().bind(imageView,result, new Callback.CommonCallback<Drawable>() {
             @Override
@@ -190,8 +142,6 @@ public class UserCodeActivity extends BaseActivity {
     }
     private void showGourpInfo(String icon,String name){
         userName.setText(name);
-        builder.cacheInMemory(true).cacheOnDisk(true);
-        ImageLoader.getInstance().displayImage(icon, userIcon,
-                builder.build());
+        Glide.with(getApplicationContext()).load(icon).into(userIcon);
     }
 }

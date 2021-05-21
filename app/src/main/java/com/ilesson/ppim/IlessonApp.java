@@ -83,6 +83,8 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
     @Override
     public void onCreate() {
         super.onCreate();
+
+
         init();
         changeFontSize();
 //        closeAndroidPDialog();
@@ -188,6 +190,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         RongIM.registerMessageTemplate(new ComposeItemProvider());
         RongIM.registerMessageTemplate(new PPImageItemProvider());
         RongIM.registerMessageTemplate(new RedPacketItemProvider());
+//        ImageLoader.getInstance().clearDiskCache();
     }
     public static IlessonApp getInstance(){
         return ilessonApp;

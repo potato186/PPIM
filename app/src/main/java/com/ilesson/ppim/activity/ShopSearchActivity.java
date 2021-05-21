@@ -137,9 +137,10 @@ public class ShopSearchActivity extends BaseActivity {
                 rootView.getWindowVisibleDisplayFrame(r);
 
                 int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
-                if (heightDiff > PPScreenUtils.dip2px(ShopSearchActivity.this, 200)) { // if more than 100 pixels, its probably a keyboard...
-//                    showKeboard();
-                    stop();
+                if (heightDiff > PPScreenUtils.dip2px(ShopSearchActivity.this, 100)) { // if more than 100 pixels, its probably a keyboard...
+
+                }else{
+
                 }
             }
         });
