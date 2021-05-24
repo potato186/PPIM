@@ -178,8 +178,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-//        setStatusBarLightMode(this, true);
-        initStatusBar();
+        setStatusBarLightMode(this, true);
+//        initStatusBar();
         token = SPUtils.get(LOGIN_TOKEN, "");
         imUtils = new IMUtils();
         imUtils.connect(this, token);
@@ -288,6 +288,7 @@ public class MainActivity extends BaseActivity {
         playTts = SPUtils.get(PLAY_TTS, true);
         showPlayState();
         initSpeech();
+        mViewPager.setCurrentItem(2);
     }
     private void initSpeech() {
         ttsHelper = new TTSHelper(this);
@@ -550,7 +551,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-//        handler.sendEmptyMessageDelayed(1,1000);
+        setCurrentActivity(this);
     }
 
     private void showUnreadMsg(int unReadMsgCount) {
@@ -798,8 +799,11 @@ public class MainActivity extends BaseActivity {
         if (recording) {
             stop(false);
         }
-        if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
-            ttsHelper.stop();
+        Log.d(TAG, "stopVoice currentActivity: "+getCurrentActivity());
+        if(this==getCurrentActivity()){
+            if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
+                ttsHelper.stop();
+            }
         }
     }
 
@@ -1002,7 +1006,7 @@ public class MainActivity extends BaseActivity {
     }
     private void setVoiceBtnLocation() {
         int maxX = PPScreenUtils.getScreenWidth(this) - PPScreenUtils.dip2px(this, 120);
-        int maxY = PPScreenUtils.getScreenHeight(this) - PPScreenUtils.dip2px(this, 130);
+        int maxY = PPScreenUtils.getScreenHeight(this) - PPScreenUtils.dip2px(this, 150);
         int x = SPUtils.get(FLOATX,PPScreenUtils.getScreenWidth(this)/2 - PPScreenUtils.dip2px(this, 60));
         int y = SPUtils.get(FLOATY, maxY);
         if (x > maxX) {

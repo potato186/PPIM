@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -173,6 +172,7 @@ public class ChatInfoActivity extends BaseActivity{
         intent.putExtra(GROUP_ID, groupId);
         intent.putExtra(MODIFY_TYPE, MODIFY_GROUP);
         intent.putExtra(ChatInfoActivity.GROUP_NAME, name);
+        requstCode = MODIFY_GROUP;
         startActivityForResult(intent,MODIFY_GROUP);
     }
     @Event(R.id.nike_layout)
@@ -182,8 +182,10 @@ public class ChatInfoActivity extends BaseActivity{
         intent.putExtra(GROUP_ICON, groupIcon);
         intent.putExtra(MODIFY_TYPE, MODIFY_NIKE_IN_GROUP);
         intent.putExtra(MODIFY_CONTENT, nikeName);
+        requstCode = MODIFY_NIKE_IN_GROUP;
         startActivityForResult(intent,MODIFY_NIKE_IN_GROUP);
     }
+    private int requstCode;
     @Event(R.id.quit)
     private void quit(View view){
         showQuitDialog();
@@ -191,44 +193,6 @@ public class ChatInfoActivity extends BaseActivity{
     @Event(R.id.delete)
     private void delete(View view){
         showDeleteDialog();
-    }
-    @Event(value=R.id.gridview,type=AdapterView.OnItemClickListener.class)
-    private void item(AdapterView<?> parent, View view, int position, long id){
-        Intent intent = new Intent();
-        intent.setClass(ChatInfoActivity.this, ContactActivity.class);
-        List<PPUserInfo> list = new ArrayList<>();
-        list.addAll(datas);
-        list.remove(addUser);
-        list.remove(deleteUser);
-        PPUserInfo self = null;
-        for (int i=0;i<list.size();i++){
-            if(list.get(i).getName().equals(SPUtils.get(LoginActivity.USER_NAME,""))){
-                self = list.get(i);
-                break;
-            }
-        }
-        if(null!=self){
-            list.remove(self);
-        }
-        intent.putExtra(HAS_MEMBERS, (Serializable) list);
-        intent.putExtra(GROUP_ID, groupId);
-        if(datas.get(position).getName().equals("add")){
-            intent.putExtra(SELECT_ACTION, INVATE_GROUP_TYPE);
-            startActivityForResult(intent,0);
-        }else if(datas.get(position).getName().equals("remove")){
-            intent.putExtra(SELECT_ACTION, REMOVE_GROUP_TYPE);
-            startActivityForResult(intent,0);
-            PPUserInfo userInfo = datas.get(position);
-        }else{
-            PPUserInfo userInfo = datas.get(position);
-            intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
-
-        Log.d(TAG, "item: "+datas.get(position).getName());
     }
     @Override
     public void onBackPressed() {
@@ -243,7 +207,7 @@ public class ChatInfoActivity extends BaseActivity{
     }
 
     private void out(){
-        if(modifyed){
+        if(modifyed&&MODIFY_GROUP==requstCode){
             Intent intent = new Intent();
             intent.putExtra(MODIFY_RESULT,name);
             setResult(MODIFY_SUCCESS,intent);
@@ -425,7 +389,7 @@ public class ChatInfoActivity extends BaseActivity{
         params.addParameter("action", "list");
         params.addParameter("token", token);
         params.addParameter("page", 0);
-        params.addParameter("size", 200);
+        params.addParameter("size", 20000);
         params.addParameter("group", groupId);
         showProgress();
         Log.d(TAG, "requestGroupInfo: " + params.toString());
@@ -551,9 +515,41 @@ public class ChatInfoActivity extends BaseActivity{
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
-                        intent.putExtra(FriendDetailActivity.USER_ID,datas.get(getLayoutPosition()).getPhone());
-                        startActivity(intent);
+//                        Intent intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
+//                        intent.putExtra(FriendDetailActivity.USER_ID,datas.get(getLayoutPosition()).getPhone());
+//                        startActivity(intent);
+                        int position = getLayoutPosition();
+                        Intent intent = new Intent();
+                        intent.setClass(ChatInfoActivity.this, ContactActivity.class);
+                        List<PPUserInfo> list = ppUserInfos;
+                        PPUserInfo self = null;
+                        for (int i=0;i<list.size();i++){
+                            if(list.get(i).getName().equals(SPUtils.get(LoginActivity.USER_NAME,""))){
+                                self = list.get(i);
+                                break;
+                            }
+                        }
+                        if(null!=self){
+                            list.remove(self);
+                        }
+                        intent.putExtra(HAS_MEMBERS, (Serializable) list);
+                        intent.putExtra(GROUP_ID, groupId);
+                        if(datas.get(position).getName().equals("add")){
+                            intent.putExtra(SELECT_ACTION, INVATE_GROUP_TYPE);
+                            startActivityForResult(intent,0);
+                            return;
+                        }else if(datas.get(position).getName().equals("remove")){
+                            intent.putExtra(SELECT_ACTION, REMOVE_GROUP_TYPE);
+                            startActivityForResult(intent,0);
+                            return;
+                        }else{
+                            PPUserInfo userInfo = datas.get(position);
+                            intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
                     }
                 });
             }

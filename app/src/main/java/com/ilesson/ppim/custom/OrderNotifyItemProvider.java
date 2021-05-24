@@ -40,9 +40,9 @@ import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvider<OrderConfirmMessage> {
     public static final double ITEMPROVIDER_WIDTH = .736;
     class ViewHolder {
-        TextView uName,address,phone, name, price, num;
+        TextView uName,address,phone, name, price, num,confirm;
         RoundImageView imageView;
-        View layout,callServer,confirm;
+        View layout,callServer;
     }
 
     private Context context;
@@ -121,8 +121,10 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
             holder.confirm.setEnabled(true);
             holder.confirm.setBackgroundResource(R.drawable.general_red_theme_corner20_selector);
         }else{
+            holder.confirm.setTextColor(v.getContext().getResources().getColor(R.color.gray_text333_color));
             holder.confirm.setBackgroundResource(R.drawable.background_gray_corner20);
             holder.confirm.setEnabled(false);
+            holder.confirm.setText(R.string.already_confirm);
         }
         holder.confirm.setOnClickListener(v1 -> {
             if(!TextUtils.isEmpty(SPUtils.get(SPUtils.get(USER_PHONE,"")+waresIntro.getOid(),""))){

@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
         android:background="@color/gray_theme">
 
         <TextView
@@ -281,7 +280,7 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:visibility="gone"
         >
         <LinearLayout

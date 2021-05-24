@@ -94,6 +94,7 @@ public class WareOrderListActivity extends BaseActivity {
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this, 3));
         recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         swipeLayout.setOnRefreshListener(() -> loadData(true));
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -167,7 +168,7 @@ public class WareOrderListActivity extends BaseActivity {
                     mList.remove(footData);
                 }
                 loading = false;
-//                swipeLayout.setRefreshing(false);
+                swipeLayout.setRefreshing(false);
                 hideProgress();
             }
         });

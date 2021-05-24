@@ -251,7 +251,7 @@ public class ResetPwdActivity extends BaseActivity{
                         handleros.sendEmptyMessageDelayed(TIME, delayed);
                     } else {
                         mGetCodeTextView.setText(R.string.get_code_again);
-                        mGetCodeTextView.setTextColor(getResources().getColor(R.color.theme_color));
+                        mGetCodeTextView.setTextColor(getResources().getColor(R.color.gray_text333_color));
                         mGetCodeTextView.setEnabled(true);
                         time=60;
                     }

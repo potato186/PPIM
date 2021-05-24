@@ -33,7 +33,7 @@
             android:gravity="center"
             android:text="@string/post_wares"
             android:textColor="@color/gray_text333_color"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_title" />
     </RelativeLayout>
 
     <ScrollView
@@ -349,7 +349,7 @@
         android:gravity="center"
         android:textSize="18sp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/background_theme_corner20"
+        android:background="@drawable/general_theme_corner20_selector"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"
         />

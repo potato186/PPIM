@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -460,7 +460,7 @@ public class IMUtils {
             }
         });
     }
-    public void confirmOrder(final View view, final String oid) {
+    public void confirmOrder(final TextView view, final String oid) {
         //确认订单：https://pp.fangnaokeji.com:9443/pp/order?action=confirm&oid=689
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
         params.addBodyParameter("action", "confirm");
@@ -479,6 +479,8 @@ public class IMUtils {
                     SPUtils.put(phone+oid,"true");
                     view.setBackgroundResource(R.drawable.background_gray_corner20);
                     view.setEnabled(false);
+                    view.setTextColor(view.getContext().getResources().getColor(R.color.gray_text333_color));
+                    view.setText(R.string.already_confirm);
                 }
             }
             @Override

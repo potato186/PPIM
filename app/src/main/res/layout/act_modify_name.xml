@@ -32,22 +32,22 @@
             android:text="@string/modify_name"
             android:textColor="@color/gray_text333_color"
             android:textSize="18sp" />
+
         <TextView
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/done"
-            android:textSize="18sp"
-            android:textColor="@color/color_999999"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
             android:background="@drawable/background_gray_corner5"
-            />
+            android:paddingLeft="12dp"
+            android:paddingTop="3dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="3dp"
+            android:text="@string/done"
+            android:textColor="@color/color_999999"
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <TextView

@@ -219,7 +219,6 @@ public class ModifyNameActivity extends BaseActivity{
                 if(base.getCode()==0){
                     Intent intent = new Intent();
                     intent.putExtra(MODIFY_RESULT,name);
-                    SPUtils.put(LoginActivity.USER_NAME,name);
                     setResult(MODIFY_SUCCESS,intent);
                     finish();
                 }else{

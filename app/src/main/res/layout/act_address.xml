@@ -34,7 +34,7 @@
             android:gravity="center"
             android:text="@string/modify_address"
             android:textColor="@color/gray_text333_color"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_title" />
     </RelativeLayout>
 
     <ScrollView
@@ -61,7 +61,7 @@
                     android:layout_marginLeft="15dp"
                     android:text="标签"
                     android:textColor="@color/gray_text333_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                         android:gravity="center"
                         android:textColor="@color/helptext_color"
                         android:background="@drawable/general_gray_edge_white_corner20_selector"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                     <TextView
                         android:id="@+id/company"
                         android:layout_width="60dp"
@@ -88,7 +88,7 @@
                         android:gravity="center"
                         android:textColor="@color/helptext_color"
                         android:background="@drawable/general_gray_edge_white_corner20_selector"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                     <TextView
                         android:id="@+id/school"
                         android:layout_width="60dp"
@@ -98,7 +98,7 @@
                         android:gravity="center"
                         android:textColor="@color/helptext_color"
                         android:background="@drawable/general_gray_edge_white_corner20_selector"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
 
@@ -115,7 +115,7 @@
                 android:maxLength="5"
                 android:hint="@string/custom_tag"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
@@ -141,7 +141,7 @@
                     android:background="@null"
                     android:hint="@string/hint_consignee_name"
                     android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -150,7 +150,7 @@
                     android:layout_marginLeft="15dp"
                     android:text="@string/consignee"
                     android:textColor="@color/gray_text333_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                     android:hint="@string/hint_consignee_phone_num_"
                     android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                     android:inputType="phone"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
                 <RelativeLayout
                     android:id="@+id/phone_prefix_layout"
                     android:layout_width="60dp"
@@ -192,7 +192,7 @@
                         android:id="@+id/phone_prefix"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="+86"
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
@@ -215,7 +215,7 @@
                     android:layout_marginLeft="15dp"
                     android:text="@string/phone_num_"
                     android:textColor="@color/gray_text333_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -246,7 +246,7 @@
                     android:textColor="@color/gray_text333_color"
                     android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                     android:hint="@string/hint_select_area"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
                 <TextView
                     android:id="@+id/arrow"
                     android:layout_width="15dp"
@@ -263,7 +263,7 @@
                     android:layout_marginLeft="15dp"
                     android:text="@string/select_area"
                     android:textColor="@color/gray_text333_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -289,7 +289,7 @@
                     android:background="@null"
                     android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                     android:hint="@string/hint_detail_address"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/addresstv"
@@ -299,7 +299,7 @@
                     android:layout_marginLeft="15dp"
                     android:text="@string/adress_detail"
                     android:textColor="@color/gray_text333_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -316,7 +316,7 @@
                 android:text="@string/confirm"
                 android:textColor="@color/gray_text333_color"
                 android:gravity="center"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/background_gray_corner20"

@@ -255,12 +255,12 @@ public class InvoiceActivity extends BaseActivity {
     }
 
     private void setSelectedStyle(TextView textView) {
-        textView.setBackgroundResource(R.drawable.score_selection_bg);
-        textView.setTextColor(getResources().getColor(R.color.theme_text_color));
+        textView.setBackgroundResource(R.drawable.background_theme_corner20);
+        textView.setTextColor(getResources().getColor(R.color.white));
     }
 
     private void setUnSelectedStyle(TextView textView) {
-        textView.setBackgroundResource(R.drawable.background_blk_edge_gray_corner20);
+        textView.setBackgroundResource(R.drawable.background_gray_corner20);
         textView.setTextColor(getResources().getColor(R.color.gray_text333_color));
     }
 

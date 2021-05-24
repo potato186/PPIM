@@ -325,7 +325,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
         android:id="@+id/to_verify"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:text="@string/pwd_rule6"
         android:layout_gravity="right"
         android:layout_marginRight="10dp"

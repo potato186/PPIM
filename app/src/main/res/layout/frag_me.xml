@@ -128,7 +128,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="55dp"
             android:textColor="@color/gray_text333_color"
-            android:textSize="15sp"
+            android:textSize="16sp"
             />
         <TextView
             android:layout_width="15dp"
@@ -167,7 +167,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="55dp"
             android:textColor="@color/gray_text333_color"
-            android:textSize="15sp"
+            android:textSize="16sp"
             />
         <TextView
             android:layout_width="15dp"
@@ -206,7 +206,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="55dp"
             android:textColor="@color/gray_text333_color"
-            android:textSize="15sp"
+            android:textSize="16sp"
             />
         <TextView
             android:layout_width="15dp"

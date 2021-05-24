@@ -718,10 +718,11 @@ public class MessageListAdapter extends BaseAdapter<UIMessage> {
 
                             if (userInfo != null && userInfo.getPortraitUri() != null) {
 //                                holder.rightIconView.setAvatar(userInfo.getPortraitUri().toString(), 0);
+                                Glide.with(mContext).load(userInfo.getPortraitUri().toString()).into(holder.rightIconView);
                             } else {
 //                                holder.rightIconView.setAvatar((String)null, 0);
                             }
-                            Glide.with(mContext).load(portrait).into(holder.rightIconView);
+
                         }
                     } else if (holder.leftIconView.getVisibility() == View.VISIBLE) {
                         userInfo = data.getUserInfo();
@@ -749,10 +750,11 @@ public class MessageListAdapter extends BaseAdapter<UIMessage> {
 
                                 if (publicServiceProfile != null && publicServiceProfile.getPortraitUri() != null) {
 //                                    holder.leftIconView.setAvatar(publicServiceProfile.getPortraitUri().toString(), 0);
+                                    Glide.with(mContext).load(publicServiceProfile.getPortraitUri().toString()).into(holder.leftIconView);
                                 } else {
 //                                    holder.leftIconView.setAvatar((String)null, 0);
                                 }
-                                Glide.with(mContext).load(publicServiceProfile.getPortraitUri().toString()).into(holder.leftIconView);
+
                             }
                         } else if (!TextUtils.isEmpty(data.getSenderUserId())) {
                             if (userInfo == null) {
@@ -761,10 +763,11 @@ public class MessageListAdapter extends BaseAdapter<UIMessage> {
 
                             if (userInfo != null && userInfo.getPortraitUri() != null) {
 //                                holder.leftIconView.setAvatar(userInfo.getPortraitUri().toString(), 0);
+                                Glide.with(mContext).load(userInfo.getPortraitUri().toString()).into(holder.leftIconView);
                             } else {
 //                                holder.leftIconView.setAvatar((String)null, 0);
                             }
-                            Glide.with(mContext).load(userInfo.getPortraitUri().toString()).into(holder.leftIconView);
+
                         }
                     }
 

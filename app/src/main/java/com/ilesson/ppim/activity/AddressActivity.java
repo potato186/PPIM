@@ -482,6 +482,7 @@ public class AddressActivity extends BaseActivity {
                         setSelectArea(options1, options2);
                     }
                 })
+                .setDividerColor(0xFFeb0c6e)//设置分割线颜色
                 .build();
         pvOptions.setPicker(provinceLists, cityLists);//二级选择器
     }

@@ -16,6 +16,7 @@
     <string name="pp_trans">PP转消费积分</string>
     <string name="phone_num">手机号</string>
     <string name="quantity">数量</string>
+    <string name="already_confirm">已确定</string>
     <string name="quantity_">数量:%1$s%2$s</string>
     <string name="input_phone_num">填写手机号</string>
     <string name="text_isr_abnf_hint_2">\t上传内容为：\n\t#ABNF 1.0 gb2312;\n\tlanguage zh-CN;\n\tmode voice;\n\troot $main;\n\t$main = $place ;</string>
@@ -85,7 +86,7 @@
     <string name="consignee_">收件人姓名</string>
     <string name="username">姓名</string>
     <string name="phone">电话</string>
-    <string name="adress_info">我的地址</string>
+    <string name="adress_info">收货地址</string>
     <string name="input_logist_info">填写物流信息</string>
     <string name="logist_name_tip">快递公司名称:</string>
     <string name="hint_logist_name_tip">请填写快递公司名称(可不填)</string>

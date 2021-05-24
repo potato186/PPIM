@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="@string/scanner"
             android:textColor="@color/gray_text333_color"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_title" />
     </RelativeLayout>
 
     <RelativeLayout

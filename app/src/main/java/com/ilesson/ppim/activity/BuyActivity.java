@@ -643,8 +643,8 @@ public class BuyActivity extends BaseActivity {
                 Options scoreInfo = datas.get(position);
                 if (0 == position) {
                     lastItem = itemViewHolder.textView;
-                    itemViewHolder.textView.setBackgroundResource(R.drawable.score_selection_bg);
-                    itemViewHolder.textView.setTextColor(getResources().getColor(R.color.theme_color));
+                    itemViewHolder.textView.setBackgroundResource(R.drawable.background_theme_corner20);
+                    itemViewHolder.textView.setTextColor(getResources().getColor(R.color.white));
                 }
                 itemViewHolder.textView.setText(scoreInfo.getName());
             }
@@ -669,8 +669,8 @@ public class BuyActivity extends BaseActivity {
         }
 
         private void setSelectView(TextView textView) {
-            textView.setBackgroundResource(R.drawable.score_selection_bg);
-            textView.setTextColor(getResources().getColor(R.color.theme_color));
+            textView.setBackgroundResource(R.drawable.background_theme_corner20);
+            textView.setTextColor(getResources().getColor(R.color.white));
         }
 
         class ItemViewHolder extends RecyclerView.ViewHolder {

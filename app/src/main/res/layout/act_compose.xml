@@ -89,7 +89,7 @@
                 android:layout_gravity="center"
                 android:textColor="@color/gray_text333_color"
                 android:background="@null"
-                android:textSize="20sp" />
+                android:textSize="@dimen/text_title" />
 
             <EditText
                 android:id="@+id/compose_text"

@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:text="@string/exchange_order"
             android:layout_centerInParent="true"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_title"
             android:textColor="@color/gray_text333_color"
             />
     </RelativeLayout>
@@ -97,8 +97,8 @@
                         android:layout_height="25dp"
                         android:text="@string/home"
                         android:gravity="center"
-                        android:textColor="@color/theme_text_color"
-                        android:background="@drawable/background_theme_click_corner5"
+                        android:textColor="@color/white"
+                        android:background="@drawable/background_theme_corner5"
                         android:textSize="16sp" />
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -188,7 +188,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
                             android:textColor="@color/gray_text333_color"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_title"
             android:text="@string/fund_tips_title"
             android:textColor="@color/gray_text333_color"
             />

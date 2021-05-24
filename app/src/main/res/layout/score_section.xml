@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/background_gray_corner20"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textColor="@color/gray_text333_color"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"

@@ -101,8 +101,8 @@ public class WareDetailActivity extends BaseActivity {
         stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this, 4));
         optionsRecyclerview.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
 
-        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this, 6));
-        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this, 6));
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION, PPScreenUtils.dip2px(this, 9));
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION, PPScreenUtils.dip2px(this, 9));
         detailRecylerview.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
         detailRecylerview.setHasFixedSize(true);
         detailRecylerview.setNestedScrollingEnabled(false);

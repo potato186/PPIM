@@ -27,7 +27,7 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:textColor="@color/gray_text333_color"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_title" />
     </RelativeLayout>
     <com.tencent.smtt.sdk.WebView
         android:id="@+id/webview"

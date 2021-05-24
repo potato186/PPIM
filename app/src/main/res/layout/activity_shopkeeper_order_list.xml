@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/order_manager"
             android:layout_centerInParent="true"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_title"
             android:textColor="@color/gray_text333_color"
             />
     </RelativeLayout>

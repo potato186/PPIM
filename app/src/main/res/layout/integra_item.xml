@@ -28,7 +28,7 @@
             android:id="@+id/business_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/gray_text333_color"
             android:layout_toRightOf="@+id/img"
             android:layout_toLeftOf="@+id/integra"
@@ -39,7 +39,7 @@
             android:id="@+id/integra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/theme_color"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
@@ -79,7 +79,7 @@
         android:text="@string/integral_detail"
         android:textColor="@color/helptext_color"
         android:gravity="center"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:background="@drawable/general_dialog_left_btn_selector"
         />
     <TextView
@@ -92,7 +92,7 @@
         android:textColor="@color/gray_text333_color"
         android:text="@string/integral_use"
         android:gravity="center"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:background="@drawable/general_dialog_right_btn_selector"
         />
 </android.support.constraint.ConstraintLayout>

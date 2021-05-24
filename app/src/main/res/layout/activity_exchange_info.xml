@@ -34,7 +34,7 @@
             android:layout_marginLeft="40dp"
             android:text="@string/integral_use"
             android:textColor="@color/gray_text333_color"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_title" />
 
         <TextView
             android:id="@+id/has_score"

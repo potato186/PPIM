@@ -305,30 +305,16 @@ public class BaseActivity extends FragmentActivity {
         return forceRequirePermissionsDenied;
     }
 
-//    /**
-//     * 手动开启权限弹窗
-//     */
-//    private void showPermissionSettingDialog() {
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("提示")
-//                .setMessage("必要的权限被拒绝")
-//                .setPositiveButton("去设置", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        AppUtils.getAppDetailsSettings(BaseActivity.this, SETTINGS_REQUEST_CODE);
-//                    }
-//                })
-//                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        dialogInterface.dismiss();
-////                        if (mNeedFinish) AppUtils.restart(BaseActivity.this);
-//                    }
-//                })
-//                .setCancelable(false)
-//                .show();
-//    }
     public String myPhone;
+    public static FragmentActivity currentActivity;
+    public void setCurrentActivity(FragmentActivity currentActivity){
+        this.currentActivity = currentActivity;
+    }
+
+    public FragmentActivity getCurrentActivity() {
+        return currentActivity;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

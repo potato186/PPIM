@@ -248,6 +248,7 @@ public class ContactActivity extends BaseActivity {
                     String groupId = base.getData();
                     RongIM.getInstance().startGroupChat(ContactActivity.this, groupId, groupName);
                     imUtils.sendTextMsg(groupId,"欢迎进入群聊");
+                    finish();
                 } else {
                     Toast.makeText(ContactActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
                 }

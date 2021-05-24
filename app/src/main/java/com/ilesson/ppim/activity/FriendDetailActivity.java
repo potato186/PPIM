@@ -72,6 +72,9 @@ public class FriendDetailActivity extends BaseActivity {
 
     }
     private void showData(){
+        if(null==ppUserInfo){
+            return;
+        }
         if(ppUserInfo.getUri()==null){
             Glide.with(getApplicationContext()).load(ppUserInfo.getIcon()).into(iconView);
         }else{

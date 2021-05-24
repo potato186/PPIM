@@ -121,7 +121,7 @@
                 android:hint="请填写密码"
                 android:inputType="textPassword"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                android:textSize="@dimen/registe_font_size" />
+                android:textSize="16sp" />
 
             <TextView
                 android:layout_width="wrap_content"

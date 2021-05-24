@@ -150,7 +150,7 @@ import static com.ilesson.ppim.activity.VoiceTxtActivity.CHATMODE;
 import static com.ilesson.ppim.custom.MyExtensionModule.shopGroup;
 import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
 @ContentView(R.layout.conversation)
-public class ConversationActivity extends BaseActivity implements RongIM.LocationProvider, RongIM.ConversationBehaviorListener, View.OnClickListener {
+public class ConversationActivity extends BaseActivity implements RongIM.LocationProvider, RongIM.ConversationBehaviorListener {
     public static String title;
     @ViewInject(R.id.title_name)
     private TextView titleTextView;
@@ -160,7 +160,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private View menu;
     @ViewInject(R.id.play_tts)
     public View playView;
-    @ViewInject(R.id.shop_car_view)
+    @ViewInject(R.id.shop_car_layout)
     public View shopCarView;
     @ViewInject(R.id.order_num)
     public View shopCarNum;
@@ -240,9 +240,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     public View noInvoiceLayout;
     @ViewInject(R.id.email_layout)
     public View emailLayout;
-//        playView.setOnClickListener(this);
-//        menu.setOnClickListener(this);
-//        shopCarView.setOnClickListener(this);
     private TTSHelper ttsHelper;
     private boolean playTts;
     public String currentKey;
@@ -300,8 +297,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         outState.putInt("theme", themeId);
     }
 
-    @Event(R.id.shop_car_view)
+    @Event(R.id.shop_car_layout)
     private void shop_car_view(View v) {
+        Log.d(TAG, "shop_car_view: ");
         shopCarEvent();
     }
     @Event(R.id.modify)
@@ -344,19 +342,19 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             startActivity(intent1);
         }
     }
-    @Event(R.id.shop_car)
-    private void shop_car(View v) {
-        if (waresIntroView.getVisibility() == View.VISIBLE) {
-            return;
-        }
-        waresIntroView.setVisibility(View.VISIBLE);
-        ttsView.setVisibility(View.GONE);
-        requestText.setVisibility(View.GONE);
-        resultImageView.setVisibility(View.GONE);
-//                showContent.setVisibility(View.GONE);
-        helpTextView.setVisibility(View.VISIBLE);
-        helpTextView.setText(helpText);
-    }
+//    @Event(R.id.shop_car)
+//    private void shop_car(View v) {
+//        if (waresIntroView.getVisibility() == View.VISIBLE) {
+//            return;
+//        }
+//        waresIntroView.setVisibility(View.VISIBLE);
+//        ttsView.setVisibility(View.GONE);
+//        requestText.setVisibility(View.GONE);
+//        resultImageView.setVisibility(View.GONE);
+////                showContent.setVisibility(View.GONE);
+//        helpTextView.setVisibility(View.VISIBLE);
+//        helpTextView.setText(helpText);
+//    }
     @Event(R.id.menu)
     private void menu(View v) {
         Intent intent = new Intent(this, ChatInfoActivity.class);
@@ -371,7 +369,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: ");
+        Log.d(TAG, "onCreate:currentActivity "+getCurrentActivity());
+        setCurrentActivity(this);
         EventBus.getDefault().register(this);
         screenWidth = PPScreenUtils.getScreenWidth(this);
         setStatusBarLightMode(this, true);
@@ -383,13 +382,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         xunfei = SPUtils.get(SettingActivity.VOICE_NAME, XUNFEI).equals(XUNFEI) ? true : false;
         conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_conversation);
 
-//        noInvoiceLayout.setOnClickListener(this);
-//        toPay.setOnClickListener(this);
-//        toSetAddress.setOnClickListener(this);
-//        showContent.setOnClickListener(this);
-//        findViewById(R.id.back_btn).setOnClickListener(this);
-//        findViewById(R.id.close).setOnClickListener(this);
-//        findViewById(R.id.modify).setOnClickListener(this);
         init();
         IntentFilter intentFilter = new IntentFilter(FINISH_CURRENT);
         registerReceiver(receiver, intentFilter);
@@ -870,12 +862,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         context.startActivity(intent);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-        }
-    }
 
     private void showInvoiceContent(SmartOrder order) {
         invoiceInfos = order.getInvoice();
@@ -1095,7 +1081,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     handleContent(key);
                 }
 //                getServer();
-            } else {
+            }  else if (msg.what == 6) {
+                String tts = (String) msg.obj;
+                ttsHelper.start(0, ConversationActivity.this, tts);
+            }
+            else {
                 setVoiceBtnLocation();
             }
         }
@@ -1149,7 +1139,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     }
 
     public void shopCarEvent() {
-        if (ttsHelper.isSpeaking()) {
+        if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
             ttsHelper.stop();
         }
         if (shopCarNum.getVisibility() == View.GONE) {
@@ -1205,10 +1195,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     }
     @Event(value = R.id.bg_layout)
     private void bg_layout(View v) {
-        closeVoice();
     }
     @Event(value = R.id.shop_layout)
     private void shop_layout(View v) {
+        closeVoice();
     }
     private void closeVoice(){
         shopLayout.setVisibility(View.GONE);
@@ -1235,6 +1225,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     public void onResume() {
         super.onResume();
         stoped=false;
+        setCurrentActivity(this);
     }
 
     private IWXAPI api;
@@ -1374,12 +1365,20 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (playTts) {
-                            ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
+                            if(TextUtils.isEmpty(currentKey)){
+                                android.os.Message msg = android.os.Message.obtain();
+                                msg.what=6;
+                                msg.obj = tts;
+                                handler.sendMessageDelayed(msg,0);
+                                Log.d(TAG, "currentActivity: "+currentActivity);
+                            }else{
+                                ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
+                            }
                         } else {
                             if (!TextUtils.isEmpty(currentKey) && voice) {
                                 playerUtils.play();
                             } else {
-                                ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
+//                                ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
                             }
                         }
 
@@ -1778,10 +1777,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     public boolean onSearchRequested(@Nullable SearchEvent searchEvent) {
         return super.onSearchRequested(searchEvent);
-    }
-
-    @Event(R.id.shop_car)
-    private void shopCar(View view) throws Exception {
     }
 
 

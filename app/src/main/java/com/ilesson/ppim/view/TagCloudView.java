@@ -58,7 +58,7 @@ public class TagCloudView extends ViewGroup{
     private TextView endText = null;
 
     private static final int DEFAULT_TEXT_COLOR = Color.WHITE;
-    private static final int DEFAULT_TEXT_SIZE = 16;
+    private static final int DEFAULT_TEXT_SIZE = 14;
     private static final int DEFAULT_TEXT_BACKGROUND = R.drawable.background_gray_corner20;
     private static final int DEFAULT_VIEW_BORDER = 6;
     private static final int DEFAULT_TEXT_BORDER_HORIZONTAL = 8;
@@ -351,10 +351,10 @@ public class TagCloudView extends ViewGroup{
                 tagView.setText(tags.get(i));
                 tagView.setTag(TYPE_TEXT_NORMAL);
                 if(i==0){
-                    tagView.setBackgroundResource(R.drawable.score_selection_bg);
-                    tagView.setTextColor(getResources().getColor(R.color.theme_color));
+                    tagView.setBackgroundResource(R.drawable.background_theme_corner5);
+                    tagView.setTextColor(getResources().getColor(R.color.white));
                 }else {
-                    tagView.setBackgroundResource(R.drawable.background_gray_corner20);
+                    tagView.setBackgroundResource(R.drawable.background_gray_corner5);
                     tagView.setTextColor(getResources().getColor(R.color.gray_text333_color));
                 }
                 final int finalI = i;
@@ -379,10 +379,10 @@ public class TagCloudView extends ViewGroup{
         for (int i = 0; i < textViews.size(); i++) {
             TextView textView = textViews.get(i);
             if(i==index){
-                textView.setBackgroundResource(R.drawable.score_selection_bg);
-                textView.setTextColor(getResources().getColor(R.color.theme_color));
+                textView.setBackgroundResource(R.drawable.background_theme_corner5);
+                textView.setTextColor(getResources().getColor(R.color.white));
             }else {
-                textView.setBackgroundResource(R.drawable.background_gray_corner20);
+                textView.setBackgroundResource(R.drawable.background_gray_corner5);
                 textView.setTextColor(getResources().getColor(R.color.gray_text333_color));
             }
         }
