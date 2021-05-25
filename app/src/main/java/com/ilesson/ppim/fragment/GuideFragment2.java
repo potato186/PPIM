@@ -43,6 +43,5 @@ public class GuideFragment2 extends BaseFragment {
             startActivity(new Intent(getActivity(),MainActivity.class));
         }
         getActivity().finish();
-        startActivity(new Intent(getActivity(), MainActivity.class));
     }
 }

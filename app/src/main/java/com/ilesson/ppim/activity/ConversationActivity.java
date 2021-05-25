@@ -1081,10 +1081,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     handleContent(key);
                 }
 //                getServer();
-            }  else if (msg.what == 6) {
-                String tts = (String) msg.obj;
-                ttsHelper.start(0, ConversationActivity.this, tts);
             }
+//            else if (msg.what == 6) {
+//                String tts = (String) msg.obj;
+//                ttsHelper.start(0, ConversationActivity.this, tts);
+//            }
             else {
                 setVoiceBtnLocation();
             }
@@ -1365,15 +1366,15 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (playTts) {
-                            if(TextUtils.isEmpty(currentKey)){
-                                android.os.Message msg = android.os.Message.obtain();
-                                msg.what=6;
-                                msg.obj = tts;
-                                handler.sendMessageDelayed(msg,0);
-                                Log.d(TAG, "currentActivity: "+currentActivity);
-                            }else{
+//                            if(TextUtils.isEmpty(currentKey)){
+//                                android.os.Message msg = android.os.Message.obtain();
+//                                msg.what=6;
+//                                msg.obj = tts;
+//                                handler.sendMessageDelayed(msg,0);
+//                                Log.d(TAG, "currentActivity: "+currentActivity);
+//                            }else{
                                 ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
-                            }
+//                            }
                         } else {
                             if (!TextUtils.isEmpty(currentKey) && voice) {
                                 playerUtils.play();
@@ -1439,14 +1440,15 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             shopCarNum.setVisibility(View.GONE);
                             shopCarView.setVisibility(View.GONE);
                             showContent(order);
-                        } else if (data.getTag() == 5) {
-                            waresIntroView.setVisibility(View.GONE);
-                            resultImageView.setVisibility(View.GONE);
-                            resultText.setVisibility(View.GONE);
-//                            handler.sendEmptyMessageDelayed(4, 3000);
+                        } else if (data.getTag() == 5) {//找客服
+//                            waresIntroView.setVisibility(View.GONE);
+//                            resultImageView.setVisibility(View.GONE);
+//                            resultText.setVisibility(View.GONE);
 //                            shopLayout.setVisibility(View.GONE);
-//                            RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE,"13823039350",title+getString(R.string.custom_server));
-                        } else if (data.getTag() == 6) {
+                            if (!playTts) {
+                                getServer();
+                            }
+                        } else if (data.getTag() == 6) {//修改地址
                             waresIntroView.setVisibility(View.GONE);
                             addressInfo = base.getExtra();
                             if (!playTts) {
@@ -1560,6 +1562,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         if (null == addressInfo) {
             intent.setClass(this, AddressListActivity.class);
         }
+        waresIntroView.setVisibility(View.GONE);
         intent.putExtra(AddressActivity.CURRENTADDRESS, addressInfo);
         intent.putExtra(ExchangeActivity.ADDRESS_INFO, true);
         intent.putExtra(AddressActivity.ACTION_MODIFY_BUY, true);
@@ -1643,6 +1646,19 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         ttsHelper.setOnTTSFinish(new TTSHelper.OnTTSFinish() {
             @Override
             public void onTTSFinish(int type) {
+                switch (type){
+                    case 5:
+                        getServer();
+                        break;
+                    case 6:
+                        modifyAddress();
+                        break;
+                    case 8:
+                    case 9:
+                    case 10:
+                        toOrderList();
+                        break;
+                }
             }
 
             @Override
@@ -1750,7 +1766,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         ifeyBtn.setOnVolumeChangeListener(new IfeyVoiceWidget1.OnVolumeChangeListener() {
             @Override
             public void onVolumeChanged(int progress, short[] data) {
-                Log.d(TAG, "onVolumeChanged: >>"+progress);
                 showVolume(progress);
             }
         });
