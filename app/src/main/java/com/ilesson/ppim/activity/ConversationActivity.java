@@ -1366,15 +1366,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (playTts) {
-//                            if(TextUtils.isEmpty(currentKey)){
-//                                android.os.Message msg = android.os.Message.obtain();
-//                                msg.what=6;
-//                                msg.obj = tts;
-//                                handler.sendMessageDelayed(msg,0);
-//                                Log.d(TAG, "currentActivity: "+currentActivity);
-//                            }else{
                                 ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
-//                            }
                         } else {
                             if (!TextUtils.isEmpty(currentKey) && voice) {
                                 playerUtils.play();

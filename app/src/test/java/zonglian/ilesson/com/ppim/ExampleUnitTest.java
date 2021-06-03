@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.function.BinaryOperator;
 
 import static org.junit.Assert.assertEquals;
 
@@ -116,21 +115,88 @@ public class ExampleUnitTest {
     }
     @Test
     public void test4() {
-        // 无返回值lambda函数体中用法
-        Runnable r1 = () -> {
-            System.out.println("hello lambda1");
-            System.out.println("hello lambda2");
-            System.out.println("hello lambda3");
-        };
-        r1.run();
+      String s = "Cang Yuan Hong Rui Ji Dong Che An Quan Jian Ce Fu Wu You Xian Gong Si";
+      System.out.println(s.length());
+        setVoiceCommand("151000123","A00202");
+    }
+    public void setVoiceCommand(String deviceUid, String content) {
+        try {
+            byte[] contents = hexStringToBytes(content);
+            byte[] allgoByte = new byte[6 + contents.length];
 
-        // 有返回值lambda函数体中用法
-        BinaryOperator<Integer> binary = (x, y) -> {
-            int a = x * 2;
-            int b = y + 2;
-            return a + b;
-        };
-        System.out.println(binary.apply(1, 2));// 3
+            allgoByte[0] = (byte) (0xFE);  //省电模式
+
+            //转为16进制
+            deviceUid = Integer.toHexString(Integer.parseInt(deviceUid));
+            int length = deviceUid.length();
+
+            //前面补0
+            for (int i = 0; i < 8 - length; i++) {
+                deviceUid = "0" + deviceUid;
+            }
+
+            //4个字节的deviceUid
+            for (int i = 1, j = 6; i <= 4; i++, j = j - 2) {
+                short a = Short.valueOf(deviceUid.substring(j, j + 2), 16);       //然后转为字节
+                byte p0 = (byte) a;
+                allgoByte[i] = p0;
+            }
+
+            int allLength = 6 + contents.length;
+            allgoByte[5] = (byte) allLength;
+
+            //带上透传的协议
+            System.arraycopy(contents, 0, allgoByte, 6, contents.length);
+            System.out.println();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
 
     }
+
+    /**
+     *
+     * @param deviceUid
+     * @return 151000123 -> 3B140009
+     */
+    private static String convertId(String deviceUid) {
+        int value = Integer.parseInt(deviceUid);
+        String hex = Integer.toHexString(value).toUpperCase();
+
+        while(hex.length() < 8) {
+            hex = "0" + hex;
+        }
+
+        char[] chs = new char[8];
+        chs[0] = hex.charAt(6);
+        chs[1] = hex.charAt(7);
+        chs[2] = hex.charAt(4);
+        chs[3] = hex.charAt(5);
+        chs[4] = hex.charAt(2);
+        chs[5] = hex.charAt(3);
+        chs[6] = hex.charAt(0);
+        chs[7] = hex.charAt(1);
+
+        return new String(chs);
+    }
+
+    public static byte[] hexStringToBytes(String hexString) {
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
 }

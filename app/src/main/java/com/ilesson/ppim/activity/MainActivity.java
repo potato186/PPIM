@@ -25,7 +25,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -146,6 +149,8 @@ public class MainActivity extends BaseActivity {
     private TextView playView;
     @ViewInject(R.id.request_text)
     private TextView requestText;
+    @ViewInject(R.id.tts_modify)
+    public TextView ttsModify;
     @ViewInject(R.id.tts)
     private TextView ttsTv;
     @ViewInject(R.id.result_image)
@@ -1053,6 +1058,16 @@ public class MainActivity extends BaseActivity {
                         if(playTts){
                             ttsHelper.start(0,MainActivity.this,tts);
                         }
+                    }
+                    String ttsm = data.getBak();
+                    if (!TextUtils.isEmpty(ttsm)) {
+                        String text = getResources().getString(R.string.modify_tts);
+                        SpannableStringBuilder style = new SpannableStringBuilder(text + ttsm);
+                        style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_color)), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ttsModify.setText(style);
+                        ttsModify.setVisibility(View.VISIBLE);
+                    } else {
+                        ttsModify.setVisibility(View.GONE);
                     }
                     String imgUrl = order.getImgurl();
                     if(!TextUtils.isEmpty(imgUrl)){
