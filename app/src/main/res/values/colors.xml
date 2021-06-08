@@ -78,8 +78,6 @@
     <color name="color_group_click">#4D94FE</color>
     <color name="color_chat_bg">#00A0EA</color>
     <color name="color_zoo_bg">#CFF0F7</color>
-    <color name="theme_color">#eb0c6e</color>
-    <color name="theme_end_color">#652d8f</color>
     <color name="color_66989FC3">#66989FC3</color>
     <color name="color_303132">#303132</color>
     <color name="code_color">#EEB601</color>
@@ -88,6 +86,8 @@
     <color name="menu_bg">#4C4C4C</color>
     <color name="menu_bg_click">#884C4C4C</color>
     <color name="shop_dialog_bg">#884C4C4C</color>
+    <color name="theme_color">#eb0c6e</color>
+    <color name="theme_end_color">#652d8f</color>
     <color name="theme_focus_color">#aaeb0c6e</color>
     <color name="theme_end_focus_color">#aa652d8f</color>
     <color name="theme_back_color">#66eb0c6e</color>

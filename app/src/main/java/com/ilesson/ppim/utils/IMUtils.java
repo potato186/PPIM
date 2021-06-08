@@ -634,6 +634,41 @@ public class IMUtils {
             }
         });
     }
+    public void initSmart() {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.TALK);
+        params.addParameter("action", "init");
+        Log.d(TAG, "loadData: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, " onSuccess: " + result);
+//                BaseCode<WaresOrder> base = new Gson().fromJson(
+//                        result,
+//                        new TypeToken<BaseCode<WaresOrder>>() {
+//                        }.getType());
+//                if(base==null){
+//                    return;
+//                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+            }
+        });
+    }
     public void resetUserInfo(){
         SPUtils.put(LOGIN_PAY, "");
         SPUtils.put(USER_MONEY, "");

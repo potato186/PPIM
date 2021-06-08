@@ -151,6 +151,8 @@ public class MainActivity extends BaseActivity {
     private TextView requestText;
     @ViewInject(R.id.tts_modify)
     public TextView ttsModify;
+    @ViewInject(R.id.help_text)
+    public TextView helpTextView;
     @ViewInject(R.id.tts)
     private TextView ttsTv;
     @ViewInject(R.id.result_image)
@@ -177,7 +179,7 @@ public class MainActivity extends BaseActivity {
     public static final int PERSON_TYPE = 2;
     public static final int ACTIVE_SUCCESS = 3;
     private boolean recording;
-    private TTSHelper ttsHelper;
+    public TTSHelper ttsHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -758,6 +760,7 @@ public class MainActivity extends BaseActivity {
                 topLayout.setVisibility(View.GONE);
                 floatBtn.setVisibility(View.VISIBLE);
                 aiLayout.setVisibility(View.VISIBLE);
+                request("");
                 break;
             case 3:
                 orderView.setVisibility(View.VISIBLE);
@@ -1030,10 +1033,12 @@ public class MainActivity extends BaseActivity {
     }
     public void request(String key) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.TALK);
-//        params.addParameter("pid", choicePrice.getId() + "");
-//        params.addParameter("user", account);
-        params.addParameter("action", "talk");
-        params.addParameter("key", key);
+        if(TextUtils.isEmpty(key)){
+            params.addParameter("action", "init");
+        }else {
+            params.addParameter("action", "talk");
+            params.addParameter("key", key);
+        }
 
 //       showProgress();
         Log.d(TAG, "loadData: " + params.toString());
@@ -1051,6 +1056,7 @@ public class MainActivity extends BaseActivity {
                     if (list.isEmpty()) {
                         return;
                     }
+                    helpTextView.setVisibility(View.GONE);
                     SmartOrder order = list.get(0);
                     String tts = order.getTts();
                     if(!TextUtils.isEmpty(tts)){
@@ -1068,6 +1074,11 @@ public class MainActivity extends BaseActivity {
                         ttsModify.setVisibility(View.VISIBLE);
                     } else {
                         ttsModify.setVisibility(View.GONE);
+                    }
+                    String help = order.getHelp().trim();
+                    if (!TextUtils.isEmpty(help)) {
+                        helpTextView.setText(help);
+                        helpTextView.setVisibility(View.VISIBLE);
                     }
                     String imgUrl = order.getImgurl();
                     if(!TextUtils.isEmpty(imgUrl)){
