@@ -420,7 +420,7 @@ public class FundFragment extends BaseFragment {
 //        if("18620341982".equals(phone)){
 //            return;
 //        }
-        mainActivity.handler.removeMessages(1);
+//        mainActivity.handler.removeMessages(1);
         count++;
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.BUSER_ASSET);
         params.addParameter("action", "all_v3");

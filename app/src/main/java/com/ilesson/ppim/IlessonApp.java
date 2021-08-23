@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -55,7 +56,7 @@ import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.service.MyHttpManager;
 import com.ilesson.ppim.utils.SPUtils;
 import com.tencent.smtt.sdk.QbSdk;
-
+import com.tencent.bugly.crashreport.CrashReport;
 import org.xutils.x;
 
 import java.lang.reflect.Constructor;
@@ -86,6 +87,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
 
 
         init();
+        initBugly();
         changeFontSize();
 //        closeAndroidPDialog();
         fontScale = getFontScale();
@@ -97,7 +99,20 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
     public static Context getContext() {
         return ilessonApp.getApplicationContext();
     }
-
+    public void initBugly() {
+        String versionName = null;
+        PackageManager manager = getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+            versionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this.getApplicationContext());
+        strategy.setAppPackageName(getPackageName());
+        strategy.setAppVersion(versionName);
+        CrashReport.initCrashReport(this.getApplicationContext(), "55ef2015f4", true, strategy);
+    }
     public void init(){
         RongIM.init(this);
 //        ZXingLibrary.initDisplayOpinion(this);
@@ -219,6 +234,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         }
         return null;
     }
+
     public String getUserByPhone(String phone){
         return map.get(phone);
     }

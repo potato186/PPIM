@@ -7,6 +7,29 @@
     android:background="@color/gray_theme"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_theme"
+        android:orientation="vertical"
+        >
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:clipToPadding="true"
+            android:layout_height="?attr/actionBarSize">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="@string/item_d"
+                android:textColor="@color/gray_text333_color"
+                android:textSize="18sp" />
+        </android.support.v7.widget.Toolbar>
+    </LinearLayout>
     <android.support.constraint.ConstraintLayout
         android:id="@+id/user_info_view"
         android:layout_width="match_parent"

@@ -21,16 +21,19 @@ import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.MainActivity;
 import com.ilesson.ppim.activity.PayPwdActivity;
+import com.ilesson.ppim.activity.WareOrderListActivity;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.BusinessGroup;
 import com.ilesson.ppim.utils.Constants;
+import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.RecyclerViewSpacesItemDecoration;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.utils.PPScreenUtils;
+import com.ilesson.ppim.utils.StatusBarUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
@@ -56,6 +59,8 @@ public class GroupFragment extends BaseFragment {
 
     @ViewInject(R.id.recylerview)
     private RecyclerView recyclerView;
+    @ViewInject(R.id.layout)
+    private View layout;
     @ViewInject(R.id.swipeLayout)
     private SwipeRefreshLayout swipeLayout;
     private List<BusinessGroup> resultList = new ArrayList<>();
@@ -68,6 +73,7 @@ public class GroupFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         mainActivity = (MainActivity) getActivity();
         EventBus.getDefault().register(this);
+        StatusBarUtil.setBarPadding(mainActivity,layout);
         token = SPUtils.get("token", "");
         phone = SPUtils.get(USER_PHONE, "");
         adapter = new RefreshAdapter(resultList);
@@ -147,11 +153,18 @@ public class GroupFragment extends BaseFragment {
             }
         });
     }
+
+    @Event(value = R.id.order)
+    private void order(View view) {
+        startActivity(new Intent(getContext(), WareOrderListActivity.class));
+    }
+
     private void showList(String result,boolean fresh){
         BaseCode<List<BusinessGroup>> base = new Gson().fromJson(
                 result,
                 new TypeToken<BaseCode<List<BusinessGroup>>>() {
                 }.getType());
+
         if(base.getCode()==0){
             List<BusinessGroup> list = base.getData();
             if(null!=base.getData()){
@@ -210,6 +223,19 @@ public class GroupFragment extends BaseFragment {
         });
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+//        mainActivity = (MainActivity) getActivity();
+//        if(mainActivity.level==1){
+//            mainActivity.requestMarket();
+//        }
+    }
     class RefreshAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Context mContext;
         LayoutInflater mInflater;

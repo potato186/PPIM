@@ -1176,7 +1176,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         if (ttsHelper.isSpeaking()) {
             ttsHelper.stop();
         }
-        stringBuilder = new StringBuilder();
         recording = true;
     }
 
@@ -1366,7 +1365,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (playTts) {
-                                ttsHelper.start(data.getTag(), ConversationActivity.this, tts);
+                                ttsHelper.start(data.getTag(), tts);
                         } else {
                             if (!TextUtils.isEmpty(currentKey) && voice) {
                                 playerUtils.play();
@@ -1724,7 +1723,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         alertDialog.show();
     }
 
-    private StringBuilder stringBuilder = new StringBuilder();
 
     private void initIfey() {
         ifeyBtn = new IfeyVoiceWidget1(this);
@@ -1891,6 +1889,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 public void onStartRecord(AudioRecognizeRequest request) {
                     currentRequestId = request.getRequestId();
                     Log.d(TAG, "onStartRecord: ");
+                }
+                public void onNextAudioData(final short[] audioDatas, final int readBufferLength) {
                 }
 
                 /**

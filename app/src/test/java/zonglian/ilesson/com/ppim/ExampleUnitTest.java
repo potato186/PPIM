@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -56,6 +59,12 @@ public class ExampleUnitTest {
     }
     @Test
     public void main12(){
+        Calendar rightNow = Calendar.getInstance();
+        int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+        System.out.println(hour);
+        System.out.println(rightNow.get(Calendar.MINUTE));
+        System.out.println(rightNow.get(Calendar.DAY_OF_MONTH));
+        System.out.println(rightNow.get(Calendar.MONTH)+1);
     }
 
     private static final String TAG = "ExampleUnitTest";
@@ -115,9 +124,11 @@ public class ExampleUnitTest {
     }
     @Test
     public void test4() {
-      String s = "Cang Yuan Hong Rui Ji Dong Che An Quan Jian Ce Fu Wu You Xian Gong Si";
-      System.out.println(s.length());
-        setVoiceCommand("151000123","A00202");
+        int i = 0x0A;
+        System.out.println(i);
+//      String s = "Cang Yuan Hong Rui Ji Dong Che An Quan Jian Ce Fu Wu You Xian Gong Si";
+//      System.out.println(s.length());
+//        setVoiceCommand("151000123","A00202");
     }
     public void setVoiceCommand(String deviceUid, String content) {
         try {
@@ -198,5 +209,18 @@ public class ExampleUnitTest {
     private static byte charToByte(char c) {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
-
+    @Test
+    public void main2(){
+        int a = 5;
+        List<Integer> arr = new ArrayList<>();
+        List<Integer> arr1 = new ArrayList<>();
+        arr.add(1);
+        arr.add(2);
+        arr.add(5);
+        arr.add(6);
+        arr1 = arr.subList(0,arr.size()-1);
+        for (Integer integer : arr1) {
+            System.out.println(integer);
+        }
+    }
 }

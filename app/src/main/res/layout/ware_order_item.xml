@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/to_post"
+        android:text="@string/no_post"
         android:textColor="@color/theme_color"
         android:textSize="16sp"
         />

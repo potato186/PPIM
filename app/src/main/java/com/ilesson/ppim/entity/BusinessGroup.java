@@ -1,6 +1,8 @@
 package com.ilesson.ppim.entity;
 
-public class BusinessGroup {
+import java.io.Serializable;
+
+public class BusinessGroup implements Serializable {
     private int id;
     private String shopKeeper;
     private String name;

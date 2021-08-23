@@ -1,6 +1,5 @@
 package com.ilesson.ppim.service;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import com.ilesson.ppim.IlessonApp;
@@ -18,7 +17,6 @@ import org.xutils.x;
 import java.lang.reflect.Type;
 
 import static com.ilesson.ppim.activity.LoginActivity.TOKEN;
-import static com.ilesson.ppim.crop.ProgressDialogFragment.TAG;
 
 public class MyHttpManager implements HttpManager {
     private static final Object lock = new Object();
@@ -53,7 +51,6 @@ public class MyHttpManager implements HttpManager {
     private long lastTip;
     @Override
     public <T> Callback.Cancelable request(HttpMethod method, RequestParams entity, Callback.CommonCallback<T> callback) {
-        Log.d(TAG, "request: "+entity.getUri());
         if(NetCheckUtil.checkNet(IlessonApp.getInstance())){
         }else{
             if(Math.abs(System.currentTimeMillis()-lastTip)>2000){

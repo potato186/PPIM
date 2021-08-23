@@ -2,60 +2,38 @@ package com.ilesson.ppim.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.activity.CaptureActivity;
-import com.iflytek.cloud.SpeechUtility;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.Close;
 import com.ilesson.ppim.entity.FriendAccept;
 import com.ilesson.ppim.entity.FriendRequest;
-import com.ilesson.ppim.entity.SmartOrder;
+import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.UpdateInfo;
 import com.ilesson.ppim.fragment.AiFragment;
 import com.ilesson.ppim.fragment.ContactFragment;
@@ -66,12 +44,9 @@ import com.ilesson.ppim.service.MyHttpManager;
 import com.ilesson.ppim.update.UpdateHelper;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
-import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.utils.TTSHelper;
-import com.ilesson.ppim.view.DragView;
+import com.ilesson.ppim.utils.StatusBarUtil;
 import com.ilesson.ppim.view.IfeyVoiceWidget1;
-import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.xutils.common.Callback;
@@ -99,7 +74,6 @@ import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 import static com.ilesson.ppim.activity.PayScoreActivity.QR_PAY;
 import static com.ilesson.ppim.activity.PayScoreActivity.TARGET_ID;
-import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
 
 /**
  * Created by potato on 2020/3/5.
@@ -109,14 +83,10 @@ public class MainActivity extends BaseActivity {
     private static final int REQUEST_CODE = 3;
     @ViewInject(R.id.container)
     private ViewPager mViewPager;
-    @ViewInject(R.id.top_layout)
-    private View topLayout;
-    @ViewInject(R.id.voice_layout)
-    private View voiceLayout;
-    @ViewInject(R.id.ai_layout)
-    private View aiLayout;
-    @ViewInject(R.id.order)
-    private View orderView;
+//    @ViewInject(R.id.ai_layout)
+//    private View aiLayout;
+//    @ViewInject(R.id.order)
+//    private View orderView;
     @ViewInject(R.id.add_layout)
     private View addLayout;
     @ViewInject(R.id.item_a)
@@ -145,20 +115,27 @@ public class MainActivity extends BaseActivity {
     private TextView mTxtC;
     @ViewInject(R.id.txt_d)
     private TextView mTxtD;
-    @ViewInject(R.id.play_tts)
-    private TextView playView;
-    @ViewInject(R.id.request_text)
-    private TextView requestText;
-    @ViewInject(R.id.tts_modify)
-    public TextView ttsModify;
-    @ViewInject(R.id.help_text)
-    public TextView helpTextView;
-    @ViewInject(R.id.tts)
-    private TextView ttsTv;
-    @ViewInject(R.id.result_image)
-    private ImageView resultImageView;
-    @ViewInject(R.id.floatBtn)
-    private DragView floatBtn;
+    @ViewInject(R.id.item_a)
+    private View item_a;
+    @ViewInject(R.id.item_ai)
+    private View item_ai;
+    @ViewInject(R.id.item_b)
+    private View item_b;
+    @ViewInject(R.id.item_c)
+    private View item_c;
+    @ViewInject(R.id.item_d)
+    private View item_d;
+
+    @ViewInject(R.id.text1)
+    private TextView text1;
+    @ViewInject(R.id.text2)
+    private TextView text2;
+    @ViewInject(R.id.apply_market)
+    private TextView apply_market;
+    @ViewInject(R.id.apply_marketing)
+    private TextView apply_marketing;
+    @ViewInject(R.id.market_layout)
+    private View market_layout;
     private View[] mModules;
     private TextView[] mTVs;
     private String[] mTitleName;
@@ -173,21 +150,23 @@ public class MainActivity extends BaseActivity {
     private List<Conversation> datas;
     public String token;
     private IMUtils imUtils;
-    private static final String FLOATX = "floatx111";
-    private static final String FLOATY = "floaty111";
     public static final int GROUP_TYPE = 1;
     public static final int PERSON_TYPE = 2;
     public static final int ACTIVE_SUCCESS = 3;
-    private boolean recording;
-    public TTSHelper ttsHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        setStatusBarLightMode(this, true);
-//        initStatusBar();
+        StatusBarUtil.fullScreen(this);
+//        setStatusBarLightMode(this,true);
+        initStatusBar();
         token = SPUtils.get(LOGIN_TOKEN, "");
+        String phone = SPUtils.get(LoginActivity.USER_PHONE,"");
+        level = SPUtils.get(USER_MARKET_LEVEL+phone,0);
+        if(level!=2){
+            requestMarket();
+        }
         imUtils = new IMUtils();
         imUtils.connect(this, token);
         Log.d(TAG, "onCreate: phone="+SPUtils.get(LoginActivity.USER_PHONE, ""));
@@ -235,7 +214,6 @@ public class MainActivity extends BaseActivity {
         }, Conversation.ConversationType.PRIVATE, Conversation.ConversationType.GROUP);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ADD_FRIEND_MSG);
-//        registerReceiver(customMessageReceiver, intentFilter);
         showUnreadRequestNewFriends();
         new UpdateHelper(this).checkVersion(false);
         imUtils.setOnAddListener(new IMUtils.OnAddListener() {
@@ -258,302 +236,44 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
             }
         });
-//        Glide.with(getApplicationContext()).asGif().load(R.mipmap.assassin).into(floatBtn);
-//        floatBtn.setOnTouchListener(this);
-        floatBtn.setOnPressListener(new DragView.OnPressListener() {
-            @Override
-            public void onPressUp(boolean isDrag) {
-//                if(!isDrag){
-//                    overridePendingTransition(0, 0);
-//                    startActivity(new Intent(MainActivity.this, VoiceTxtActivity.class));
-//                }
-                if (!isDrag) {
-                    if (recording) {
-                        stop(false);
-                    } else {
-                        toSpeech();
-                    }
-                }
-            }
 
-            @Override
-            public void onPressDown() {
 
-            }
-        });
-        floatBtn.setOnLocationListener(new DragView.OnLocationListener() {
-            @Override
-            public void onLocation(int l, int t) {
-                SPUtils.put(FLOATX, l);
-                SPUtils.put(FLOATY, t);
-                setVoiceBtnLocation();
-            }
-        });
-        handler.sendEmptyMessageDelayed(0, 200);
         EventBus.getDefault().post(new Close());
         requestSdcard();
-        playTts = SPUtils.get(PLAY_TTS, true);
-        showPlayState();
-        initSpeech();
         mViewPager.setCurrentItem(2);
-    }
-    private void initSpeech() {
-        ttsHelper = new TTSHelper(this);
-        ttsHelper.setOnTTSFinish(new TTSHelper.OnTTSFinish() {
-            @Override
-            public void onTTSFinish(int type) {
-            }
 
+        item_a.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTTSstart() {
-
+            public void onClick(View v) {
+                setSelection(0);
             }
         });
-        SpeechUtility.createUtility(this,
-                getResources().getString(R.string.xunfei_appid));
-        initIfey();
-    }
-    public void toSpeech() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.requestEach(Manifest.permission.RECORD_AUDIO)
-                .subscribe(new Consumer<Permission>() {
-                    @Override
-                    public void accept(Permission permission) throws Exception {
-                        if (permission.granted) {
-                            // 用户已经同意该权限
-                            if (recording) {
-                                Log.d(TAG, "record_view: stop();");
-                                stop(true);
-                            } else {
-                                start();
-                            }
-                        } else if (permission.shouldShowRequestPermissionRationale) {
-                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时。还会提示请求权限的对话框
-//                            finish();
-                        } else {
-                            getPermission();
-                            // 用户拒绝了该权限，而且选中『不再询问』那么下次启动时，就不会提示出来了，
-                        }
-                    }
-                });
-//                .subscribe(new Consumer<Boolean>() {
-//            public void accept(Boolean aBoolean) {
-//                if (aBoolean) {
-//                    initSpeech();
-//                } else {
-//                    Toast.makeText(ConversationActivity.this, R.string.no_permission, Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-    }
-    public void getPermission(){
-        AlertDialog.Builder alertDialog=null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            alertDialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
-        } else {
-            alertDialog = new AlertDialog.Builder(this);
-        }
-        alertDialog.setTitle("权限设置")
-                .setMessage("应用缺乏录音权限，是否前往手动授予该权限？")
-                .setPositiveButton("前往", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                        intent.setData(uri);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .create();
-        alertDialog.show();
-    }
-    private void initIfey() {
-        ifeyBtn = new IfeyVoiceWidget1(this);
-        ifeyBtn.initIfey(new IfeyVoiceWidget1.MessageListener() {
-
+        item_b.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onReceiverMessage(String content) {
-                if (null != ifeyBtn) {
-                    ifeyBtn.stop();
-                }
-                if (TextUtils.isEmpty(content)) {
-                    return;
-                }
-                content = content.toLowerCase();
-                handleContent(content);
-                stop(true);
-                Log.d(TAG, "onReceiverMessage: ");
-            }
-
-            @Override
-            public void onStateChanged(boolean state) {
-                if (state) {
-//                    start();
-                } else {
-                    recording = false;
-                    stop(false);
-                    ifeyBtn.stop();
-                }
-            }
-        }, null, false);
-        ifeyBtn.setOnVolumeChangeListener(new IfeyVoiceWidget1.OnVolumeChangeListener() {
-            @Override
-            public void onVolumeChanged(int progress, short[] data) {
-                Log.d(TAG, "onVolumeChanged: >>"+progress);
-                showVolume(progress);
+            public void onClick(View v) {
+                setSelection(1);
             }
         });
-        ifeyBtn.setOnTextReceiverListener(new IfeyVoiceWidget1.OnTextReceiverListener() {
+        item_ai.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void TextReceiver(String text) {
+            public void onClick(View v) {
+                setSelection(2);
             }
         });
-        anim = AnimationUtils.loadAnimation(this, R.anim.voice_view_anim);
-    }
-    private void handleContent(String content) {
-        if (voiceLayout.getVisibility() == View.GONE && !TextUtils.isEmpty(content)) {
-            voiceLayout.setVisibility(View.VISIBLE);
-        }
-        content = content.replace("，", "").replace("。", "").replace("！", "").replace("？", "");
-        requestText.setText(content);
-        request(content);
-    }
-    public void clickVoice() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Consumer<Boolean>() {
-            public void accept(Boolean aBoolean) {
-                if (aBoolean) {
-                    if (recording) {
-                        Log.d(TAG, "record_view: stop();");
-                        stop(true);
-                    } else {
-                        start();
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.no_permission, Toast.LENGTH_SHORT).show();
-                }
+        item_c.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelection(3);
             }
         });
-    }
-    private void start() {
-        ifeyBtn.start();
-        handler.removeMessages(2);
-        LinearInterpolator lir = new LinearInterpolator();
-        anim.setInterpolator(lir);
-        floatBtn.startAnimation(anim);
-        if (ttsHelper.isSpeaking()) {
-            ttsHelper.stop();
-        }
-        recording = true;
-    }
-    private void showVolume(int volume) {
-        int p = (last + volume) / 2;
-        last = p;
-        index = volume;
-        handler.sendEmptyMessage(1);
-    }
-    private void stop(boolean showDialog) {
-        recording = false;
-        handler.removeMessages(2);
-//        setVoiceBtnLocation();
-        ifeyBtn.stop();
-        if (showDialog) {
-            floatBtn.setBackgroundResource(R.drawable.home_dialog);
-            AnimationDrawable anim = (AnimationDrawable) floatBtn.getBackground();
-            anim.start();
-        } else {
-            floatBtn.setBackgroundResource(imgs[0]);
-            floatBtn.clearAnimation();
-        }
-    }
-    private boolean stoped;
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopVoice();
-    }
-    private int[] imgs = {R.mipmap.speak_module0, R.mipmap.speak_module1, R.mipmap.speak_module2, R.mipmap.speak_module3, R.mipmap.speak_module4, R.mipmap.speak_module5, R.mipmap.speak_module6, R.mipmap.speak_module7, R.mipmap.speak_module7};
-    public void requestSdcard() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
+        item_d.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                } else {
-                    goIntentSetting();
-//只有用户拒绝开启权限，且选了不再提示时，才会走这里，否则会一直请求开启
-                }
-            }
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
+            public void onClick(View v) {
+                setSelection(4);
             }
         });
     }
 
-    private void goIntentSetting() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getPackageName(), null);
-        intent.setData(uri);
-        try {
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private int last = 0;
-    private int index = 0;
-    Animation anim;
-    private int current = 0;
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0) {
-//                int x = SPUtils.get(FLOATX, PPScreenUtils.getScreenWidth(MainActivity.this) - PPScreenUtils.dip2px(MainActivity.this, 120));
-//                int y = SPUtils.get(FLOATY, PPScreenUtils.getScreenHeight(MainActivity.this) - PPScreenUtils.dip2px(MainActivity.this, 120));
-//                floatBtn.setLocation(x, y);
-                setVoiceBtnLocation();
-            } else if(msg.what==1){
-                handler.removeMessages(2);
-                if (!recording) {
-                    return;
-                }
-                if (index < 0) index = 0;
-                if (index > imgs.length - 1) index = imgs.length - 1;
-                floatBtn.setBackgroundResource(imgs[index]);
-                handler.sendEmptyMessageDelayed(2, 100);
-                current = index - 1;
-            } else if (msg.what == 2) {
-                if (!recording) {
-                    return;
-                }
-                if (current < index - 1) {
-                    current = index;
-                }
-                if (current < 0) current = 0;
-                if (current > imgs.length - 1) current = imgs.length - 1;
-                floatBtn.setBackgroundResource(imgs[current]);
-                handler.sendEmptyMessageDelayed(2, 50);
-            }
-        }
-    };
 
     @Override
     public void onResume() {
@@ -632,7 +352,6 @@ public class MainActivity extends BaseActivity {
             showUnreadRequestNewFriends();
         }
     }
-
     public void onEventMainThread(FriendAccept friendAccept) {
         contactFragment.requestFriendsList(true);
     }
@@ -660,12 +379,13 @@ public class MainActivity extends BaseActivity {
     private GroupFragment groupFragment = new GroupFragment();
     private MeFragment meFragment = new MeFragment();
     private ContactFragment contactFragment = new ContactFragment();
+    private AiFragment aiFragment = new AiFragment();
 
     private void setFragments() {
         mFragments = new ArrayList<>();
         mFragments.add(conversationListFragment);
         mFragments.add(contactFragment);
-        mFragments.add(new AiFragment());
+        mFragments.add(aiFragment);
         mFragments.add(groupFragment);
         mFragments.add(new MeFragment());
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -678,7 +398,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         mViewPager.setOnPageChangeListener(new ViewPagerListener());
-        setSelection(0);
+//        setSelection(0);
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -735,7 +455,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private int currentIndex;
-
+    private int lastIndex;
     public void setSelection(int index) {
         mViewPager.setCurrentItem(index);
         Log.d(TAG, "setSelection: ");
@@ -746,29 +466,33 @@ public class MainActivity extends BaseActivity {
                 mTVs[i].setTextColor(getResources().getColor(R.color.gray_text333_color));
             }
         }
-        orderView.setVisibility(View.GONE);
         addLayout.setVisibility(View.GONE);
-        aiLayout.setVisibility(View.GONE);
-        topLayout.setVisibility(View.VISIBLE);
+//        aiLayout.setVisibility(View.GONE);
+        market_layout.setVisibility(View.GONE);
         switch (index) {
             case 0:
             case 1:
                 addLayout.setVisibility(View.VISIBLE);
-                hideVoice();
+//                hideVoice();
                 break;
             case 2:
-                topLayout.setVisibility(View.GONE);
-                floatBtn.setVisibility(View.VISIBLE);
-                aiLayout.setVisibility(View.VISIBLE);
-                request("");
+//                floatBtn.setVisibility(View.VISIBLE);
+//                aiLayout.setVisibility(View.VISIBLE);
+                aiFragment.request("");
                 break;
             case 3:
-                orderView.setVisibility(View.VISIBLE);
-                hideVoice();
+                if(level==1){
+                    requestMarket();
+                }
+                checkLevel();
+//                hideVoice();
             case 4:
-                hideVoice();
+//                hideVoice();
                 break;
 
+        }
+        if(index!=2){
+            aiFragment.stopVoice();
         }
         mTitle.setText(mTitleName[index]);
         mModules[index].setSelected(true);
@@ -777,106 +501,72 @@ public class MainActivity extends BaseActivity {
         mTVs[index].setPressed(true);
         mTVs[index].setTextColor(getResources().getColor(R.color.theme_color));
         currentIndex = index;
-    }
-    private void hideVoice(){
-        closeVoice();
-        floatBtn.setVisibility(View.GONE);
-    }
-    private boolean playTts;
-    public void playTTsEvent() {
-        playTts = !playTts;
-        showPlayState();
-        SPUtils.put(PLAY_TTS, playTts);
-        if (!playTts && ttsHelper.isSpeaking()) {
-            ttsHelper.stop();
-        }
-    }
-    private void showPlayState() {
-        if (playTts) {
-            playView.setBackgroundResource(R.mipmap.sy_on);
-        } else {
-            playView.setBackgroundResource(R.mipmap.sy_of);
-        }
-    }
-    private void closeVoice(){
-        voiceLayout.setVisibility(View.GONE);
-        stopVoice();
-    }
-
-    private void stopVoice(){
-        if (recording) {
-            stop(false);
-        }
-        Log.d(TAG, "stopVoice currentActivity: "+getCurrentActivity());
-        if(this==getCurrentActivity()){
-            if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
-                ttsHelper.stop();
+        if(lastIndex==2){
+            if(index!=2){
+                initStatusBar();
+            }
+        }else{
+            if(index==2){
+                StatusBarUtil.fullScreen(this);
             }
         }
+        lastIndex = index;
     }
 
-    @Event(value = R.id.voice_layout)
-    private void voice_layout(View v) {
-        closeVoice();
-    }
-    @Event(value = R.id.content_layout)
-    private void content_layout(View v) {
-    }
-    @Event(value = R.id.play_tts)
-    private void play_tts(View v) {
-        playTTsEvent();
-    }
-    @Event(value = R.id.close)
-    private void close(View v) {
-        closeVoice();
-    }
-    @Event(value = R.id.item_b, type = View.OnTouchListener.class)
-    private boolean touchB(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            setSelection(1);
-        }
-        return true;
-    }
-    @Event(value = R.id.item_ai, type = View.OnTouchListener.class)
-    private boolean item_ai(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            setSelection(2);
-        }
-        return true;
-    }
 
-    @Event(value = R.id.item_c, type = View.OnTouchListener.class)
-    private boolean touchC(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            setSelection(3);
-        }
-        return true;
+    @Event(value = R.id.apply_market)
+    private void apply_market(View v) {
+        updateMarket();
     }
+//    @Event(value = R.id.item_b, type = View.OnTouchListener.class)
+//    public boolean touchB(View v, MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            setSelection(1);
+//        }
+//        return true;
+//    }
+//    @Event(value = R.id.item_ai, type = View.OnTouchListener.class)
+//    public boolean item_ai(View v, MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            if(currentIndex!=2){
+//                setSelection(2);
+//            }
+//        }
+//        return true;
+//    }
+//
+//    @Event(value = R.id.item_c, type = View.OnTouchListener.class)
+//    public boolean touchC(View v, MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            setSelection(3);
+//        }
+//        return true;
+//    }
+//
+//    @Event(value = R.id.item_d, type = View.OnTouchListener.class)
+//    public boolean touch(View v, MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            setSelection(4);
+//        }
+//
+//        return true;
+//    }
+//
+//    @Event(value = R.id.item_a, type = View.OnTouchListener.class)
+//    public boolean touchA(View v, MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_UP) {
+//            setSelection(0);
+//        }
+//        return true;
+//    }
 
-    @Event(value = R.id.item_d, type = View.OnTouchListener.class)
-    private boolean touch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            setSelection(4);
-        }
-
-        return true;
-    }
-
-    @Event(value = R.id.item_a, type = View.OnTouchListener.class)
-    private boolean touchA(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            setSelection(0);
-        }
-        return true;
-    }
-
-    @Event(value = R.id.add)
-    private void add(View view) {
+//    @Event(value = R.id.add)
+    public void add(View view) {
         showPopwindow(view);
     }
 
-    @Event(value = R.id.search)
-    private void search(View view) {
+//    @Event(value = R.id.search)
+public void search() {
         startActivity(new Intent(this, SearchActivity.class));
     }
 
@@ -927,11 +617,6 @@ public class MainActivity extends BaseActivity {
 //            groupFragment.activeSuccess();
 //            return;
 //        }
-    }
-
-    @Event(value = R.id.order)
-    private void order(View view) {
-        startActivity(new Intent(this, WareOrderListActivity.class));
     }
 
     @Override
@@ -1012,112 +697,58 @@ public class MainActivity extends BaseActivity {
 //            System.exit(0);
         }
     }
-    private void setVoiceBtnLocation() {
-        int maxX = PPScreenUtils.getScreenWidth(this) - PPScreenUtils.dip2px(this, 120);
-        int maxY = PPScreenUtils.getScreenHeight(this) - PPScreenUtils.dip2px(this, 150);
-        int x = SPUtils.get(FLOATX,PPScreenUtils.getScreenWidth(this)/2 - PPScreenUtils.dip2px(this, 60));
-        int y = SPUtils.get(FLOATY, maxY);
-        if (x > maxX) {
-            x = maxX;
-        }
-        if (y > maxY) {
-            y = maxY;
-        }
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) floatBtn.getLayoutParams();
-        layoutParams.leftMargin = x;
-        layoutParams.topMargin = y;
-//        layoutParams.rightMargin = -250;
-//        layoutParams.bottomMargin = -250;
-        floatBtn.setLayoutParams(layoutParams);
-//        floatBtn.setLocation(x, y);
-    }
-    public void request(String key) {
-        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.TALK);
-        if(TextUtils.isEmpty(key)){
-            params.addParameter("action", "init");
-        }else {
-            params.addParameter("action", "talk");
-            params.addParameter("key", key);
-        }
 
-//       showProgress();
+
+    private static final String USER_MARKET_LEVEL="user_market_level";
+    public int level=0;
+    public void checkLevel(){
+        if(level==0){
+            market_layout.setVisibility(View.VISIBLE);
+            text1.setVisibility(View.VISIBLE);
+            text2.setVisibility(View.VISIBLE);
+            apply_market.setVisibility(View.VISIBLE);
+            apply_marketing.setVisibility(View.GONE);
+        }else if(level==1){
+            text1.setVisibility(View.GONE);
+            text2.setVisibility(View.GONE);
+            apply_market.setVisibility(View.GONE);
+            apply_marketing.setVisibility(View.VISIBLE);
+            market_layout.setVisibility(View.VISIBLE);
+        }else if(level==2){
+            market_layout.setVisibility(View.GONE);
+        }
+    }
+    public void requestMarket() {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.EXTRA);
+        params.addParameter("action", "query");
         Log.d(TAG, "loadData: " + params.toString());
-        x.http().post(params, new Callback.CommonCallback<String>() {
+        x.http().post(params, new Callback.CacheCallback<String>() {
+            @Override
+            public boolean onCache(String result) {
+                BaseCode<PPUserInfo> data = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode<PPUserInfo>>() {
+                        }.getType());
+                if(data.getCode()==0){
+                    PPUserInfo info = data.getData();
+                    level = info.getLevel();
+                }
+                return false;
+            }
+
             @SuppressLint("StringFormatMatches")
             @Override
             public void onSuccess(String result) {
                 Log.d(TAG, "onSuccess: "+result);
-                BaseCode<List<SmartOrder>> data = new Gson().fromJson(
+                BaseCode<PPUserInfo> data = new Gson().fromJson(
                         result,
-                        new TypeToken<BaseCode<List<SmartOrder>>>() {
+                        new TypeToken<BaseCode<PPUserInfo>>() {
                         }.getType());
                 if(data.getCode()==0){
-                    List<SmartOrder> list = data.getData();
-                    if (list.isEmpty()) {
-                        return;
-                    }
-                    helpTextView.setVisibility(View.GONE);
-                    SmartOrder order = list.get(0);
-                    String tts = order.getTts();
-                    if(!TextUtils.isEmpty(tts)){
-                        ttsTv.setText(tts);
-                        if(playTts){
-                            ttsHelper.start(0,MainActivity.this,tts);
-                        }
-                    }
-                    String ttsm = data.getBak();
-                    if (!TextUtils.isEmpty(ttsm)) {
-                        String text = getResources().getString(R.string.modify_tts);
-                        SpannableStringBuilder style = new SpannableStringBuilder(text + ttsm);
-                        style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_color)), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ttsModify.setText(style);
-                        ttsModify.setVisibility(View.VISIBLE);
-                    } else {
-                        ttsModify.setVisibility(View.GONE);
-                    }
-                    String help = order.getHelp().trim();
-                    if (!TextUtils.isEmpty(help)) {
-                        helpTextView.setText(help);
-                        helpTextView.setVisibility(View.VISIBLE);
-                    }
-                    String imgUrl = order.getImgurl();
-                    if(!TextUtils.isEmpty(imgUrl)){
-                        Glide.with(MainActivity.this).asBitmap().load(imgUrl).into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                ViewGroup.LayoutParams params = resultImageView.getLayoutParams();
-                                int width = 0;
-                                int height = 0;
-
-                                int screenWidth = PPScreenUtils.getScreenWidth(MainActivity.this);
-                                int maxW = (int) (screenWidth * .85);
-                                if ((double) resource.getWidth() / (double) resource.getHeight() > 1.2) {
-                                    width = maxW;
-                                    height = resource.getHeight() * width / resource.getWidth();
-                                } else {
-                                    int calW = PPScreenUtils.dip2px(MainActivity.this, resource.getWidth());
-                                    if (calW < maxW) {
-                                        width = calW;
-                                        height = PPScreenUtils.dip2px(MainActivity.this, resource.getHeight());
-                                    }
-                                }
-                                params.width = width;
-                                params.height = height;
-                                resultImageView.setLayoutParams(params);
-                                resultImageView.setImageBitmap(resource);
-                                resultImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                                resultImageView.setVisibility(View.VISIBLE);
-                            }
-                        });
-                        resultImageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                ImagePreviewActivity.startPreview(MainActivity.this,order.getImgurl());
-                            }
-                        });
-                    }else {
-                        resultImageView.setVisibility(View.GONE);
-                    }
+                    PPUserInfo info = data.getData();
+                    level = info.getLevel();
+                    String phone = SPUtils.get(LoginActivity.USER_PHONE,"");
+                    SPUtils.put(USER_MARKET_LEVEL+phone,level);
                 }else {
                     showToast(data.getMessage());
                 }
@@ -1135,15 +766,89 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onFinished() {
-                floatBtn.setBackgroundResource(imgs[0]);
-                floatBtn.clearAnimation();
-//                setVoiceBtnLocation();
+            }
+        });
+    }
+    public void updateMarket() {
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.EXTRA);
+        params.addParameter("action", "update");
+        Log.d(TAG, "loadData: " + params.toString());
+        showProgress();
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @SuppressLint("StringFormatMatches")
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "onSuccess: "+result);
+                BaseCode data = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode>() {
+                        }.getType());
+                if(data.getCode()==0){
+                    level = 1;
+                    checkLevel();
+                }else {
+                    showToast(data.getMessage());
+                }
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+                level = 1;
+                checkLevel();
+                hideProgress();
             }
         });
     }
     public void onEventMainThread(UpdateInfo message) {
         if(null!=meFragment){
             meFragment.setUserInfo();
+        }
+    }
+    public void requestSdcard() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                } else {
+                    goIntentSetting();
+//只有用户拒绝开启权限，且选了不再提示时，才会走这里，否则会一直请求开启
+                }
+            }
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+    private void goIntentSetting() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

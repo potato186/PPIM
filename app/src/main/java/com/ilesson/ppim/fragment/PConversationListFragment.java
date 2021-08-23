@@ -18,9 +18,11 @@ import android.widget.Toast;
 
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.LoginActivity;
+import com.ilesson.ppim.activity.MainActivity;
 import com.ilesson.ppim.adapter.ConversationListAdapter;
 import com.ilesson.ppim.custom.MyExtensionModule;
 import com.ilesson.ppim.utils.IMUtils;
+import com.ilesson.ppim.utils.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,7 +33,6 @@ import io.rong.eventbus.EventBus;
 import io.rong.imkit.R.bool;
 import io.rong.imkit.R.drawable;
 import io.rong.imkit.R.id;
-import io.rong.imkit.R.layout;
 import io.rong.imkit.R.string;
 import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
@@ -74,7 +75,7 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
     private int pageSize = 100;
     private static final int REQUEST_MSG_DOWNLOAD_PERMISSION = 1001;
     private ArrayList<Message> cacheEventList = new ArrayList();
-
+    private MainActivity mainActivity;
     public PConversationListFragment() {
     }
 
@@ -138,13 +139,13 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(layout.rc_fr_conversationlist, container, false);
+        View view = inflater.inflate(R.layout.fr_conversationlist, container, false);
         View emptyView = this.findViewById(view, id.rc_conversation_list_empty_layout);
         TextView emptyText = (TextView)this.findViewById(view, id.rc_empty_tv);
         if (this.getActivity() != null) {
             emptyText.setText(this.getActivity().getResources().getString(string.rc_conversation_list_empty_prompt));
         }
-
+        mainActivity = (MainActivity) getActivity();
         this.mList = (ListView)this.findViewById(view, id.rc_list);
         this.mRefreshLayout = (RongSwipeRefreshLayout)this.findViewById(view, id.rc_refresh);
         this.mList.setEmptyView(emptyView);
@@ -154,7 +155,25 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
         if (this.mAdapter == null) {
             this.mAdapter = this.onResolveAdapter(this.getActivity());
         }
-
+        view.findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(null!=mainActivity){
+                    mainActivity.search();
+                }
+            }
+        });
+        view.findViewById(R.id.add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(null!=mainActivity){
+                    mainActivity.add(v);
+                }
+            }
+        });
+        StatusBarUtil.setBarPadding(mainActivity,view.findViewById(R.id.layout));
+        TextView title = view.findViewById(R.id.title);
+        title.setText(R.string.item_b);
         this.mAdapter.setOnPortraitItemClick(this);
         this.mRefreshLayout.setCanRefresh(false);
         this.mRefreshLayout.setCanLoading(true);
@@ -165,7 +184,6 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
             Resources resources = this.getContext().getResources();
             this.enableAutomaticDownloadMsg = resources.getBoolean(bool.rc_enable_automatic_download_voice_msg);
         }
-
         this.headerNetWorkView = this.findViewById(view, id.rc_status_bar);
         this.headerNetWorkImage = (ImageView)this.findViewById(view, id.rc_status_bar_image);
         this.headerNetWorkText = (TextView)this.findViewById(view, id.rc_status_bar_text);
@@ -1261,6 +1279,11 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
 
                     uiConversation.setUnReadMessageCount(0);
                     if(uiConversation.getConversationTargetId().contains("market")){
+                        MainActivity activity = (MainActivity) getActivity();
+                        if(activity.level!=2){
+                            activity.setSelection(3);
+                            return;
+                        }
                         MyExtensionModule.shopGroup = true;
                     }else{
                         MyExtensionModule.shopGroup = false;

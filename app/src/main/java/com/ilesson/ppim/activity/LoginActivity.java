@@ -113,6 +113,9 @@ public class LoginActivity extends BaseActivity {
 
     @Event(value = R.id.phone_code_layout)
     private void phone_code_layout(View view) throws DbException {
+        if(contryCodes==null||contryCodes.size()==0){
+            getContry();
+        }
         showCountryDialog();
     }
 

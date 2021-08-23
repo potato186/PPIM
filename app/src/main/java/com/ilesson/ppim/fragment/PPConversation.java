@@ -334,7 +334,7 @@ public class PPConversation extends ConversationFragment implements View.OnClick
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (!TextUtils.isEmpty(tts) && playTts) {
-                            ttsHelper.start(0, getActivity(), tts);
+                            ttsHelper.start(0, tts);
                         }
                         if (data.getTag() == 0) {
                             showContent(order);

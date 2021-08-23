@@ -3,6 +3,7 @@ package com.ilesson.ppim.utils;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.iflytek.cloud.InitListener;
@@ -14,18 +15,38 @@ import com.iflytek.sunflower.FlowerCollector;
 import com.ilesson.ppim.activity.SettingActivity;
 import com.tencent.qcloudtts.LongTextTTS.LongTextTtsController;
 import com.tencent.qcloudtts.LongTextTTS.audio.QCloudMediaService;
+import com.tencent.qcloudtts.callback.QCloudPlayerCallback;
 import com.tencent.qcloudtts.callback.TtsExceptionHandler;
 import com.tencent.qcloudtts.exception.TtsException;
+import com.tencent.qcloudtts.exception.TtsNotInitializedException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.ilesson.ppim.activity.SettingActivity.XUNFEI;
 
 public class TTSHelper {
 	private SpeechSynthesizer mTts;
-	private LongTextTtsController mTtsController;
+	private static LongTextTtsController mTtsController;
+	private boolean playing;
 	public TTSHelper(Context context) {
-			mTts = SpeechSynthesizer.createSynthesizer(context, mTtsInitListener);
-	}
+		if(null==mTtsController){
+			mTtsController = new LongTextTtsController();
+			mTtsController.init(context,Long.valueOf(PPConfig.apppId),PPConfig.secretId,PPConfig.secretKey);
+			//设置语速
+			mTtsController.setVoiceSpeed(0);
+//设置音色
+			mTtsController.setVoiceType(101010);
+//设置音量
+//			mTtsController.setVoiceVolume(volume);
+////设置语言
+			mTtsController.setVoiceLanguage(2);
+//设置ProjectId
+			mTtsController.setProjectId(1217813);
+		}
+//			mTts = SpeechSynthesizer.createSynthesizer(context, mTtsInitListener);
 
+	}
 	private InitListener mTtsInitListener = new InitListener() {
 		@Override
 		public void onInit(int code) {
@@ -36,6 +57,7 @@ public class TTSHelper {
 		@Override
 		public void onSpeakBegin() {
 			System.out.println("onSpeakBegin");
+			Log.d("tts", "text="+text1+"   >>>>讯飞用时："+(System.currentTimeMillis()-start));
 			if (null != mOnTTSFinish)
 				mOnTTSFinish.onTTSstart();
 			QCloudMediaService s;
@@ -99,12 +121,100 @@ public class TTSHelper {
 		if(null!=mTts){
 			return mTts.isSpeaking();
 		}
+		if(null!=mTtsController&&playing){
+			return true;
+		}
 		return false;
 	}
+	private long start;
+	//发起tts请求
+	public void start(int type,final String ttsText){
+		playing = true;
+		if(TextUtils.isEmpty(ttsText)){
+			return;
+		}
+		if(isChinese(ttsText)){//读中文
+			mTtsController.setVoiceLanguage(1);
+			mTtsController.setVoiceType(101010);
+		}else {//读英文
+			mTtsController.setVoiceLanguage(2);
+			mTtsController.setVoiceType(101050);
+		}
+		start = System.currentTimeMillis();
+		try {
+			mTtsController.startTts(ttsText, mTtsExceptionHandler, new QCloudPlayerCallback() {
 
+				//播放开始
+				@Override
+				public void onTTSPlayStart() {
+					playing = true;
+					Log.d("tts", "text="+ttsText+"   >>>>腾讯用时："+(System.currentTimeMillis()-start));
+				}
+
+				//音频缓冲中
+				@Override
+				public void onTTSPlayWait() {
+					Log.d("tts", "onPlayWait");
+				}
+
+				//缓冲完成，继续播放
+				@Override
+				public void onTTSPlayResume() {
+					Log.d("tts", "onPlayResume");
+				}
+
+				//连续播放下一句
+				@Override
+				public void onTTSPlayNext() {
+					Log.d("tts", "onPlayNext");
+				}
+
+				//播放中止
+				@Override
+				public void onTTSPlayStop() {
+					Log.d("tts", "onPlayStop");
+				}
+
+				//播放结束
+				@Override
+				public void onTTSPlayEnd() {
+					playing = false;
+					if (null != mOnTTSFinish)
+						mOnTTSFinish.onTTSFinish(type);
+					Log.d("tts", "onPlayEnd");
+				}
+
+				//当前播放的字符,当前播放的字符在所在的句子中的下标.
+				@Override
+				public void onTTSPlayProgress(String currentWord, int currentIndex) {
+//					Log.d("tts", "onTTSPlayProgress" + currentWord + currentIndex);
+				}
+				public void onTTSPlayAudioCachePath(String path) {
+
+				}
+			});
+		} catch (TtsNotInitializedException e) {
+			Log.e("tts", e.getMessage());
+		}
+	}
+
+	private final TtsExceptionHandler mTtsExceptionHandler = new TtsExceptionHandler() {
+		@Override
+		public void onRequestException(TtsException e) {
+			Log.e(TAG, "tts onRequestException");
+			//网络出错的时候
+			mTtsController.pause();
+		}
+
+	};
 	private static final String TAG = "TTSHelper";
+	private String text1;
 	public void start(final int type, Context context, String text) {
+//		start(type,text);
+//		if(true)return;
 		Log.d(TAG, "start: ");
+		text1 = text;
+		start = System.currentTimeMillis();
 		if(null==mTts){
 			mTts = SpeechSynthesizer.createSynthesizer(context, mTtsInitListener);
 		}
@@ -152,6 +262,7 @@ public class TTSHelper {
 		mTts.setParameter(SpeechConstant.VOLUME, "50");
 		// 设置播放器音频流类型
 		mTts.setParameter(SpeechConstant.STREAM_TYPE, "3");
+//		mTts.setParameter(SpeechConstant.LANGUAGE, "en_us");
 		// 设置播放合成音频打断音乐播放，默认为true
 		mTts.setParameter(SpeechConstant.KEY_REQUEST_FOCUS, "false");
 		mTts.setParameter(SpeechConstant.ENGINE_MODE, "false");
@@ -184,5 +295,17 @@ public class TTSHelper {
 		if (mTts != null) {
 			mTts.stopSpeaking();
 		}
+		if (mTtsController != null) {
+			mTtsController.stop();
+		}
+	}
+	public boolean isChinese(String str)
+	{
+		Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+		Matcher m = p.matcher(str);
+		if (m.find()) {
+			return true;
+		}
+		return false;
 	}
 }

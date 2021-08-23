@@ -22,11 +22,11 @@ import com.ilesson.ppim.activity.ScoreListActivity;
 import com.ilesson.ppim.activity.SettingActivity;
 import com.ilesson.ppim.activity.UserDetailActivity;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.StatusBarUtil;
 import com.ilesson.ppim.utils.WxShareUtils;
 import com.ilesson.ppim.view.CircleImageView;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 
-import org.devio.takephoto.model.InvokeParam;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -43,21 +43,20 @@ public class MeFragment extends BaseFragment {
     private static final String TAG = "MeFragment";
     private MainActivity mainActivity;
 
+    @ViewInject(R.id.layout)
+    private View layout;
     @ViewInject(R.id.user_icon)
     public CircleImageView userIcon;
     @ViewInject(R.id.user_nike)
     private TextView userNike;
     @ViewInject(R.id.user_phone)
     private TextView userPhone;
-    private String iconPath;
-
-//    private TakePhoto takePhoto;
-    private InvokeParam invokeParam;
     private boolean needFresh;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        StatusBarUtil.setBarPadding(mainActivity,layout);
         setUserInfo();
     }
 
@@ -79,11 +78,6 @@ public class MeFragment extends BaseFragment {
             return;
         }
         if (!TextUtils.isEmpty(icon)) {
-//            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-//            builder.cacheInMemory(true).cacheOnDisk(true);
-//            ImageLoader.getInstance().displayImage(icon, userIcon,
-//                    builder.build());
-//            userIcon.setAvatar(icon,R.mipmap.default_icon);
             Glide.with(getActivity()).load(icon).into(userIcon);
         }
         String name = SPUtils.get(LoginActivity.USER_NAME, "");
@@ -141,7 +135,7 @@ public class MeFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    private void showShareDialog() {
+    public void showShareDialog() {
         if (mShareDialog == null) {
             initShareDialog();
         }
@@ -152,7 +146,7 @@ public class MeFragment extends BaseFragment {
      */
     private Dialog mShareDialog;
 
-    private void initShareDialog() {
+    public void initShareDialog() {
         mShareDialog = new Dialog(getActivity(), R.style.dialog_bottom_full);
         mShareDialog.setCanceledOnTouchOutside(true);
         mShareDialog.setCancelable(true);
@@ -181,11 +175,11 @@ public class MeFragment extends BaseFragment {
         window.setContentView(view);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);//设置横向全屏
     }
-    private void share(int type){
+    public void share(int type){
         dismissShareDialog();
         WxShareUtils.shareWeb(getActivity(),type,"","",mainActivity.getResources().getString(R.string.app_des));
     }
-    private void dismissShareDialog() {
+    public void dismissShareDialog() {
         if (mShareDialog != null&&mShareDialog.isShowing()) {
             mShareDialog.dismiss();
         }

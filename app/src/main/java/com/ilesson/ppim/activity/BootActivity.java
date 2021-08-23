@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.StatusBarUtil;
 
 import static com.ilesson.ppim.activity.ResetPwdActivity.RESET_FROM_BOOT;
 import static com.ilesson.ppim.activity.ResetPwdActivity.RESET_LOGIN_PWD;
@@ -22,7 +23,7 @@ public class BootActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boot);
-        initStatusBar();
+        StatusBarUtil.fullScreen(this);
 //        View logoView = findViewById(R.id.logo);
 //        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
 //        int width = PPScreenUtils.getScreenWidth(this);

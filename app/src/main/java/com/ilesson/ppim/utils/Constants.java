@@ -7,7 +7,6 @@ package com.ilesson.ppim.utils;
 public interface Constants {
 
     String BASE_URL="https://pp.fangnaokeji.com:9443/pp";
-    String RBASE_URL=" http://192.168.2.30:8080/pp";
 //    String BASE_URL="http://192.168.2.192:8080/pp";
 //    String AI_URL="https://aiibt.net/pigai.php";
     String AI_URL="http://www.xn--gmq6f129l.net/api20.php";
@@ -38,16 +37,15 @@ public interface Constants {
     String SERVER="/server";
     String COMPOSITION_URL="/composition";
     String BITCAPS="/bitcaps";
+    String EXTRA="/extra";
     String REGISTE="/mobile-signup";
     String SHARE_BASE="http://pp.aiibt.net/pp";
     String SHARE_LINK=SHARE_BASE+COMPOSITION_URL+".jsp?uuid=";
-
     int appCode = 103;
     String opCode = "fc14061dee275c12fc7b331f3b888347";
     public static final int REQ_QR_CODE = 11002; // // 打开扫描界面请求码
     public static final int REQ_PERM_CAMERA = 11003; // 打开摄像头
     public static final int REQ_PERM_EXTERNAL_STORAGE = 11004; // 读写文件
-
     public static final String INTENT_EXTRA_KEY_QR_SCAN = "qr_scan_result";
     int VISIBLE_THRESHOLD = 3;
 }

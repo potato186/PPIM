@@ -17,6 +17,7 @@
             android:name=".activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.main"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

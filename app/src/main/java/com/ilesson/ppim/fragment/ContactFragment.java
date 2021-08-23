@@ -26,6 +26,7 @@ import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.StatusBarUtil;
 
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
@@ -51,6 +52,8 @@ import static com.ilesson.ppim.activity.MainActivity.FRIEND_ACCEPT;
  */
 @ContentView(R.layout.frag_contact)
 public class ContactFragment extends BaseFragment {
+    @ViewInject(R.id.top)
+    public View top;
     @ViewInject(R.id.msg_tip)
     public TextView msgTip;
 
@@ -74,6 +77,7 @@ public class ContactFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         EventBus.getDefault().register(this);
         mainActivity = (MainActivity) getActivity();
+        StatusBarUtil.setBarPadding(mainActivity,top);
         layoutManager = new LinearLayoutManager(mainActivity);
         datas = new ArrayList<>();
         contactList.setLayoutManager(layoutManager);
@@ -113,6 +117,20 @@ public class ContactFragment extends BaseFragment {
             msgTip.setText(unAcceptFriends + "");
         } else {
             msgTip.setVisibility(View.GONE);
+        }
+    }
+
+    @Event(value = R.id.search)
+    private void search(View view) {
+        if(null!=mainActivity){
+            mainActivity.search();
+        }
+    }
+
+    @Event(value = R.id.add)
+    private void add(View view) {
+        if(null!=mainActivity){
+            mainActivity.add(view);
         }
     }
 
@@ -180,6 +198,7 @@ public class ContactFragment extends BaseFragment {
                 new TypeToken<BaseCode<List<PPUserInfo>>>() {
                 }.getType());
         hasRequest = true;
+
         if (base.getCode() == 0) {
             List<PPUserInfo> data = base.getData();
             if (null == data || data.isEmpty()) {

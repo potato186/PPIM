@@ -215,6 +215,19 @@
         <item name="android:windowContentOverlay">@android:color/transparent</item>
         <item name="android:windowBackground">@color/sr_window_background</item>
     </style>
+    <style name="AppTheme.main" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--状态栏颜色，只有api21上有效-->
+        <item name="colorPrimary">@color/gray_theme</item>
+        <!--标题栏颜色-->
+        <item name="colorPrimaryDark">@color/gray_theme</item>
+        <!--控件颜色-->
+        <item name="colorAccent">@color/gray_theme</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:checkableBehavior">single</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="actionBarSize">48dp</item>
+        <item name="android:actionBarSize">48dp</item>
+    </style>
     <style name="AppTheme.gary" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

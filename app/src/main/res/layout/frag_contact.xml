@@ -2,47 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-    <RelativeLayout
+    android:background="@color/white"
+    >
+    <LinearLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:background="@color/gray_theme"
-        android:visibility="gone"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray_text333_color"
-            android:textSize="18sp"
-            android:text="通讯录"
-            android:layout_marginLeft="15dp"
-            android:layout_centerVertical="true"
+        <include
+            layout="@layout/layout_index_toolbar"
             />
-        <TextView
-            android:id="@+id/add"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@mipmap/add_icon"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:layout_centerVertical="true"
-            />
-        <TextView
-            android:id="@+id/search"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@mipmap/search_icon"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="45dp"
-            android:layout_centerVertical="true"
-            />
-    </RelativeLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/new_friend_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@android:color/white"
-        android:layout_marginTop="7dp"
+        android:layout_below="@+id/top"
         >
         <ImageView
             android:id="@+id/user_icon"
@@ -75,17 +54,6 @@
             android:visibility="gone"
             />
     </LinearLayout>
-   <!-- <ListView
-        android:id="@+id/listiview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:divider="@color/list_story_click"
-        android:dividerHeight="0.5dp"
-        android:visibility="gone"
-        android:background="@color/white"
-        android:layout_below="@+id/new_friend_layout"
-        />-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
@@ -105,5 +73,6 @@
         android:layout_width="30dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/top"
         />
 </RelativeLayout>

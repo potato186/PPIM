@@ -345,10 +345,10 @@ public class BaseActivity extends FragmentActivity {
     }
 
 
-    protected void showToast(String msg){
+    public void showToast(String msg){
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
-    protected void showToast(int res){
+    public void showToast(int res){
         Toast.makeText(this, getResources().getString(res), Toast.LENGTH_LONG).show();
     }
     public interface PermissionsResultListener {

@@ -387,7 +387,7 @@ public class UserDetailActivity extends BaseActivity{
             }
         }).setDate(selectedDate)//设置系统时间为当前时间
                 .setRangDate(startDate, selectedDate)//设置控件日期范围 也可以不设置默认1900年到2100年
-//                .setType(new boolean[]{true, true, true})//设置年月日时分秒是否显示 true:显示 false:隐藏
+//                .setType(new boolean[]{false, true, true,false,false,false})//设置年月日时分秒是否显示 true:显示 false:隐藏
 //                .setLabel("年", "月", "日")
                 .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
                 .setDividerColor(0xFFeb0c6e)//设置分割线颜色
