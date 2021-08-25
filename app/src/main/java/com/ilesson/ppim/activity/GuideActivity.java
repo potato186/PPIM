@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.fragment.GuideFragment1;
 import com.ilesson.ppim.fragment.GuideFragment2;
+import com.ilesson.ppim.utils.StatusBarUtil;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
@@ -30,7 +31,8 @@ public class GuideActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initStatusBar();
+//        initStatusBar();
+        StatusBarUtil.fullScreen(this);
         setFragments();
     }
     private void setFragments() {
