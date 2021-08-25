@@ -101,7 +101,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 //        tencenRecognize = TencenRecognize.getInstance();
 //        tencenRecognize.initTencenVoice(mainActivity);
 //        tencenRecognize.setOnRecognizeListener(this);
-        anim = AnimationUtils.loadAnimation(mainActivity, R.anim.voice_view_anim);
+        voiceAnim = AnimationUtils.loadAnimation(mainActivity, R.anim.voice_view_anim);
         showPlayState();
         initTts();
         floatBtn.setOnPressListener(new DragView.OnPressListener() {
@@ -132,7 +132,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
         });
         handler.sendEmptyMessageDelayed(0, 200);
         initXunfeiSpeech();
-        initIfey();
     }
 
     private void initTts() {
@@ -179,8 +178,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     private void closeVoice() {
         voiceLayout.setVisibility(View.GONE);
         if (recording) {
-//            tencenRecognize.stop();
-//            stop(false);
             stopXunfei(false);
         }
     }
@@ -194,13 +191,12 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     public void stopVoice(){
         stopTts();
         if (recording) {
-//            tencenRecognize.stop();
-//            stop(false);
             stopXunfei(false);
         }
     }
     public void toSpeech() {
         RxPermissions rxPermissions = new RxPermissions(this);
+
         rxPermissions.requestEach(Manifest.permission.RECORD_AUDIO)
                 .subscribe(new Consumer<Permission>() {
                     @Override
@@ -208,8 +204,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                         if (permission.granted) {
                             // 用户已经同意该权限
                             if (recording) {
-//                                tencenRecognize.stop();
-//                                stop(false);
                                 stopXunfei(false);
                             } else {
 //                                start();
@@ -402,7 +396,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
             public void accept(Boolean aBoolean) {
                 if (aBoolean) {
                     if (recording) {
-                        Log.d(TAG, "record_view: stop();");
                         stop(true);
                     } else {
                         start();
@@ -418,8 +411,8 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 //        tencenRecognize.start();
         handler.removeMessages(2);
         LinearInterpolator lir = new LinearInterpolator();
-        anim.setInterpolator(lir);
-        floatBtn.startAnimation(anim);
+        voiceAnim.setInterpolator(lir);
+        floatBtn.startAnimation(voiceAnim);
         if (ttsHelper.isSpeaking()) {
             ttsHelper.stop();
         }
@@ -453,8 +446,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     public void onStop() {
         super.onStop();
         if (recording) {
-//            tencenRecognize.stop();
-//            stop(false);
             stopXunfei(false);
         }
     }
@@ -464,7 +455,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 
     private int last = 0;
     private int index = 0;
-    Animation anim;
+    Animation voiceAnim;
     private int current = 0;
     public Handler handler = new Handler() {
         @Override
@@ -575,7 +566,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                 content = content.toLowerCase();
                 handleContent(content);
                 stopXunfei(true);
-                Log.d(TAG, "onReceiverMessage: ");
             }
 
             @Override
@@ -604,15 +594,15 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 
 
     private void startXunfei() {
+        recording = true;
         ifeyBtn.start();
         handler.removeMessages(2);
         LinearInterpolator lir = new LinearInterpolator();
-        anim.setInterpolator(lir);
-        floatBtn.startAnimation(anim);
+        voiceAnim.setInterpolator(lir);
+        floatBtn.startAnimation(voiceAnim);
         if (ttsHelper.isSpeaking()) {
             ttsHelper.stop();
         }
-        recording = true;
     }
 
     private void stopXunfei(boolean showDialog) {

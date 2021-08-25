@@ -89,7 +89,6 @@ public class TTSHelper {
 
 		@Override
 		public void onCompleted(SpeechError error) {
-			System.out.println("onCompleted="+type);
 			if (null != mOnTTSFinish)
 				mOnTTSFinish.onTTSFinish(type);
 		}
@@ -148,31 +147,26 @@ public class TTSHelper {
 				@Override
 				public void onTTSPlayStart() {
 					playing = true;
-					Log.d("tts", "text="+ttsText+"   >>>>腾讯用时："+(System.currentTimeMillis()-start));
 				}
 
 				//音频缓冲中
 				@Override
 				public void onTTSPlayWait() {
-					Log.d("tts", "onPlayWait");
 				}
 
 				//缓冲完成，继续播放
 				@Override
 				public void onTTSPlayResume() {
-					Log.d("tts", "onPlayResume");
 				}
 
 				//连续播放下一句
 				@Override
 				public void onTTSPlayNext() {
-					Log.d("tts", "onPlayNext");
 				}
 
 				//播放中止
 				@Override
 				public void onTTSPlayStop() {
-					Log.d("tts", "onPlayStop");
 				}
 
 				//播放结束
@@ -181,7 +175,6 @@ public class TTSHelper {
 					playing = false;
 					if (null != mOnTTSFinish)
 						mOnTTSFinish.onTTSFinish(type);
-					Log.d("tts", "onPlayEnd");
 				}
 
 				//当前播放的字符,当前播放的字符在所在的句子中的下标.
