@@ -5,38 +5,25 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
-import com.ilesson.ppim.custom.ComposeMessage;
-import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.contactcard.activities.ContactDetailActivity;
 import com.ilesson.ppim.entity.PPUserInfo;
-import com.ilesson.ppim.utils.Constants;
-import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.MyFileUtils;
 import com.ilesson.ppim.utils.SPUtils;
 
-import org.xutils.common.Callback;
-import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
-import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,10 +39,11 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
+import io.rong.imlib.model.UserInfo;
 import io.rong.message.FileMessage;
 import io.rong.message.ImageMessage;
-import io.rong.message.TextMessage;
 
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_INFO;
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 
 /**
@@ -78,8 +66,9 @@ public class ForwadSelectActivity extends BaseActivity {
     public static final String INTENT_TYPE = "intent_type";
     public static final String COMPOSEMESSAGE = "composeMessage";
     public static final int PAY_SCORE = 1;
+    public static final int SEND_FRIEND_CARD = 2;
     public static int ACTION_TYPE = 0;
-
+    private PPUserInfo ppUserInfo;
     @Event(R.id.back_btn)
     private void back(View v) {
         finish();
@@ -100,6 +89,7 @@ public class ForwadSelectActivity extends BaseActivity {
     }
 
     private void initData() {
+        Intent intent = getIntent();
         messageContent = intent.getParcelableExtra("msg");
         String action = intent.getAction();
         if (intent.ACTION_VIEW.equals(action)) {
@@ -130,6 +120,8 @@ public class ForwadSelectActivity extends BaseActivity {
     private void init() {
         intent = getIntent();
         ACTION_TYPE = intent.getIntExtra(INTENT_TYPE, 0);
+        Bundle bundle = intent.getExtras();
+        ppUserInfo = (PPUserInfo) bundle.getSerializable(USER_INFO);
         RongIM.getInstance().getConversationList(new RongIMClient.ResultCallback<List<Conversation>>() {
             @Override
             public void onSuccess(List<Conversation> conversations) {
@@ -223,7 +215,16 @@ public class ForwadSelectActivity extends BaseActivity {
                         bundle.putSerializable(FriendDetailActivity.USER_INFO, user);
                         intent.putExtras(bundle);
                         startActivity(intent);
-                    } else if (otherFile) {
+                    } else if(ACTION_TYPE==SEND_FRIEND_CARD){
+                        UserInfo userInfo = new UserInfo(ppUserInfo.getPhone(),ppUserInfo.getName(), Uri.parse(ppUserInfo.getIcon()));
+                        Intent intent = new Intent(ForwadSelectActivity.this, ContactDetailActivity.class);
+                        intent.putExtra("contact", userInfo);
+                        intent.putExtra("conversationType", conversation.getConversationType());
+                        intent.putExtra("targetId", conversation.getTargetId());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                    else if (otherFile) {
                         for (Uri uri : uris) {
                             MessageContent msg = null;
                             if (intent.getType().contains("image")) {

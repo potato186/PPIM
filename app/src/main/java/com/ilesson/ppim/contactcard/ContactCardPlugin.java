@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -68,8 +67,9 @@ public class ContactCardPlugin implements IPluginModule {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CONTACT && resultCode == Activity.RESULT_OK) {
+            io.rong.imlib.model.UserInfo userInfo = data.getParcelableExtra("contact");
             Intent intent = new Intent(context, ContactDetailActivity.class);
-            intent.putExtra("contact", (Bundle) data.getParcelableExtra("contact"));
+            intent.putExtra("contact", userInfo);
             intent.putExtra("conversationType", conversationType);
             intent.putExtra("targetId", targetId);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

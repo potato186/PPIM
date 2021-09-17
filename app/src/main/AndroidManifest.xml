@@ -137,6 +137,7 @@
             android:name=".activity.ScoreDetailActivity"
             android:theme="@style/AppTheme.score" />
         <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.TextSizeShowActivity" />
         <activity android:name=".activity.NoteActivity"
             android:theme="@style/AppTheme.white"
             android:windowSoftInputMode="adjustResize"/>
@@ -196,6 +197,9 @@
             android:theme="@style/AppTheme.white" />
         <activity
             android:name=".activity.ModifyNikeNameActivity"
+            android:theme="@style/AppTheme.white" />
+        <activity
+            android:name=".activity.ModifyGroupTagNameActivity"
             android:theme="@style/AppTheme.white" />
         <activity
             android:name=".activity.FileReaderActivity"
@@ -259,7 +263,11 @@
             android:theme="@style/AppTheme.blk"
             />
         <activity android:name=".activity.FriendDetailActivity"
-            android:theme="@style/AppTheme.white"/>
+            android:theme="@style/AppTheme.gary"/>
+        <activity android:name=".activity.UserInfoSttingActivity"
+            android:theme="@style/AppTheme.gary"/>
+        <activity android:name=".activity.UserSttingActivity"
+            android:theme="@style/AppTheme.gary"/>
         <activity
             android:name="io.rong.imkit.tools.RongWebviewActivity"
              />

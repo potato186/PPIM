@@ -55,8 +55,9 @@ import com.ilesson.ppim.entity.FriendRequest;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.service.MyHttpManager;
 import com.ilesson.ppim.utils.SPUtils;
-import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.smtt.sdk.QbSdk;
+
 import org.xutils.x;
 
 import java.lang.reflect.Constructor;
@@ -80,21 +81,14 @@ import io.rong.imkit.RongIM;
 public class IlessonApp extends MultiDexApplication implements Application.ActivityLifecycleCallbacks{
     private static final String TAG = "IlessonApp";
     private static IlessonApp ilessonApp;
-    public static final String FONT_SCALE="font_scale";
+    public static final String FONT_INDEX ="font_index";
     @Override
     public void onCreate() {
         super.onCreate();
-
-
         init();
         initBugly();
         changeFontSize();
-//        closeAndroidPDialog();
-        fontScale = getFontScale();
-//        SDKInitializer.initialize(this);
-        //自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
-        //包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
-//        SDKInitializer.setCoordType(CoordType.BD09LL);
+        fontScale = getFontIndex();
     }
     public static Context getContext() {
         return ilessonApp.getApplicationContext();
@@ -113,6 +107,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         strategy.setAppVersion(versionName);
         CrashReport.initCrashReport(this.getApplicationContext(), "55ef2015f4", true, strategy);
     }
+
     public void init(){
         RongIM.init(this);
 //        ZXingLibrary.initDisplayOpinion(this);
@@ -205,7 +200,6 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         RongIM.registerMessageTemplate(new ComposeItemProvider());
         RongIM.registerMessageTemplate(new PPImageItemProvider());
         RongIM.registerMessageTemplate(new RedPacketItemProvider());
-//        ImageLoader.getInstance().clearDiskCache();
     }
     public static IlessonApp getInstance(){
         return ilessonApp;
@@ -284,28 +278,9 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         RongExtensionManager.getInstance().registerExtensionModule(new MyExtensionModule());
     }
 
-    /**
-     * 重写 getResource 方法，防止系统字体影响
-     */
-//    @Override
-//    public Resources getResources() {//禁止app字体大小跟随系统字体大小调节
-//        Resources resources = super.getResources();
-//        ilessonApp = this;
-//        if (resources != null && resources.getConfiguration().fontScale != 1.0f) {
-//            android.content.res.Configuration configuration = resources.getConfiguration();
-//            float scale = SPUtils.get(FONT_SCALE, 1.0f);
-//            configuration.fontScale = 1.3f;
-//            Log.d(TAG, "getResources: fontScale="+scale);
-//            resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-//        }
-//        return resources;
-//    }
     public void changeFontSize() {
         Configuration c = getResources().getConfiguration();
-        c.fontScale = SPUtils.get(FONT_SCALE, 1.0f);
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//        metrics.scaledDensity = c.fontScale * metrics.density;
+        c.fontScale = SPUtils.get(FONT_INDEX, 1.0f);
         getResources().updateConfiguration(c, getResources().getDisplayMetrics());
     }
     /**
@@ -347,10 +322,10 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
     private List<Activity> activityList;
     private float fontScale;
 
-    public static float getFontScale() {
+    public static float getFontIndex() {
         float fontScale = 1.0f;
         if (ilessonApp != null) {
-            fontScale = SPUtils.get(FONT_SCALE, 1.0f);
+            fontScale = SPUtils.get(FONT_INDEX, 1.0f);
         }
         return fontScale;
     }
@@ -425,7 +400,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
                         if (fontScale != ilessonApp.fontScale) {
                             ilessonApp.fontScale = fontScale;
                             //保存设置后的字体大小
-                            SPUtils.put(FONT_SCALE, fontScale);
+                            SPUtils.put(FONT_INDEX, fontScale);
                         }
                     }
                 }
@@ -465,4 +440,5 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         String name = manager.getRunningTasks(1).get(0).topActivity.getClassName();
         return name.equals(cls.getName());
     }
+
 }

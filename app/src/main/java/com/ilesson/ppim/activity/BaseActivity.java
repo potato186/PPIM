@@ -32,8 +32,10 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 
-import static com.ilesson.ppim.IlessonApp.FONT_SCALE;
+import static com.ilesson.ppim.IlessonApp.FONT_INDEX;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
+import static com.ilesson.ppim.activity.TextSizeShowActivity.FONT_SCALE;
 
 public class BaseActivity extends FragmentActivity {
 
@@ -314,10 +316,11 @@ public class BaseActivity extends FragmentActivity {
     public FragmentActivity getCurrentActivity() {
         return currentActivity;
     }
-
+    public String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        token = SPUtils.get(LOGIN_TOKEN, "");
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 //            StatusBarUtil.setStatusBarColor(this,android.R.color.white);
@@ -356,38 +359,65 @@ public class BaseActivity extends FragmentActivity {
 
         void onPermissionDenied();
     }
-    public boolean isNeedResetFontSize = true;
-    /**
-     * 重写 getResource 方法，防止系统字体影响
-     */
+
+    //重写字体缩放比例 api<25
     @Override
-    public Resources getResources() {//禁止app字体大小跟随系统字体大小调节
-        Resources resources = super.getResources();
-//        if (isNeedResetFontSize) {
-//            if (resources != null && resources.getConfiguration().fontScale != 1.0f) {
-                android.content.res.Configuration configuration = resources.getConfiguration();
-                float scale = SPUtils.get(FONT_SCALE, 1.0f);
-                configuration.fontScale = scale;
-                resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-//            }
-//        }
-        return resources;
-    }
-    /**
-     * 修改字体大小
-     *
-     * @param spKey
-     */
-    public void changeFontSize(String spKey) {
-        float scale = 1.0f;
-        Configuration c = getResources().getConfiguration();
-        if (!TextUtils.isEmpty(spKey)) {
-            scale = SPUtils.get(spKey, 1.0f);
+    public Resources getResources() {
+        Resources res =super.getResources();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
+            Configuration config = res.getConfiguration();
+            config.fontScale= SPUtils.get(FONT_INDEX, 1.0f)*FONT_SCALE+1;//1 设置正常字体大小的倍数
+            res.updateConfiguration(config,res.getDisplayMetrics());
         }
-        c.fontScale = scale;
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//        metrics.scaledDensity = c.fontScale * metrics.density;
-        getResources().updateConfiguration(c, getResources().getDisplayMetrics());
+        return res;
     }
+    //重写字体缩放比例  api>25
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        if(Build.VERSION.SDK_INT>Build.VERSION_CODES.N){
+            final Resources res = newBase.getResources();
+            final Configuration config = res.getConfiguration();
+            config.fontScale=SPUtils.get(FONT_INDEX, 1.0f)*FONT_SCALE+1;
+            final Context newContext = newBase.createConfigurationContext(config);
+            super.attachBaseContext(newContext);
+        }else{
+            super.attachBaseContext(newBase);
+        }
+    }
+
+
+    public boolean isNeedResetFontSize = true;
+//    /**
+//     * 重写 getResource 方法，防止系统字体影响
+//     */
+//    @Override
+//    public Resources getResources() {//禁止app字体大小跟随系统字体大小调节
+//        Resources resources = super.getResources();
+////        if (isNeedResetFontSize) {
+////            if (resources != null && resources.getConfiguration().fontScale != 1.0f) {
+//                android.content.res.Configuration configuration = resources.getConfiguration();
+//                float scale = SPUtils.get(FONT_SCALE, 1.0f);
+//                configuration.fontScale = scale;
+//                resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+////            }
+////        }
+//        return resources;
+//    }
+//    /**
+//     * 修改字体大小
+//     *
+//     * @param spKey
+//     */
+//    public void changeFontSize(String spKey) {
+//        float scale = 1.0f;
+//        Configuration c = getResources().getConfiguration();
+//        if (!TextUtils.isEmpty(spKey)) {
+//            scale = SPUtils.get(spKey, 1.0f);
+//        }
+//        c.fontScale = scale;
+////        DisplayMetrics metrics = new DisplayMetrics();
+////        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+////        metrics.scaledDensity = c.fontScale * metrics.density;
+//        getResources().updateConfiguration(c, getResources().getDisplayMetrics());
+//    }
 }

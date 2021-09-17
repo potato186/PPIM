@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_label_name">智能PP</string>
     <string name="phone_registe">手机号注册</string>
     <string name="item_a">消息</string>
@@ -12,6 +12,11 @@
     <string name="add_friend">添加好友</string>
     <string name="blockchain_group">区块链群</string>
     <string name="request_group">发起群聊</string>
+    <string name="nike_in_group">我在群里的昵称</string>
+    <string name="nike_of_group">群备注</string>
+    <string name="nike_of_group_visible">群聊的备注仅自己可见</string>
+    <string name="mynike_in_group">我在群里的昵称</string>
+    <string name="modify_nike_in_group_tip">昵称修改后，只会在此群内显示，群内成员都可以看见。</string>
     <string name="select_friends">选择联系人</string>
     <string name="pp_trans">PP转消费积分</string>
     <string name="phone_num">手机号</string>
@@ -70,7 +75,6 @@
     <string name="confirm_take_post">已签收</string>
     <string name="custom_confirm_take_post">买家已签收</string>
     <string name="order_manager">商家订单管理</string>
-    <string name="nike_in_group">我在群里的昵称</string>
     <string name="logistics_num">物流单号</string>
     <string name="logistics_state">物流状态</string>
     <string name="logistics_info">物流信息</string>
@@ -124,6 +128,11 @@
     <string name="code_userinfo">二维码名片</string>
     <string name="code_group">群二维码</string>
     <string name="voice_switch">语言播报</string>
+    <string name="message_disturb">消息免打扰</string>
+    <string name="search_record">查找聊天记录</string>
+    <string name="message_top">消息置顶</string>
+    <string name="recommend">推荐给好友</string>
+    <string name="add_blacklist">加入黑名单</string>
     <string name="scan_code_trans">扫二维码付消费积分</string>
     <string name="trans_to_friend">转消费积分给好友</string>
     <string name="scan_code">扫一扫</string>
@@ -175,7 +184,7 @@
     <string name="has_split_info">已领取%1$d/%2$d个,%3$d/%4$d消费积分</string>
     <string name="no_split_info">%1$d个红包,%2$s被抢光</string>
     <string name="default_des">恭喜发财,大吉大利</string>
-    <string name="app_des">一款虚拟机器人(语音)物换物的平台,是集区块链技术、社交、消费(消费积分)为一体的物联网创新平台。</string>
+    <string name="app_des">一款具备 AI 智能的虚拟机器人平台。</string>
     <string name="rc_plugins_contact">个人名片</string>
     <string name="rc_send">发送</string>
     <string name="rc_send_to">发送给 :</string>
@@ -222,15 +231,25 @@
     <string name="order_tips">亲,请您核对订单信息</string>
     <string name="order_express_tips">亲,您的订单已发货!</string>
     <string name="new_order_tips">亲,您有新的订单!</string>
+    <string name="pp_number">PP号:%1$s</string>
     <string name="chat_info">聊天信息(%1$d)</string>
+    <string name="chat_info_">聊天信息</string>
+    <string name="chat_info_set">资料设置</string>
     <string name="font_resize_standard">标准</string>
     <string name="trans_to_person">转消费积分给个人</string>
     <string name="paypwd_error">支付密码错误,请重试</string>
     <string name="retry">重试</string>
+    <string name="preview_font">预览字体大小</string>
+    <string name="drag_font">滑动下面的滑块调整字体大小</string>
+    <string name="drag_font_help">设置后，会改变所有模块中的字体大小。如果在使用过程中存在问题或意见，可反馈给我们。</string>
     <string name="quit_tip">删除并退出群聊后,将不再接收此群聊信息</string>
     <string name="delete_group_tip">是否解散群聊</string>
     <string name="more_member">查看全部群成员</string>
     <string name="delete_it">是否删除?</string>
+    <string name="delete_friend_title">删除联系人</string>
+    <string name="delete_friend_tips">将联系人\"%1$s\"删除，将同时删除与该联系人的聊天记录</string>
+    <string name="add_black_list_tip">加入黑名单,你将不再接收到对方消息</string>
+    <string name="add_black_list">加入黑名单</string>
     <string name="create_group_title">建群提示</string>
     <string name="create_group_now">继续创建</string>
     <string name="create_group_next">下次再建</string>
@@ -310,6 +329,9 @@
     <string name="reset_pay_pwd">重置支付密码</string>
     <string name="account_scurity">账号与安全</string>
     <string name="about_us">关于智能PP</string>
+    <string name="region">国家/地区</string>
+    <string name="true_name">真实姓名</string>
+    <string name="ai_title" tools:ignore="ExtraTranslation">仿脑物联智能操作系统</string>
     <string name="contact_server">联系客服</string>
     <string name="new_version">版本更新</string>
     <string name="group_name">群聊名称</string>
@@ -354,10 +376,12 @@
     <string name="password_not_null">密码不能为空</string>
     <string name="nike_not_null">昵称不能为空</string>
     <string name="nike">昵称</string>
+    <string name="nike_tip">例如：陈晨</string>
     <string name="nick_amost_2">昵称不能少于2个字符</string>
     <string name="registe">用户注册</string>
     <string name="registe_btn">注册</string>
     <string name="real_name">真实姓名</string>
+    <string name="input_pwd_">请填写密码</string>
     <string name="real_name_symbol">姓名拼音</string>
     <string name="modify_real_name_symbol">修改姓名拼音</string>
     <string name="modify_real_name">修改真实姓名</string>
@@ -408,6 +432,7 @@
     <string name="confirm_recept">确认收货</string>
     <string name="check_logistc">查看物流</string>
     <string name="custom_tag">编辑自定义标签名称</string>
+    <string name="tag">标签</string>
     <string name="hint_consignee_name">请填写收货人姓名</string>
     <string name="phone_num_">手机号码</string>
     <string name="hint_consignee_phone_num_">请填写收货人手机号码</string>
@@ -432,6 +457,8 @@
     <string name="invoice_type">发票类型</string>
     <string name="invoice_title">发票抬头</string>
     <string name="invoice_content">发票内容</string>
+    <string name="detail_intro">详情介绍</string>
+    <string name="detail_more">更多详情</string>
     <string name="invoice_title_type">抬头类型</string>
     <string name="invoice_title_name">抬头名称</string>
     <string name="invoice_price">开票金额</string>

@@ -10,7 +10,16 @@ public class GroupInfo implements Serializable {
     private String id;
     private String name;
     private String icon;
+    private String tag;
     private int size;
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public String getId() {
         return id;

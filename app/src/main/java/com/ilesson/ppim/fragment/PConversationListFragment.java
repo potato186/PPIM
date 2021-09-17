@@ -19,8 +19,11 @@ import android.widget.Toast;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.LoginActivity;
 import com.ilesson.ppim.activity.MainActivity;
+import com.ilesson.ppim.activity.UserSttingActivity;
 import com.ilesson.ppim.adapter.ConversationListAdapter;
 import com.ilesson.ppim.custom.MyExtensionModule;
+import com.ilesson.ppim.entity.DeleteFriend;
+import com.ilesson.ppim.entity.FreshConversation;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.StatusBarUtil;
 
@@ -173,7 +176,7 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
         });
         StatusBarUtil.setBarPadding(mainActivity,view.findViewById(R.id.layout));
         TextView title = view.findViewById(R.id.title);
-        title.setText(R.string.item_b);
+        title.setText(R.string.item_a);
         this.mAdapter.setOnPortraitItemClick(this);
         this.mRefreshLayout.setCanRefresh(false);
         this.mRefreshLayout.setCanLoading(true);
@@ -501,7 +504,6 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
                 }
             }
         }
-
     }
 
     public boolean shouldUpdateConversation(Message message, int left) {
@@ -848,6 +850,9 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
         }
 
     }
+    public void onEventMainThread(FreshConversation event) {
+        this.getConversationList(this.getConfigConversationTypes(), false);
+    }
 
     public void onEventMainThread(final Event.CreateDiscussionEvent createDiscussionEvent) {
         RLog.d(TAG, "createDiscussionEvent");
@@ -926,6 +931,9 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
         }
     }
 
+    public void onEventMainThread(DeleteFriend var) {
+
+    }
     public void onEventMainThread(Discussion discussion) {
         RLog.d(TAG, "Discussion: " + discussion.getName() + " " + discussion.getId());
         if (this.isConfigured(Conversation.ConversationType.DISCUSSION)) {
@@ -1270,6 +1278,7 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
             if (realPosition >= 0 && realPosition < this.mAdapter.getCount()) {
                 UIConversation uiConversation = (UIConversation)this.mAdapter.getItem(realPosition);
                 Conversation.ConversationType conversationType = uiConversation.getConversationType();
+                UserSttingActivity.isTop = uiConversation.isTop();
                 if (this.getGatherState(conversationType)) {
                     RongIM.getInstance().startSubConversationList(this.getActivity(), conversationType);
                 } else {

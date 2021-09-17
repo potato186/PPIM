@@ -120,7 +120,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Event(value = R.id.registe)
-    private void registe(View view) throws DbException {
+    private void registe(View view) {
         startActivity(new Intent(LoginActivity.this, RegisteActivity.class));
     }
 

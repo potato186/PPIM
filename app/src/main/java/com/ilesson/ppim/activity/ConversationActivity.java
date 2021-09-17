@@ -48,13 +48,18 @@ import com.ilesson.ppim.R;
 import com.ilesson.ppim.custom.ComposeMessage;
 import com.ilesson.ppim.entity.AddressInfo;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.DeleteFriend;
 import com.ilesson.ppim.entity.GroupBase;
+import com.ilesson.ppim.entity.GroupInfo;
 import com.ilesson.ppim.entity.HideProgress;
 import com.ilesson.ppim.entity.InvoiceInfo;
+import com.ilesson.ppim.entity.ModifyGroupName;
+import com.ilesson.ppim.entity.ModifyGroupNike;
 import com.ilesson.ppim.entity.NoteInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.PayOrder;
 import com.ilesson.ppim.entity.PaySuccess;
+import com.ilesson.ppim.entity.ResetGroupName;
 import com.ilesson.ppim.entity.ShowProgress;
 import com.ilesson.ppim.entity.SmartOrder;
 import com.ilesson.ppim.entity.WaresOrder;
@@ -113,6 +118,7 @@ import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.RongMessageItemLongClickActionManager;
 import io.rong.imkit.mention.RongMentionManager;
+import io.rong.imkit.model.GroupUserInfo;
 import io.rong.imkit.model.UIMessage;
 import io.rong.imkit.widget.provider.MessageItemLongClickAction;
 import io.rong.imlib.model.Conversation;
@@ -127,6 +133,7 @@ import io.rong.message.TextMessage;
 import static com.ilesson.ppim.activity.AddressActivity.SET_ADDRESS_SUCCESS;
 import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
 import static com.ilesson.ppim.activity.ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE;
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
 import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_MEDIUM;
 import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NAME;
 import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NUM;
@@ -142,18 +149,20 @@ import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
 import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_MEDIUM;
 import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_NAME;
 import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
 import static com.ilesson.ppim.activity.PayScoreActivity.PAY_DECS;
 import static com.ilesson.ppim.activity.PayScoreActivity.PAY_MONEY;
 import static com.ilesson.ppim.activity.SettingActivity.XUNFEI;
 import static com.ilesson.ppim.activity.VoiceTxtActivity.CHATMODE;
 import static com.ilesson.ppim.custom.MyExtensionModule.shopGroup;
 import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
+
 @ContentView(R.layout.conversation)
 public class ConversationActivity extends BaseActivity implements RongIM.LocationProvider, RongIM.ConversationBehaviorListener {
     public static String title;
     @ViewInject(R.id.title_name)
     private TextView titleTextView;
+    @ViewInject(R.id.nike_name)
+    private TextView nikeNameTextView;
     public String groupName;
     public String mTargetId;
     @ViewInject(R.id.menu)
@@ -218,8 +227,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     public TextView invoicePrice;
     @ViewInject(R.id.invoice_email)
     public TextView invoiceEmail;
-//    @ViewInject(R.id.voice_icon)
-//    public ImageView imageRecord;
     @ViewInject(R.id.result_image)
     public ImageView resultImageView;
     @ViewInject(R.id.wares_img)
@@ -267,6 +274,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private List<InvoiceInfo> invoiceInfos;
     private SmartOrder smartOrder;
     private boolean isOwner;
+
     public void onEventMainThread(Conversation conversation) {
         if (!isFinishing()) {
             finish();
@@ -302,38 +310,44 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         Log.d(TAG, "shop_car_view: ");
         shopCarEvent();
     }
+
     @Event(R.id.modify)
     private void modify(View v) {
         setInvoice(invoiceInfo);
     }
+
     @Event(R.id.no_invoice)
     private void no_invoice(View v) {
         setInvoice(null);
     }
+
     @Event(R.id.play_tts)
     private void play_tts(View v) {
         playTTsEvent();
     }
+
     @Event(R.id.back_btn)
     private void back_btn(View v) {
         out();
     }
+
     @Event(R.id.to_pay)
     private void to_pay(View v) {
         if (null != api && null != req) {
             api.sendReq(req);
         }
     }
+
     @Event(R.id.close)
     private void close(View v) {
-//        shopLayout.setVisibility(View.GONE);
-//        stop(false);
         closeVoice();
     }
+
     @Event(R.id.to_set_address)
     private void to_set_address(View v) {
-            startActivityForResult(new Intent(ConversationActivity.this, AddressActivity.class), 0);
+        startActivityForResult(new Intent(ConversationActivity.this, AddressActivity.class), 0);
     }
+
     @Event(R.id.show_content)
     private void show_content(View v) {
         if (currentOrder != null && !TextUtils.isEmpty(currentOrder.getLink())) {
@@ -342,34 +356,33 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             startActivity(intent1);
         }
     }
-//    @Event(R.id.shop_car)
-//    private void shop_car(View v) {
-//        if (waresIntroView.getVisibility() == View.VISIBLE) {
-//            return;
-//        }
-//        waresIntroView.setVisibility(View.VISIBLE);
-//        ttsView.setVisibility(View.GONE);
-//        requestText.setVisibility(View.GONE);
-//        resultImageView.setVisibility(View.GONE);
-////                showContent.setVisibility(View.GONE);
-//        helpTextView.setVisibility(View.VISIBLE);
-//        helpTextView.setText(helpText);
-//    }
+
     @Event(R.id.menu)
     private void menu(View v) {
-        Intent intent = new Intent(this, ChatInfoActivity.class);
-        intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
-        intent.putExtra(ChatInfoActivity.GROUP_NAME, title);
-        intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
+        if (mConversationType == Conversation.ConversationType.GROUP) {
+            Intent intent = new Intent(this, ChatInfoActivity.class);
+            intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
+            intent.putExtra(ChatInfoActivity.GROUP_NAME, groupInfo.getName());
+            intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
 //                intent.putExtra(ChatInfoActivity.GROUP_INFO, groupBase);
-        intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
-        intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
-        startActivityForResult(intent, 0);
+            intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
+            intent.putExtra(ChatInfoActivity.GROUP_TAG, groupInfo.getTag());
+            intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
+            startActivityForResult(intent, 0);
+        } else {
+            Intent intent = new Intent(this, UserSttingActivity.class);
+            intent.putExtra(USER_ID, mTargetId);
+            startActivity(intent);
+        }
     }
+    public static final String TARGET_ID = "targetId";
+    public static final String TARGET_NAME = "target_name";
+    public static final String MESSAGE_ID = "message_id";
+    public int messageId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate:currentActivity "+getCurrentActivity());
+        Log.d(TAG, "onCreate:currentActivity " + getCurrentActivity());
         setCurrentActivity(this);
         EventBus.getDefault().register(this);
         screenWidth = PPScreenUtils.getScreenWidth(this);
@@ -377,7 +390,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         playerUtils = new PlayerUtils();
         playerUtils.initPlayer(this);
         Intent intent = getIntent();
-        mTargetId = intent.getData().getQueryParameter("targetId");
+        mTargetId = intent.getData().getQueryParameter(TARGET_ID);
         title = intent.getData().getQueryParameter("title");
         xunfei = SPUtils.get(SettingActivity.VOICE_NAME, XUNFEI).equals(XUNFEI) ? true : false;
         conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_conversation);
@@ -497,7 +510,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 playTts = SPUtils.get(PLAY_TTS, true);
                 showPlayState();
                 request("", false);
-                voiceLayout.setVisibility(View.VISIBLE);
                 handler.sendEmptyMessageDelayed(0, 200);
                 groupName = intent.getData().getQueryParameter("title");
                 SPUtils.put(MARKET_SERVER, groupName);
@@ -540,7 +552,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         setListenerToRootView();
         initSpeech();
     }
+
     private boolean show;
+
     private void setListenerToRootView() {
         final View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -550,17 +564,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 rootView.getWindowVisibleDisplayFrame(r);
 
                 int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
-                Log.d(TAG, "onGlobalLayout: "+heightDiff);
-                if (heightDiff > PPScreenUtils.getScreenHeight(ConversationActivity.this)/3) { // if more than 100 pixels, its probably a keyboard...
-                    if(!show){
+                if (heightDiff > PPScreenUtils.getScreenHeight(ConversationActivity.this) / 3) { // if more than 100 pixels, its probably a keyboard...
+                    if (!show) {
                         setVoiceBtnLocationOnSoftInput();
                     }
-                    show=true;
-                }else{
-                    if(show){
+                    show = true;
+                } else {
+                    if (show&&mTargetId.contains("market")) {
                         setVoiceBtnLocation();
                     }
-                    show=false;
+                    show = false;
                 }
             }
         });
@@ -599,7 +612,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        stoped=false;
+        stoped = false;
         if (resultCode == PAY_SUCCESS) {
             String money = data.getStringExtra(PAY_MONEY);
             String desc = data.getStringExtra(PAY_DECS);
@@ -637,8 +650,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 lastOrder.setInvoicetag(tag);
             }
             invoiceTag = tag;
-            invoiceMedium = INVOICE_PAPER.equals(invoiceInfo.getMedium())?getResources().getString(R.string.paper_type):"";
-            if(null!=lastOrder){
+            invoiceMedium = INVOICE_PAPER.equals(invoiceInfo.getMedium()) ? getResources().getString(R.string.paper_type) : "";
+            if (null != lastOrder) {
                 lastOrder.setInv_eptype(invoiceMedium);
             }
             showInvoiceView(invoiceInfo);
@@ -650,19 +663,20 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             return;
         }
         if (resultCode == MODIFY_SUCCESS) {
-            title = data.getStringExtra(MODIFY_RESULT);
-            showTitle();
+//            title = data.getStringExtra(MODIFY_RESULT);
+//            showTitle();
+            requestGroupInfo(true);
             return;
         }
-        if (resultCode == SET_ADDRESS_SUCCESS_TO_USE||resultCode == SET_ADDRESS_SUCCESS) {
+        if (resultCode == SET_ADDRESS_SUCCESS_TO_USE || resultCode == SET_ADDRESS_SUCCESS) {
             String key = buyKey;
             String text = "寄到";
-            if(key.length()>2){
-                if(key.startsWith(text)||key.substring(1).startsWith(text)||key.substring(2).startsWith(text)){
-                    key=postPlace+key;
+            if (key.length() > 2) {
+                if (key.startsWith(text) || key.substring(1).startsWith(text) || key.substring(2).startsWith(text)) {
+                    key = postPlace + key;
                 }
             }
-            if(!key.contains("改地址")){
+            if (!key.contains("改地址")) {
                 request(key, false);
                 requestText.setText(key);
             }
@@ -674,6 +688,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     }
 
     private static final String TAG = "ConversationActivity";
+    public static final String CONVERSATION_TYPE = "conversation_type";
 
     /**
      * 展示如何从 Intent 中得到 融云会话页面传递的 Uri
@@ -681,11 +696,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private String phone;
 
     private void getIntentDate(Intent intent) {
-        if (mTargetId.contains("market")) {//导购群置顶
-//            playView.setVisibility(View.VISIBLE);
-//            RongIM.getInstance().setConversationToTop(Conversation.ConversationType.GROUP, mTargetId, true, true, null);
-        }
         OutlineActivity.title = title;
+        messageId = intent.getIntExtra(MESSAGE_ID,-1);
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN, "");
         phone = SPUtils.get(LoginActivity.USER_PHONE, "");
         OutlineActivity.targetId = mTargetId;
@@ -694,13 +706,12 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         OutlineActivity.conversationType = mConversationType;
         if (mConversationType == Conversation.ConversationType.GROUP) {
             imUtils.searchGroupInfo(token, mTargetId);
-            if (null != menu) {
-                menu.setVisibility(View.VISIBLE);
-            }
             if (null != titleTextView) {
                 titleTextView.setText(title + "(" + 2 + ")");
             }
-            requestGroupInfo();
+            requestGroupInfo(false);
+//            imUtils.searchGroupUserInfo();
+            requestAllGroupUsers();
         } else {
             titleTextView.setText(title);
             imUtils.searchUserInfo(token, mTargetId);
@@ -735,6 +746,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
         finish();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -746,7 +758,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private String nikeName;
     private String groupIcon;
     private GroupBase groupBase;
-    public void requestGroupInfo() {
+    private GroupInfo groupInfo;
+    public void requestGroupInfo(boolean justRefreshName) {
         ///pp/group?action=info&token=%s&group=%s
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN, "");
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
@@ -774,8 +787,13 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     groupSize = groupBase.getSize();
                     isOwner = groupBase.isOwner();
                     nikeName = groupBase.getMy().getName();
+                    groupInfo = groupBase.getGroup();
                     groupIcon = groupBase.getGroup().getIcon();
+                    EventBus.getDefault().post(new ResetGroupName(groupInfo.getName()));
                     showTitle();
+                    if(justRefreshName){
+                        return;
+                    }
                     final List<UserInfo> users = new ArrayList<>();
                     for (PPUserInfo info : list) {
                         Uri portraitUri = Uri.parse(info.getIcon());
@@ -807,6 +825,50 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         });
     }
 
+    public void requestAllGroupUsers() {
+        ///pp/group?action=info&token=%s&group=%s
+        String token = SPUtils.get(LoginActivity.LOGIN_TOKEN,"");
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
+        params.addParameter("action", "list");
+        params.addParameter("token", token);
+        params.addParameter("page", 0);
+        params.addParameter("size", 20000);
+        params.addParameter("group", mTargetId);
+        showProgress();
+        Log.d(TAG, "requestGroupInfo: " + params.toString());
+        x.http().post(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                BaseCode<List<PPUserInfo>> base = new Gson().fromJson(
+                        result,
+                        new TypeToken<BaseCode<List<PPUserInfo>>>() {
+                        }.getType());
+                if (base.getCode() == 0) {
+                    List<PPUserInfo> list = base.getData();
+                    for (PPUserInfo ppUserInfo : list) {
+                        SPUtils.put(ppUserInfo.getPhone(),ppUserInfo.getIcon());
+                        SPUtils.put(ppUserInfo.getPhone()+"name",ppUserInfo.getName());
+                        GroupUserInfo groupUserInfo = new GroupUserInfo(mTargetId,ppUserInfo.getPhone(),ppUserInfo.getName());
+                        RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
+                    }
+                }
+            }
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                ex.printStackTrace();
+            }
+            @Override
+            public void onCancelled(CancelledException cex) {
+                cex.printStackTrace();
+            }
+
+
+            @Override
+            public void onFinished() {
+                hideProgress();
+            }
+        });
+    }
     @Override
     public boolean onUserPortraitClick(Context context, Conversation.ConversationType conversationType, UserInfo userInfo) {
         PPUserInfo user = new PPUserInfo();
@@ -899,8 +961,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
         invoiceTag = order.getInvoicetag();
         invoiceMedium = order.getInv_eptype();
-        if(TextUtils.isEmpty(invoiceTag)&&!TextUtils.isEmpty(invoiceMedium)){
-            invoiceTag =  getResources().getString(R.string.personal);
+        if (TextUtils.isEmpty(invoiceTag) && !TextUtils.isEmpty(invoiceMedium)) {
+            invoiceTag = getResources().getString(R.string.personal);
         }
         invoiceInfo = null;
 
@@ -934,8 +996,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     invoiceInfo.setEmail(eName);
                 }
                 invoiceInfo.setType(tag);
-                String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium)?INVOICE_PAPER:INVOICE_ELECT;
-                if (TextUtils.isEmpty(invoiceInfo.getName())||(medium.equals(INVOICE_ELECT)&&TextUtils.isEmpty(invoiceInfo.getEmail()))) {
+                String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium) ? INVOICE_PAPER : INVOICE_ELECT;
+                if (TextUtils.isEmpty(invoiceInfo.getName()) || (medium.equals(INVOICE_ELECT) && TextUtils.isEmpty(invoiceInfo.getEmail()))) {
                     noInvoiceLayout.setVisibility(View.VISIBLE);
                     setInvoice(invoiceInfo);
                 } else {
@@ -956,8 +1018,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             noInvoiceLayout.setVisibility(View.VISIBLE);
         } else {
             invoiceLayout.setVisibility(View.VISIBLE);
-            String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium)?INVOICE_PAPER:INVOICE_ELECT;
-            String mediumName = medium.equals(INVOICE_ELECT)?getResources().getString(R.string.elec_invoice):getResources().getString(R.string.paper_invoice);
+            String medium = getResources().getString(R.string.paper_type).equals(invoiceMedium) ? INVOICE_PAPER : INVOICE_ELECT;
+            String mediumName = medium.equals(INVOICE_ELECT) ? getResources().getString(R.string.elec_invoice) : getResources().getString(R.string.paper_invoice);
             invoiceInfo.setMedium(medium);
             invoiceInfo.setMediumName(mediumName);
             String title = invoiceInfo.getType().equals(INVOICE_PERSON) ? getResources().getString(R.string.personal) : getResources().getString(R.string.enterprise);
@@ -1019,7 +1081,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     String name = SPUtils.get(MARKET_SERVER, "");
 
                     String id = TextUtil.getServerId(serverId);
-                    RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE,id,String.format(getResources().getString(R.string.custom_server),name));
+                    RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE, id, String.format(getResources().getString(R.string.custom_server), name));
 //                    RongIM.getInstance().startConversation(ConversationActivity.this, Conversation.ConversationType.PRIVATE, id, name + getResources().getString(R.string.custom_server));
                 }
 //                readJson(result);
@@ -1108,6 +1170,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         layoutParams.topMargin = y;
         floatBtn.setLayoutParams(layoutParams);
         floatBtn.requestFocus();
+        voiceLayout.setVisibility(View.VISIBLE);
     }
 
     private void setVoiceBtnLocationOnSoftInput() {
@@ -1118,7 +1181,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         }
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) floatBtn.getLayoutParams();
         layoutParams.leftMargin = x;
-        layoutParams.topMargin = PPScreenUtils.getScreenHeight(this)/2-PPScreenUtils.dip2px(this,100);
+        layoutParams.topMargin = PPScreenUtils.getScreenHeight(this) / 2 - PPScreenUtils.dip2px(this, 100);
         floatBtn.setLayoutParams(layoutParams);
     }
 
@@ -1134,13 +1197,13 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         playTts = !playTts;
         showPlayState();
         SPUtils.put(PLAY_TTS, playTts);
-        if (!playTts && ttsHelper.isSpeaking()) {
+        if (!playTts && ttsHelper != null) {
             ttsHelper.stop();
         }
     }
 
     public void shopCarEvent() {
-        if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
+        if (null != ttsHelper && ttsHelper != null) {
             ttsHelper.stop();
         }
         if (shopCarNum.getVisibility() == View.GONE) {
@@ -1173,7 +1236,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         LinearInterpolator lir = new LinearInterpolator();
         anim.setInterpolator(lir);
         floatBtn.startAnimation(anim);
-        if (ttsHelper.isSpeaking()) {
+        if (ttsHelper != null) {
             ttsHelper.stop();
         }
         recording = true;
@@ -1193,27 +1256,32 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             floatBtn.clearAnimation();
         }
     }
+
     @Event(value = R.id.bg_layout)
     private void bg_layout(View v) {
     }
+
     @Event(value = R.id.shop_layout)
     private void shop_layout(View v) {
         closeVoice();
     }
-    private void closeVoice(){
+
+    private void closeVoice() {
         shopLayout.setVisibility(View.GONE);
         stopVoice();
     }
 
-    private void stopVoice(){
+    private void stopVoice() {
         if (recording) {
             stop(false);
         }
-        if (null!=ttsHelper&&ttsHelper.isSpeaking()) {
+        if (null != ttsHelper && ttsHelper != null) {
             ttsHelper.stop();
         }
     }
+
     private boolean stoped;
+
     @Override
     public void onStop() {
         super.onStop();
@@ -1224,7 +1292,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     public void onResume() {
         super.onResume();
-        stoped=false;
+        stoped = false;
         setCurrentActivity(this);
     }
 
@@ -1273,16 +1341,16 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     }
 
     private AddressInfo addressInfo;
-    private String buyKey="";
+    private String buyKey = "";
     private String invoiceTag;
     private String invoiceMedium;
-    private String postPlace="";
+    private String postPlace = "";
 
     public void request(final String key, final boolean voice) {
-        if(stoped){
+        if (stoped) {
             return;
         }
-        if (key==null||key.length() > 100) {
+        if (key == null || key.length() > 100) {
             return;
         }
         currentKey = key;
@@ -1323,6 +1391,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         toSetAddress.setVisibility(View.GONE);
                         noInvoiceLayout.setVisibility(View.GONE);
                         invoiceLayout.setVisibility(View.GONE);
+                        resultImageView.setVisibility(View.GONE);
 //                        waresIntroView.setVisibility(View.GONE);
 //                        resultImageView.setVisibility(View.GONE);
 //                        addressLayout.setVisibility(View.GONE);
@@ -1365,7 +1434,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (playTts) {
-                                ttsHelper.start(data.getTag(), tts);
+                            if ("en".equals(order.getTtsType())) {
+                                ttsHelper.startEnglish(data.getTag(), tts);
+                            } else {
+                                ttsHelper.startChinese(data.getTag(), tts);
+                            }
                         } else {
                             if (!TextUtils.isEmpty(currentKey) && voice) {
                                 playerUtils.play();
@@ -1375,7 +1448,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         }
 
                         if (data.getTag() == 0) {
-                            if(tts.contains("寄到哪里")){
+                            if (tts.contains("寄到哪里")) {
                                 postPlace = key;
                             }
                             showContent(order);
@@ -1573,8 +1646,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             requestText.setVisibility(View.GONE);
             ttsView.setVisibility(View.VISIBLE);
 //            showContent.setVisibility(View.GONE);
-            helpTextView.setVisibility(View.VISIBLE);
-            helpTextView.setText(order.getHelp());
+            if (!TextUtils.isEmpty(order.getHelp())) {
+                helpTextView.setVisibility(View.VISIBLE);
+                helpTextView.setText(order.getHelp());
+            }
             SPUtils.put(tag, false);
         }
         if (!first && TextUtils.isEmpty(currentKey)) {
@@ -1628,16 +1703,17 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         resultImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImagePreviewActivity.startPreview(ConversationActivity.this,order.getImgurl());
+                ImagePreviewActivity.startPreview(ConversationActivity.this, order.getImgurl());
             }
         });
     }
+
     private void initSpeech() {
         ttsHelper = new TTSHelper(this);
         ttsHelper.setOnTTSFinish(new TTSHelper.OnTTSFinish() {
             @Override
             public void onTTSFinish(int type) {
-                switch (type){
+                switch (type) {
                     case 5:
                         getServer();
                         break;
@@ -1696,8 +1772,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 //            }
 //        });
     }
-    public void getPermission(){
-        AlertDialog.Builder alertDialog=null;
+
+    public void getPermission() {
+        AlertDialog.Builder alertDialog = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             alertDialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         } else {
@@ -1817,13 +1894,23 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         showShopTheme(false);
         shopCarView.setVisibility(View.GONE);
         shopCarNum.setVisibility(View.GONE);
-        if(!IlessonApp.getInstance().isCommonBuy()){
-            new IMUtils().loadTrade(ConversationActivity.this,trade,false);
+        if (!IlessonApp.getInstance().isCommonBuy()) {
+            new IMUtils().loadTrade(ConversationActivity.this, trade, false);
         }
     }
 
     public void onEventMainThread(AddressInfo var) {
 //        search(buyKey,false);
+    }
+    public void onEventMainThread(DeleteFriend var) {
+        finish();
+    }
+    public void onEventMainThread(ModifyGroupNike var) {
+        requestGroupInfo(true);
+    }
+
+    public void onEventMainThread(ModifyGroupName var) {
+        requestGroupInfo(true);
     }
 
     private AAIClient aaiClient;
@@ -1890,6 +1977,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     currentRequestId = request.getRequestId();
                     Log.d(TAG, "onStartRecord: ");
                 }
+
                 public void onNextAudioData(final short[] audioDatas, final int readBufferLength) {
                 }
 
@@ -2048,14 +2136,15 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         return stringBuffer.toString();
     }
 
-    public void onEventMainThread(ShowProgress showProgress){
+    public void onEventMainThread(ShowProgress showProgress) {
         showProgress();
     }
-    public void onEventMainThread(HideProgress hideProgress){
+
+    public void onEventMainThread(HideProgress hideProgress) {
         hideProgress();
     }
 
-    private void loadOrder(String id,int type) {
+    private void loadOrder(String id, int type) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
         params.addParameter("action", "info");
         params.addParameter("oid", id);
@@ -2066,8 +2155,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         x.http().post(params, new Callback.CacheCallback<String>() {
             @Override
             public boolean onCache(String result) {
-                WaresOrder order = readOrderJson(result,type);
-                if(null==order||TextUtils.isEmpty(order.getName())){
+                WaresOrder order = readOrderJson(result, type);
+                if (null == order || TextUtils.isEmpty(order.getName())) {
                     return true;
                 }
 
@@ -2077,7 +2166,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             @Override
             public void onSuccess(String result) {
                 Log.d(TAG, " onSuccess: " + result);
-                readOrderJson(result,type);
+                readOrderJson(result, type);
             }
 
             @Override
@@ -2099,23 +2188,24 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         });
     }
 
-    public static final int SHOPKEEPER_DETAIL=1;
-    public static final int TO_POST=2;
-    public static final int CHECK_LOGISTIC=3;
+    public static final int SHOPKEEPER_DETAIL = 1;
+    public static final int TO_POST = 2;
+    public static final int CHECK_LOGISTIC = 3;
+
     private WaresOrder readOrderJson(String json, int type) {
         BaseCode<WaresOrder> base = new Gson().fromJson(
                 json,
                 new TypeToken<BaseCode<WaresOrder>>() {
                 }.getType());
-        if(base==null||base.getCode()!=0){
+        if (base == null || base.getCode() != 0) {
             return null;
         }
         WaresOrder order = base.getData();
         Intent intent = new Intent(this, WaresOrderDetailctivity.class);
         intent.putExtra(WaresOrderDetailctivity.ORDER_DETAIL, order);
-        switch (type){
+        switch (type) {
             case SHOPKEEPER_DETAIL:
-                intent.putExtra(WaresOrderDetailctivity.SHOP_ORDER,true);
+                intent.putExtra(WaresOrderDetailctivity.SHOP_ORDER, true);
                 break;
             case TO_POST:
                 intent.setClass(this, ModifyLogisticActivity.class);
@@ -2127,5 +2217,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         startActivity(intent);
         return order;
     }
+
     private String trade;
 }

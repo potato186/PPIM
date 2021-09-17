@@ -31,7 +31,16 @@ public class SmartOrder {
     private int allPrice;
     private String subName;
     private String inv_eptype;
+    private String ttsType;
     private List<InvoiceInfo> invoice;
+
+    public String getTtsType() {
+        return ttsType;
+    }
+
+    public void setTtsType(String ttsType) {
+        this.ttsType = ttsType;
+    }
 
     public String getInv_eptype() {
         return inv_eptype;

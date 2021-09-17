@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.adapter.RecordAdapter;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
@@ -61,6 +65,7 @@ import io.rong.imlib.model.MessageContent;
 import io.rong.message.FileMessage;
 import io.rong.message.ImageMessage;
 
+import static com.ilesson.ppim.activity.ConversationActivity.CONVERSATION_TYPE;
 import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 
 /**
@@ -87,20 +92,40 @@ public class SearchActivity extends BaseActivity {
     private TextView searchKey;
     @ViewInject(R.id.search_listiview)
     private ListView listView;
+    @ViewInject(R.id.chat_record)
+    private RecyclerView chatRecordRecyclerView;
     private List<PPUserInfo> allFriends;
     private List<PPUserInfo> result;
     private String token;
     private MessageContent messageContent;
     private boolean otherFile;
     private Intent intent;
+    private String targetId;
+    private String targetName;
     private Uri uri;
     private List<Uri> uris = new ArrayList<>();
+    private Conversation.ConversationType conversationType;
+    private RecordAdapter recordAdapter;
+    private List<Message> messageList;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            if(TextUtils.isEmpty(targetId)){
+                search();
+            }else{
+                searchChatRecord();
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBarLightMode(this,true);
         allFriends = new ArrayList<>();
         result = new ArrayList<>();
+        messageList = new ArrayList<>();
+        recordAdapter = new RecordAdapter(this, messageList,targetName);
         token = SPUtils.get(LOGIN_TOKEN,"");
         searchEdit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -110,7 +135,7 @@ public class SearchActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                handler.removeMessages(0);
             }
 
             @Override
@@ -124,7 +149,7 @@ public class SearchActivity extends BaseActivity {
                     close.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.VISIBLE);
                     searchKey.setText(s.toString());
-                    search();
+                    handler.sendEmptyMessageDelayed(0,600);
                 }
             }
         });
@@ -179,6 +204,38 @@ public class SearchActivity extends BaseActivity {
         requestFriendsList();
         initData();
     }
+
+    private void searchChatRecord(){
+        String searchKey = searchEdit.getText().toString();
+        if(TextUtils.isEmpty(searchKey)){
+            return;
+        }
+        RongIMClient.getInstance().searchMessages(conversationType, targetId, searchKey, 0, 0, new RongIMClient.ResultCallback<List<Message>>() {
+            /**
+             * 成功回调
+             * @param messages 查找匹配到的消息集合
+             */
+            @Override
+            public void onSuccess(List<Message> messages) {
+                Log.d(TAG, "onSuccess: "+messages);
+                messageList.clear();
+                messageList.addAll(messages);
+                chatRecordRecyclerView.setVisibility(View.VISIBLE);
+                chatRecordRecyclerView.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
+                chatRecordRecyclerView.setAdapter(recordAdapter);
+            }
+
+            /**
+             * 失败回调
+             * @param errorCode 错误码
+             */
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
+    }
+
     private void sendMsg(Message message){
         RongIM.getInstance().sendMessage(message,
                 "", null, new IRongCallback.ISendMessageCallback() {
@@ -231,6 +288,12 @@ public class SearchActivity extends BaseActivity {
     private void initData(){
         intent = getIntent();
         messageContent = intent.getParcelableExtra("msg");
+        targetId = intent.getStringExtra(ConversationActivity.TARGET_ID);
+        targetName = intent.getStringExtra(ConversationActivity.TARGET_NAME);
+        Bundle bundle = intent.getExtras();
+        if(null!=bundle){
+            conversationType = (Conversation.ConversationType) intent.getExtras().getSerializable(CONVERSATION_TYPE);
+        }
         String action = intent.getAction();
         if (intent.ACTION_VIEW.equals(action)) {
             intent.getType();

@@ -87,7 +87,7 @@ public class SettingActivity extends BaseActivity{
     }
     @Event(R.id.font)
     private void font(View view){
-        Intent intent = new Intent(this,ModifyFontActivity.class);
+        Intent intent = new Intent(this,TextSizeShowActivity.class);
         startActivity(intent);
     }
     @Event(R.id.feedback)

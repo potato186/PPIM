@@ -24,6 +24,8 @@
     <dimen name="userinfo_item_height">55dp</dimen>
     <dimen name="outline_item_margin">20dp</dimen>
     <dimen name="title_base_height">10dp</dimen>
+    <dimen name="login_item">120dp</dimen>
+    <dimen name="address_item">90dp</dimen>
     <dimen name="padding_10">10dp</dimen>
     <dimen name="padding_15">15dp</dimen>
     <dimen name="top_margin">5dp</dimen>
@@ -39,6 +41,7 @@
     <dimen name="margin_layout">16dp</dimen>
     <dimen name="big_image_size">74dp</dimen>
 
+    <dimen name="switch_width">22dp</dimen>
     <dimen name="middle_text_size">17sp</dimen>
     <dimen name="small_text_size">15sp</dimen>
     <dimen name="mini_text_size">13sp</dimen>

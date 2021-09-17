@@ -27,6 +27,9 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import io.rong.imkit.RongIM;
+import io.rong.imkit.model.GroupUserInfo;
+
 import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ICON;
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
@@ -38,31 +41,32 @@ import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
  * Created by potato on 2019/4/9.
  */
 @ContentView(R.layout.act_modify_nikename)
-public class ModifyNikeNameActivity extends BaseActivity{
+public class ModifyNikeNameActivity extends BaseActivity {
     @ViewInject(R.id.save)
     private TextView saveBtn;
-//    @ViewInject(R.id.group_name)
+    //    @ViewInject(R.id.group_name)
 //    private TextView groupName;
     @ViewInject(R.id.icon)
     private RoundImageView iconView;
     @ViewInject(R.id.nike_edit)
     private EditText nikeEdit;
-    public static final int MODIFY_NAME=0;
-    public static final int MODIFY_GROUP=1;
-    public static final int MODIFY_REAL_NAME=2;
-    public static final int MODIFY_SYMBL=3;
-    public static final int MODIFY_NIKE_IN_GROUP=4;
-    public static final String MODIFY_CONTENT="modify_content";
-    public static final String MODIFY_TYPE="modify_type";
-    public static final String MODIFY_RESULT="modify_result";
+    public static final int MODIFY_NAME = 0;
+    public static final int MODIFY_GROUP = 1;
+    public static final int MODIFY_REAL_NAME = 2;
+    public static final int MODIFY_SYMBL = 3;
+    public static final int MODIFY_NIKE_IN_GROUP = 4;
+    public static final String MODIFY_CONTENT = "modify_content";
+    public static final String MODIFY_TYPE = "modify_type";
+    public static final String MODIFY_RESULT = "modify_result";
     private int type;
     private String groupId;
     private String realName;
     private String nameSymbl;
+
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
-        setStatusBarLightMode(this,true);
+        setStatusBarLightMode(this, true);
         String name = getIntent().getStringExtra(MODIFY_CONTENT);
         groupId = getIntent().getStringExtra(GROUP_ID);
         String groupIcon = getIntent().getStringExtra(GROUP_ICON);
@@ -83,10 +87,10 @@ public class ModifyNikeNameActivity extends BaseActivity{
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length()==0){
+                if (s.length() == 0) {
                     saveBtn.setTextColor(getResources().getColor(R.color.color_999999));
                     saveBtn.setBackgroundResource(R.drawable.background_gray_corner20);
-                }else{
+                } else {
                     saveBtn.setEnabled(true);
                     saveBtn.setTextColor(getResources().getColor(R.color.white));
                     saveBtn.setBackgroundResource(R.drawable.background_theme_corner20);
@@ -96,18 +100,19 @@ public class ModifyNikeNameActivity extends BaseActivity{
     }
 
     @Event(R.id.save)
-    private void save(View view){
+    private void save(View view) {
         String name = nikeEdit.getText().toString().trim();
-        if(TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             return;
         }
-            modifyGroupUserNike(name);
+        modifyGroupUserNike(name);
     }
 
     private static final String TAG = "ModifyNikeNameActivity";
+
     private void modifyGroupUserNike(String name) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
-        String token = SPUtils.get(LOGIN_TOKEN,"");
+        String token = SPUtils.get(LOGIN_TOKEN, "");
         params.addParameter("token", token);
         params.addParameter("action", "modify_my_name");
         params.addParameter("group", groupId);
@@ -122,14 +127,16 @@ public class ModifyNikeNameActivity extends BaseActivity{
                         result,
                         new TypeToken<BaseCode>() {
                         }.getType());
-                if(base.getCode()==0){
+                if (base.getCode() == 0) {
                     Intent intent = new Intent();
-                    intent.putExtra(MODIFY_RESULT,name);
-                    SPUtils.put(NIKE_NAME,name);
-                    setResult(MODIFY_SUCCESS,intent);
+                    intent.putExtra(MODIFY_RESULT, name);
+                    SPUtils.put(NIKE_NAME, name);
+                    setResult(MODIFY_SUCCESS, intent);
+                    GroupUserInfo groupUserInfo = new GroupUserInfo(groupId,SPUtils.get(LoginActivity.USER_PHONE, ""),name);
+                    RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
                     finish();
-                }else{
-                    Toast.makeText(ModifyNikeNameActivity.this,base.getMessage(),Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ModifyNikeNameActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -152,8 +159,9 @@ public class ModifyNikeNameActivity extends BaseActivity{
             }
         });
     }
+
     @Event(R.id.back_btn)
-    private void back_btn(View view){
+    private void back_btn(View view) {
         finish();
     }
 

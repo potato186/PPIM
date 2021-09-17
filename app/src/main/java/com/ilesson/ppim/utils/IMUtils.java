@@ -68,7 +68,10 @@ public class IMUtils {
 
     public void connect(Context context, final String token) {
         login(context, token);
+        init(token);
 //        refreshUserInfo(token);
+    }
+    public void init(String token){
         RongIM.connect(token, new RongIMClient.ConnectCallback() {
 
             @Override
@@ -88,6 +91,7 @@ public class IMUtils {
 
         });
         RongIM.setUserInfoProvider(userId -> {
+            Log.d(TAG, "init: ");
             searchUserInfo(token, userId);
             return null;
 
@@ -102,7 +106,6 @@ public class IMUtils {
             return null;
         },true);
     }
-
     public void searchGroupUserInfo(String token, String groupId,String userId) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.RONG_URL);
         params.addParameter("action", "group_user");
@@ -120,8 +123,6 @@ public class IMUtils {
                         }.getType());
                 if (base.getCode() == 0) {
                     RongUserInfo info = base.getData();
-//                    String test = "https://pp.fangnaokeji.com:9443/pp/images/demo/shop_01.png";
-//                    Group group = new Group(userId, info.getName(), Uri.parse(test));
                     GroupUserInfo groupUserInfo = new GroupUserInfo(groupId,userId,info.getName());
                     RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
                 }
@@ -199,6 +200,8 @@ public class IMUtils {
                 if (base.getCode() == 0) {
                     RongUserInfo info = base.getData();
                     UserInfo userInfo = new UserInfo(userId, info.getName(), Uri.parse(info.getIcon()));
+                    SPUtils.put(userId,info.getIcon());
+                    SPUtils.put(userId+"name",info.getName());
                     RongIM.getInstance().refreshUserInfoCache(userInfo);
                 } else {
                 }

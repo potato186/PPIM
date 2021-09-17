@@ -1,5 +1,7 @@
 package com.ilesson.ppim.custom;
 
+import com.ilesson.ppim.contactcard.ContactCardPlugin;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class MyExtensionModule extends DefaultExtensionModule {
         pluginModules.add(new FilePlugin());
         pluginModules.add(new ComposePlugin());
         if (conversationType == Conversation.ConversationType.PRIVATE) {
+
         }else if (conversationType == Conversation.ConversationType.GROUP) {
             if(shopGroup){
                 pluginModules.add(new CustomServerPlugin());
@@ -34,6 +37,7 @@ public class MyExtensionModule extends DefaultExtensionModule {
 //            pluginModules.add(new PPLoctionPlugin());
 //            pluginModules.add(new ContactCardPlugin());
         }
+        pluginModules.add(new ContactCardPlugin());
         return pluginModules;
     }
 }

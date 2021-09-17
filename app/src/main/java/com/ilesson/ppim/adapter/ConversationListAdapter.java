@@ -216,7 +216,6 @@ public class ConversationListAdapter extends BaseAdapter<UIConversation> {
                             } else {
                                 holder.unReadMsgCountRight.setText(Integer.toString(data.getUnReadMessageCount()));
                             }
-
                             holder.unReadMsgCountRightIcon.setImageResource(drawable.rc_unread_count_bg);
                         } else {
                             holder.unReadMsgCount.setVisibility(View.GONE);
@@ -226,7 +225,6 @@ public class ConversationListAdapter extends BaseAdapter<UIConversation> {
                         holder.unReadMsgCountIcon.setVisibility(View.GONE);
                         holder.unReadMsgCount.setVisibility(View.GONE);
                     }
-
                     holder.leftImageLayout.setVisibility(View.GONE);
                 } else {
                     if (tag.portraitPosition() != 3) {
@@ -244,9 +242,7 @@ public class ConversationListAdapter extends BaseAdapter<UIConversation> {
                             if (message == null) {
                                 EventBus.getDefault().post(new MessageDeleteEvent(new int[]{data.getLatestMessageId()}));
                             }
-
                         }
-
                         public void onError(ErrorCode e) {
                         }
                     });

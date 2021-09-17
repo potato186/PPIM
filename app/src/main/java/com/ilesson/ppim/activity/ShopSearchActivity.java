@@ -344,7 +344,7 @@ public class ShopSearchActivity extends BaseActivity {
                             helpTextView.setVisibility(View.VISIBLE);
                         }
                         if (!TextUtils.isEmpty(tts) && playTts) {
-                            ttsHelper.start(0, ShopSearchActivity.this, tts);
+//                            ttsHelper.start(0, ShopSearchActivity.this, tts);
                         }
                         if (data.getTag() == 0) {
                             showContent(order);

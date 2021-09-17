@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.DeleteFriend;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.RongUserInfo;
 import com.ilesson.ppim.utils.Constants;
@@ -47,6 +48,8 @@ public class FriendDetailActivity extends BaseActivity {
     private TextView nameView;
     @ViewInject(R.id.add)
     private TextView addView;
+    @ViewInject(R.id.user_id)
+    private TextView userIdView;
     private String token;
     public static final String USER_INFO="user_info";
     public static final String USER_ID="user_id";
@@ -58,6 +61,7 @@ public class FriendDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBarLightMode(this,true);
+        EventBus.getDefault().register(this);
         imUtils = new IMUtils();
         token = SPUtils.get(LOGIN_TOKEN,"");
         Intent intent = getIntent();
@@ -80,7 +84,7 @@ public class FriendDetailActivity extends BaseActivity {
         }else{
             Glide.with(this).load(ppUserInfo.getUri()).into(iconView);
         }
-
+        userIdView.setText(String.format(getResources().getString(R.string.pp_number),ppUserInfo.getPhone()));
         nameView.setText(ppUserInfo.getName());
         imUtils.setOnAddListener(new IMUtils.OnAddListener() {
             @Override
@@ -160,6 +164,17 @@ public class FriendDetailActivity extends BaseActivity {
     private void back_btn(View view) {
         finish();
     }
+    @Event(value = R.id.menu)
+    private void menu(View view) {
+        if(null==ppUserInfo){
+            return;
+        }
+        Intent intent = new Intent(this, UserInfoSttingActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FriendDetailActivity.USER_INFO, ppUserInfo);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
     @Event(value = R.id.user_icon)
     private void user_icon(View view) {
         if(ppUserInfo!=null){
@@ -220,5 +235,14 @@ public class FriendDetailActivity extends BaseActivity {
             public void onFinished() {
             }
         });
+    }
+
+    public void onEventMainThread(DeleteFriend var) {
+        finish();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

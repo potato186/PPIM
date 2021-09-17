@@ -48,23 +48,22 @@
             android:layout_marginRight="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/region"
+                android:layout_width="@dimen/login_item"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:text="国家/地区"
+                android:text="@string/region"
                 android:textColor="@color/gray_text333_color"
                 android:textSize="@dimen/registe_font_size" />
 
             <TextView
                 android:id="@+id/phone_code"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="100dp"
+                android:layout_toRightOf="@+id/region"
                 android:text="@string/default_country"
                 android:textColor="@color/theme_color"
                 android:textSize="@dimen/registe_font_size" />
@@ -86,12 +85,12 @@
             android:layout_marginRight="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/phone"
+                android:layout_width="@dimen/login_item"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:text="手机号"
+                android:text="@string/phone_num"
                 android:textColor="@color/gray_text333_color"
                 android:textSize="@dimen/registe_font_size" />
 
@@ -99,9 +98,8 @@
                 android:id="@+id/phone_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="100dp"
+                android:layout_toRightOf="@+id/phone"
                 android:inputType="number"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:background="@null"
@@ -122,12 +120,12 @@
             android:layout_marginRight="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/code"
+                android:layout_width="@dimen/login_item"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:text="验证码"
+                android:text="@string/verify_code"
                 android:textColor="@color/gray_text333_color"
                 android:textSize="@dimen/registe_font_size" />
 
@@ -135,12 +133,14 @@
                 android:id="@+id/code_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="100dp"
+                android:layout_toRightOf="@+id/code"
+                android:layout_toLeftOf="@+id/get_code"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:background="@null"
                 android:inputType="number"
+                android:lines="1"
+                android:ellipsize="end"
                 android:hint="@string/hint_input_vcode"
                 android:textSize="@dimen/registe_font_size" />
 
@@ -152,7 +152,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/general_gray_btn_selector"
                 android:padding="5dp"
-                android:text="发送验证码"
+                android:text="@string/send_code"
                 android:textColor="@color/gray_text333_color" />
 
             <View
@@ -170,12 +170,12 @@
             >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/pass"
+                android:layout_width="@dimen/login_item"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:text="密码"
+                android:text="@string/password"
                 android:textColor="@color/gray_text333_color"
                 android:textSize="@dimen/registe_font_size" />
 
@@ -183,9 +183,8 @@
                 android:id="@+id/pwd_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="100dp"
+                android:layout_toRightOf="@+id/pass"
                 android:inputType="textPassword"
                 android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                 android:background="@null"

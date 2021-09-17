@@ -45,6 +45,7 @@ import com.ilesson.ppim.update.UpdateHelper;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.SetFont;
 import com.ilesson.ppim.utils.StatusBarUtil;
 import com.ilesson.ppim.view.IfeyVoiceWidget1;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -52,7 +53,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
-import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
@@ -245,31 +245,36 @@ public class MainActivity extends BaseActivity {
         item_a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelection(0);
+                mViewPager.setCurrentItem(0);
+//                setSelection(0);
             }
         });
         item_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelection(1);
+                mViewPager.setCurrentItem(1);
+//                setSelection(1);
             }
         });
         item_ai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelection(2);
+                mViewPager.setCurrentItem(2);
+//                setSelection(2);
             }
         });
         item_c.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelection(3);
+                mViewPager.setCurrentItem(3);
+//                setSelection(3);
             }
         });
         item_d.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSelection(4);
+                mViewPager.setCurrentItem(4);
+//                setSelection(4);
             }
         });
     }
@@ -355,6 +360,14 @@ public class MainActivity extends BaseActivity {
     public void onEventMainThread(FriendAccept friendAccept) {
         contactFragment.requestFriendsList(true);
     }
+    public void onEventMainThread(SetFont event) {
+        Intent intent = getIntent();
+        overridePendingTransition(0, 0);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+    }
 
     IUnReadMessageObserver observer = new IUnReadMessageObserver() {
         @Override
@@ -398,7 +411,6 @@ public class MainActivity extends BaseActivity {
             }
         });
         mViewPager.setOnPageChangeListener(new ViewPagerListener());
-//        setSelection(0);
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -467,17 +479,13 @@ public class MainActivity extends BaseActivity {
             }
         }
         addLayout.setVisibility(View.GONE);
-//        aiLayout.setVisibility(View.GONE);
         market_layout.setVisibility(View.GONE);
         switch (index) {
             case 0:
             case 1:
                 addLayout.setVisibility(View.VISIBLE);
-//                hideVoice();
                 break;
             case 2:
-//                floatBtn.setVisibility(View.VISIBLE);
-//                aiLayout.setVisibility(View.VISIBLE);
                 aiFragment.request("");
                 break;
             case 3:
@@ -485,9 +493,7 @@ public class MainActivity extends BaseActivity {
                     requestMarket();
                 }
                 checkLevel();
-//                hideVoice();
             case 4:
-//                hideVoice();
                 break;
 
         }
@@ -514,51 +520,6 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    @Event(value = R.id.apply_market)
-    private void apply_market(View v) {
-        updateMarket();
-    }
-//    @Event(value = R.id.item_b, type = View.OnTouchListener.class)
-//    public boolean touchB(View v, MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_UP) {
-//            setSelection(1);
-//        }
-//        return true;
-//    }
-//    @Event(value = R.id.item_ai, type = View.OnTouchListener.class)
-//    public boolean item_ai(View v, MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_UP) {
-//            if(currentIndex!=2){
-//                setSelection(2);
-//            }
-//        }
-//        return true;
-//    }
-//
-//    @Event(value = R.id.item_c, type = View.OnTouchListener.class)
-//    public boolean touchC(View v, MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_UP) {
-//            setSelection(3);
-//        }
-//        return true;
-//    }
-//
-//    @Event(value = R.id.item_d, type = View.OnTouchListener.class)
-//    public boolean touch(View v, MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_UP) {
-//            setSelection(4);
-//        }
-//
-//        return true;
-//    }
-//
-//    @Event(value = R.id.item_a, type = View.OnTouchListener.class)
-//    public boolean touchA(View v, MotionEvent event) {
-//        if (event.getAction() == MotionEvent.ACTION_UP) {
-//            setSelection(0);
-//        }
-//        return true;
-//    }
 
 //    @Event(value = R.id.add)
     public void add(View view) {
@@ -609,14 +570,6 @@ public void search() {
             finish();
             return;
         }
-//        if (resultCode == MODIFY_SUCCESS) {
-//            meFragment.setUserInfo();
-//            return;
-//        }
-//        if (resultCode == ACTIVE_SUCCESS) {
-//            groupFragment.activeSuccess();
-//            return;
-//        }
     }
 
     @Override
@@ -656,12 +609,7 @@ public void search() {
         contentView.findViewById(R.id.scan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                boolean isPay = SPUtils.get(LOGIN_PAY, false);
-//                if (!isPay) {
-//                    startActivity(new Intent(MainActivity.this, PayPwdActivity.class));
-//                } else {
                     toScan();
-//                }
                 popupWindow.dismiss();
             }
         });
@@ -827,7 +775,6 @@ public void search() {
                 if (aBoolean) {
                 } else {
                     goIntentSetting();
-//只有用户拒绝开启权限，且选了不再提示时，才会走这里，否则会一直请求开启
                 }
             }
             @Override

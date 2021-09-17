@@ -8,8 +8,10 @@ android:layout_height="match_parent"
 
     <LinearLayout
         android:id="@+id/request_group"
-        android:layout_width="130dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="130dp"
+        android:minHeight="45dp"
         android:orientation="horizontal"
         android:background="@drawable/menu_btn_selector"
         >
@@ -32,8 +34,10 @@ android:layout_height="match_parent"
     </LinearLayout>
     <LinearLayout
         android:id="@+id/add_friend"
-        android:layout_width="130dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="130dp"
+        android:minHeight="45dp"
         android:orientation="horizontal"
         android:background="@drawable/menu_btn_selector"
         >
@@ -56,8 +60,10 @@ android:layout_height="match_parent"
     </LinearLayout>
     <LinearLayout
         android:id="@+id/scan"
-        android:layout_width="130dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="130dp"
+        android:minHeight="45dp"
         android:orientation="horizontal"
         android:background="@drawable/menu_btn_selector"
         >

@@ -65,14 +65,14 @@
         android:layout_marginTop="20dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="真实姓名"
+            android:text="@string/true_name"
             android:textColor="@color/gray_text333_color"
-            android:textSize="@dimen/registe_font_size" />
+            android:textSize="@dimen/registe_font_size"
+            />
 
         <EditText
             android:id="@+id/name_edit"
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:hint="@string/hint_input_name"
@@ -100,12 +100,11 @@
         android:layout_marginTop="5dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="姓名拼音"
+            android:text="@string/real_name_symbol"
             android:textColor="@color/gray_text333_color"
             android:textSize="@dimen/registe_font_size" />
 
@@ -115,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:hint="@string/hint_input_name_pinyin"
@@ -135,12 +134,11 @@
         >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="昵称"
+            android:text="@string/nike"
             android:textColor="@color/gray_text333_color"
             android:textSize="@dimen/registe_font_size" />
 
@@ -150,10 +148,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
-            android:hint="例如：陈晨"
+            android:hint="@string/nike_tip"
             android:textSize="@dimen/registe_font_size" />
 
         <View
@@ -171,23 +169,22 @@
         android:layout_marginRight="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/region"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="国家/地区"
+            android:text="@string/region"
             android:textColor="@color/gray_text333_color"
             android:textSize="@dimen/registe_font_size" />
 
         <TextView
             android:id="@+id/phone_code"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:text="@string/default_country"
             android:textColor="@color/theme_color"
             android:textSize="@dimen/registe_font_size" />
@@ -208,11 +205,10 @@
         android:layout_marginRight="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
             android:text="@string/phone_num"
             android:textColor="@color/gray_text333_color"
             android:textSize="@dimen/registe_font_size" />
@@ -223,7 +219,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:inputType="number"
@@ -244,11 +240,10 @@
         android:layout_marginRight="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
             android:text="@string/verify_code"
             android:textColor="@color/gray_text333_color"
             android:textSize="@dimen/registe_font_size" />
@@ -259,10 +254,14 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:inputType="number"
+            android:lines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_toLeftOf="@+id/get_code"
             android:hint="@string/hint_input_vcode"
             android:textSize="@dimen/registe_font_size" />
 
@@ -291,11 +290,10 @@
         android:layout_marginRight="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/login_item"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
             android:text="@string/password"
             android:textColor="@color/gray_text333_color"
             android:textSize="@dimen/registe_font_size" />
@@ -306,7 +304,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="115dp"
             android:textCursorDrawable="@drawable/rc_shape_cursor_color"
             android:background="@null"
             android:hint="@string/input_password"
@@ -337,7 +335,7 @@
         android:layout_height="40dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/general_red_theme_corner5_selector"
         android:gravity="center"
         android:text="@string/registe_btn"

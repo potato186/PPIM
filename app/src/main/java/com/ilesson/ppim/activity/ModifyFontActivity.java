@@ -15,7 +15,7 @@ import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 
-import static com.ilesson.ppim.IlessonApp.FONT_SCALE;
+import static com.ilesson.ppim.IlessonApp.FONT_INDEX;
 
 
 /**
@@ -37,7 +37,7 @@ public class ModifyFontActivity extends BaseActivity{
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setStatusBarLightMode(this,true);
-        scalaSize = SPUtils.get(FONT_SCALE, 1.0f);
+        scalaSize = SPUtils.get(FONT_INDEX, 1.0f);
 //        fontResizeView.setSliderGrade();
         fontResizeView.setOnFontChangeListener(new FontResizeView.OnFontChangeListener() {
             @Override
@@ -90,7 +90,7 @@ public class ModifyFontActivity extends BaseActivity{
         right_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtils.put(FONT_SCALE, selectSize/14);
+                SPUtils.put(FONT_INDEX, selectSize/14);
                 IlessonApp.restartApp(ModifyFontActivity.this);
                 dialog.dismiss();
             }

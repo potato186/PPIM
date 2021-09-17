@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +20,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.FreshConversation;
+import com.ilesson.ppim.entity.ModifyGroupNike;
 import com.ilesson.ppim.entity.PPUserInfo;
+import com.ilesson.ppim.entity.ResetGroupName;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.PPScreenUtils;
@@ -39,8 +44,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.widget.AsyncImageView;
+import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 
 import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
@@ -63,10 +70,16 @@ import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
  */
 @ContentView(R.layout.act_chat_info)
 public class ChatInfoActivity extends BaseActivity{
+    @ViewInject(R.id.disturb_switch)
+    private Switch disturbSwitch;
+    @ViewInject(R.id.message_top_switch)
+    private Switch messageTopSwitch;
     @ViewInject(R.id.title)
     private TextView titleTextView;
     @ViewInject(R.id.group_name)
-    private TextView groupName;
+    private TextView groupNameTextView;
+    @ViewInject(R.id.tag_name)
+    private TextView tagNameTextview;
     @ViewInject(R.id.nike_name)
     private TextView nikeNameView;
     @ViewInject(R.id.delete)
@@ -88,10 +101,12 @@ public class ChatInfoActivity extends BaseActivity{
     public static final String GROUP_NAME = "group_name";
     public static final String GROUP_ICON = "group_icon";
     public static final String NIKE_NAME = "nike_name";
+    public static final String GROUP_TAG = "group_tag";
     public static final String ISOWNER = "isOwner";
-    private String name;
+    private String groupName;
     private String nikeName="";
     private String groupId;
+    private String groupTag;
     private boolean modifyed;
     private PPUserInfo addUser,deleteUser;
     private String groupIcon;
@@ -99,8 +114,13 @@ public class ChatInfoActivity extends BaseActivity{
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setStatusBarLightMode(this,true);
+        EventBus.getDefault().register(this);
         groupId = getIntent().getStringExtra(GROUP_ID);
-        name = getIntent().getStringExtra(GROUP_NAME);
+        groupTag = getIntent().getStringExtra(GROUP_TAG);
+        groupName = getIntent().getStringExtra(GROUP_NAME);
+        if(!TextUtils.isEmpty(groupTag)){
+            groupName = groupName.replace(groupTag,"").replace("(","").replace(")","");
+        }
         isOwner = getIntent().getBooleanExtra(ISOWNER,false);
         nikeName = SPUtils.get(NIKE_NAME,"");
         groupIcon = getIntent().getStringExtra(GROUP_ICON);
@@ -112,7 +132,10 @@ public class ChatInfoActivity extends BaseActivity{
         }
 
         nikeNameView.setText(nikeName);
-        groupName.setText(name);
+        groupNameTextView.setText(groupName);
+        if(!TextUtils.isEmpty(groupTag)){
+            tagNameTextview.setText(groupTag);
+        }
         datas = new ArrayList<>();
         adapter = new DataAdapter(datas);
         recylerView.setLayoutManager(new GridLayoutManager(this,5));
@@ -141,8 +164,87 @@ public class ChatInfoActivity extends BaseActivity{
                 SPUtils.put(PLAY_TTS, isChecked);
             }
         });
-//        searchGroupMember();
         requestGroupInfo();
+        RongIMClient.getInstance().getConversationNotificationStatus(Conversation.ConversationType.GROUP, groupId, new RongIMClient.ResultCallback<Conversation.ConversationNotificationStatus>() {
+            /**
+             * 成功回调
+             * @param status 消息提请状态
+             */
+            @Override
+            public void onSuccess(Conversation.ConversationNotificationStatus status) {
+                disturbSwitch.setChecked(status== Conversation.ConversationNotificationStatus.NOTIFY?false:true);
+                disturbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        Conversation.ConversationNotificationStatus notificationStatus = isChecked?Conversation.ConversationNotificationStatus.DO_NOT_DISTURB:Conversation.ConversationNotificationStatus.NOTIFY;
+                        RongIMClient.getInstance().setConversationNotificationStatus(Conversation.ConversationType.GROUP, groupId, notificationStatus, new RongIMClient.ResultCallback<Conversation.ConversationNotificationStatus>() {
+
+                            /**
+                             * 成功回调
+                             * @param status 消息提请状态
+                             */
+                            @Override
+                            public void onSuccess(Conversation.ConversationNotificationStatus status) {
+                                EventBus.getDefault().post(new FreshConversation());
+                                RongIM.getInstance().setConversationNotificationStatus(Conversation.ConversationType.GROUP,
+                                        groupId, status, new RongIMClient.ResultCallback<Conversation.ConversationNotificationStatus>() {
+                                            @Override
+                                            public void onSuccess(Conversation.ConversationNotificationStatus conversationNotificationStatus) {
+                                            }
+
+                                            @Override
+                                            public void onError(RongIMClient.ErrorCode errorCode) {
+                                            }
+                                        });
+                            }
+
+                            /**
+                             * 错误回调
+                             * @param errorCode 错误码
+                             */
+                            @Override
+                            public void onError(RongIMClient.ErrorCode errorCode) {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            /**
+             * 错误回调
+             * @param errorCode 错误码
+             */
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
+
+        messageTopSwitch.setChecked(UserSttingActivity.isTop);
+        messageTopSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                UserSttingActivity.isTop=isChecked;
+                RongIMClient.getInstance().setConversationToTop(Conversation.ConversationType.GROUP, groupId, isChecked, false, new
+                        RongIMClient.ResultCallback<Boolean>() {
+                            /**
+                             * 成功回调
+                             */
+                            @Override
+                            public void onSuccess(Boolean success) {
+                                EventBus.getDefault().post(new FreshConversation());
+                            }
+                            /**
+                             * 错误回调
+                             */
+                            @Override
+                            public void onError(RongIMClient.ErrorCode ErrorCode) {
+
+                            }
+                        }) ;
+            }
+        });
     }
 
     @Event(R.id.back_btn)
@@ -156,6 +258,16 @@ public class ChatInfoActivity extends BaseActivity{
     @Event(R.id.more_member)
     private void more_member(View view){
         startActivity(new Intent(this,MoreMemberActivity.class).putExtra(GROUP_MEMBER,(Serializable)ppUserInfos));
+    }
+    @Event(R.id.search_record)
+    private void search_record(View view){
+        Intent intent = new Intent(this,SearchActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ConversationActivity.CONVERSATION_TYPE, Conversation.ConversationType.GROUP);
+        intent.putExtras(bundle);
+        intent.putExtra(ConversationActivity.TARGET_ID,groupId);
+        intent.putExtra(ConversationActivity.TARGET_NAME, groupName);
+        startActivity(intent);
     }
     @Event(R.id.code_layout)
     private void code_layout(View view){
@@ -171,9 +283,19 @@ public class ChatInfoActivity extends BaseActivity{
         Intent intent = new Intent(ChatInfoActivity.this,ModifyNameActivity.class);
         intent.putExtra(GROUP_ID, groupId);
         intent.putExtra(MODIFY_TYPE, MODIFY_GROUP);
-        intent.putExtra(ChatInfoActivity.GROUP_NAME, name);
+        intent.putExtra(ChatInfoActivity.GROUP_NAME, groupName);
         requstCode = MODIFY_GROUP;
         startActivityForResult(intent,MODIFY_GROUP);
+    }
+    @Event(R.id.tag_layout)
+    private void tag_layout(View view){
+        Intent intent = new Intent(ChatInfoActivity.this,ModifyGroupTagNameActivity.class);
+        intent.putExtra(GROUP_ID, groupId);
+        intent.putExtra(GROUP_ICON, groupIcon);
+//        intent.putExtra(MODIFY_TYPE, MODIFY_GROUP);
+        intent.putExtra(ChatInfoActivity.GROUP_NAME, groupTag);
+//        requstCode = MODIFY_GROUP;
+        startActivity(intent);
     }
     @Event(R.id.nike_layout)
     private void nike_layout(View view){
@@ -209,7 +331,7 @@ public class ChatInfoActivity extends BaseActivity{
     private void out(){
         if(modifyed&&MODIFY_GROUP==requstCode){
             Intent intent = new Intent();
-            intent.putExtra(MODIFY_RESULT,name);
+            intent.putExtra(MODIFY_RESULT, groupName);
             setResult(MODIFY_SUCCESS,intent);
         }
         finish();
@@ -219,8 +341,8 @@ public class ChatInfoActivity extends BaseActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode== MODIFY_SUCCESS){
             if(requestCode==MODIFY_GROUP){
-                name = data.getStringExtra(MODIFY_RESULT);
-                groupName.setText(name);
+                groupName = data.getStringExtra(MODIFY_RESULT);
+                groupNameTextView.setText(groupName);
                 modifyed = true;
                 return;
             }
@@ -451,6 +573,14 @@ public class ChatInfoActivity extends BaseActivity{
         titleTextView.setText(text);
     }
 
+    public void onEventMainThread(ModifyGroupNike var) {
+        groupTag = var.getNikeName();
+        tagNameTextview.setVisibility(View.VISIBLE);
+        tagNameTextview.setText(var.getNikeName());
+    }
+    public void onEventMainThread(ResetGroupName var) {
+        groupNameTextView.setText(var.getName());
+    }
     class DataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<PPUserInfo> data;
 
@@ -554,5 +684,11 @@ public class ChatInfoActivity extends BaseActivity{
                 });
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

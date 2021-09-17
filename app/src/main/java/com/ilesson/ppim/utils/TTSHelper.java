@@ -29,7 +29,9 @@ public class TTSHelper {
 	private SpeechSynthesizer mTts;
 	private static LongTextTtsController mTtsController;
 	private boolean playing;
+	private Context context;
 	public TTSHelper(Context context) {
+	    this.context = context;
 		if(null==mTtsController){
 			mTtsController = new LongTextTtsController();
 			mTtsController.init(context,Long.valueOf(PPConfig.apppId),PPConfig.secretId,PPConfig.secretKey);
@@ -44,7 +46,7 @@ public class TTSHelper {
 //设置ProjectId
 			mTtsController.setProjectId(1217813);
 		}
-//			mTts = SpeechSynthesizer.createSynthesizer(context, mTtsInitListener);
+			mTts = SpeechSynthesizer.createSynthesizer(context, mTtsInitListener);
 
 	}
 	private InitListener mTtsInitListener = new InitListener() {
@@ -127,18 +129,18 @@ public class TTSHelper {
 	}
 	private long start;
 	//发起tts请求
-	public void start(int type,final String ttsText){
+	public void startEnglish(int type,final String ttsText){
 		playing = true;
 		if(TextUtils.isEmpty(ttsText)){
 			return;
 		}
-		if(isChinese(ttsText)){//读中文
-			mTtsController.setVoiceLanguage(1);
-			mTtsController.setVoiceType(101010);
-		}else {//读英文
+//		if(isChinese(ttsText)){//读中文
+//			mTtsController.setVoiceLanguage(1);
+//			mTtsController.setVoiceType(101010);
+//		}else {//读英文
 			mTtsController.setVoiceLanguage(2);
 			mTtsController.setVoiceType(101050);
-		}
+//		}
 		start = System.currentTimeMillis();
 		try {
 			mTtsController.startTts(ttsText, mTtsExceptionHandler, new QCloudPlayerCallback() {
@@ -202,7 +204,7 @@ public class TTSHelper {
 	};
 	private static final String TAG = "TTSHelper";
 	private String text1;
-	public void start(final int type, Context context, String text) {
+	public void startChinese(final int type,  String text) {
 //		start(type,text);
 //		if(true)return;
 		Log.d(TAG, "start: ");

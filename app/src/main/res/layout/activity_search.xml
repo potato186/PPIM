@@ -137,7 +137,13 @@
         android:divider="@color/gray_bg_color"
         android:dividerHeight="0.5dp"
         android:visibility="gone" />
-
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:background="@color/white"
+        android:id="@+id/chat_record"
+        />
     <TextView
         android:id="@+id/no_user"
         android:layout_width="wrap_content"

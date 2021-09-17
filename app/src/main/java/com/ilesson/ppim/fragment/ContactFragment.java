@@ -22,6 +22,7 @@ import com.ilesson.ppim.contactview.ContactAdapter;
 import com.ilesson.ppim.contactview.DividerItemDecoration;
 import com.ilesson.ppim.contactview.LetterView;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.DeleteFriend;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
@@ -150,7 +151,9 @@ public class ContactFragment extends BaseFragment {
 //            modify();
 //        }
     }
-
+    public void onEventMainThread(DeleteFriend var) {
+        requestFriendsList(false);
+    }
     public void requestFriendsList(final boolean update) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.USER_URL);
         params.addParameter("action", "friend");

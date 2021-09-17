@@ -93,9 +93,13 @@
 
                     <TextView
                         android:id="@+id/tag"
-                        android:layout_width="50dp"
-                        android:layout_height="25dp"
-                        android:text="@string/home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="家"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:background="@drawable/background_theme_corner5"
@@ -113,7 +117,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
-                            android:textSize="@dimen/text_size_16"
+                            android:textSize="16sp"
                             android:textColor="@color/gray_text333_color"
                             />
                         <TextView
@@ -124,7 +128,7 @@
                             android:id="@+id/phone"
                             android:layout_toRightOf="@+id/user_name"
                             android:textColor="@color/gray_text333_color"
-                            android:textSize="@dimen/text_size_16"
+                            android:textSize="16sp"
                             />
 
                         <TextView

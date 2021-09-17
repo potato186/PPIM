@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.ModifyGroupName;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
@@ -26,6 +27,8 @@ import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import io.rong.eventbus.EventBus;
 
 import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
 import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
@@ -167,6 +170,7 @@ public class ModifyNameActivity extends BaseActivity{
                 if(base.getCode()==0){
                     if(type==MODIFY_NAME){
                         SPUtils.put(USER_NAME,name);
+                        EventBus.getDefault().post(new ModifyGroupName(name));
                     }else if(type==MODIFY_REAL_NAME){
                         SPUtils.put(REAL_NAME,name);
                         SPUtils.put(NAME_SYMBL,TextUtil.getPinyin(name));

@@ -149,14 +149,14 @@
     <RelativeLayout
         android:id="@+id/server_layout"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
+        android:minHeight="55dp"
         android:background="#EDEDED"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
         >
         <TextView
             android:layout_width="110dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:id="@+id/call_server"
             android:text="@string/call_server"
             android:textSize="18sp"

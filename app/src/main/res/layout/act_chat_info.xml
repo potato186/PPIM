@@ -71,6 +71,7 @@
                 android:background="@drawable/white_gray_btn_selector">
 
                 <TextView
+                    android:id="@+id/group_name_lable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -90,6 +91,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/group_name_lable"
+                    android:layout_marginLeft="5dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="30dp"
                     android:text="@string/group_name"
@@ -147,6 +150,78 @@
                     android:layout_alignParentBottom="true"
                     />
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/message_disturb_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/white_gray_btn_selector"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/message_disturb"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp"
+                    />
+                <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/disturb_switch"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:textOn="on"
+                    android:textOff="off"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@color/gray_theme"
+                    android:layout_alignParentBottom="true"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/message_top_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/white_gray_btn_selector"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/message_top"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp"
+                    />
+                <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/message_top_switch"
+                    android:layout_gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:textOn="on"
+                    android:textOff="off"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
+                    />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@color/gray_theme"
+                    android:layout_alignParentBottom="true"
+                    />
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/voice_switch_layout"
                 android:layout_width="match_parent"
@@ -183,14 +258,17 @@
             <RelativeLayout
                 android:id="@+id/nike_layout"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:paddingLeft="15dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/white_gray_btn_selector">
 
                 <TextView
+                    android:id="@+id/nike_name_lable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:maxWidth="150dp"
                     android:layout_centerVertical="true"
                     android:text="@string/nike_in_group"
                     android:textColor="@color/gray_text333_color"
@@ -210,6 +288,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="30dp"
+                    android:layout_toRightOf="@+id/nike_name_lable"
+                    android:layout_marginLeft="5dp"
                     android:text="@string/nike"
                     android:singleLine="true"
                     android:gravity="center_vertical|right"
@@ -223,7 +303,82 @@
                     android:layout_alignParentBottom="true"
                     />
             </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/tag_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:paddingLeft="15dp"
+                android:background="@drawable/white_gray_btn_selector">
 
+                <TextView
+                    android:id="@+id/tag_lable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="150dp"
+                    android:layout_centerVertical="true"
+                    android:text="@string/nike_of_group"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/right_arrow" />
+                <TextView
+                    android:id="@+id/tag_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="30dp"
+                    android:layout_toRightOf="@+id/tag_lable"
+                    android:layout_marginLeft="5dp"
+                    android:singleLine="true"
+                    android:gravity="center_vertical|right"
+                    android:ems="10"
+                    android:textColor="@color/color_666666"
+                    android:textSize="16sp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_theme"
+                    android:layout_alignParentBottom="true"
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/search_record"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:paddingLeft="15dp"
+                android:background="@drawable/white_gray_btn_selector">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/search_record"
+                    android:textColor="@color/gray_text333_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/right_arrow" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_theme"
+                    android:layout_alignParentBottom="true"
+                    />
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/shop_list_layout"
                 android:layout_width="match_parent"

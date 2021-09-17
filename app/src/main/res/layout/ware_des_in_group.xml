@@ -78,35 +78,36 @@
         />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="详情介绍"
+            android:text="@string/detail_intro"
             android:textSize="16sp"
             android:textColor="@color/gray_text333_color"
-            android:layout_alignParentBottom="true"
             />
         <TextView
+            android:id="@+id/detail_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="更多详情"
+            android:text="@string/detail_more"
             android:textSize="14sp"
             android:layout_toLeftOf="@+id/tag_arrow"
+            android:layout_centerVertical="true"
             android:layout_marginRight="3dp"
             android:textColor="@color/theme_text_color"
-            android:layout_alignParentBottom="true"
             />
         <TextView
             android:id="@+id/tag_arrow"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="3dp"
-            android:layout_alignParentBottom="true"
             android:background="@mipmap/right_arrow"
-            android:layout_marginBottom="2dp"
             />
     </RelativeLayout>
 

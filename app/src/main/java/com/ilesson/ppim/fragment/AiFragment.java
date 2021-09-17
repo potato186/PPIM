@@ -90,7 +90,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     private boolean recording;
     public TTSHelper ttsHelper;
 //    private TencenRecognize tencenRecognize;
-    private static final String SHOW_NO_HELP_COUNT = "show_no_help_count";
+    private static final String INIT_COUNT = "init_count";
     private MainActivity mainActivity;
     public IfeyVoiceWidget1 ifeyBtn;
     @Override
@@ -109,8 +109,8 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
             public void onPressUp(boolean isDrag) {
                 if (!isDrag) {
                     if (recording) {
-//                        tencenRecognize.stop();
-                        stop(false);
+                        stopXunfei(false);
+//                        stop(false);
                     } else {
                         toSpeech();
                     }
@@ -162,7 +162,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     }
 
     public void stopTts(){
-        if (ttsHelper!=null&&ttsHelper.isSpeaking()) {
+        if (ttsHelper!=null) {
             ttsHelper.stop();
         }
     }
@@ -177,6 +177,10 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 
     private void closeVoice() {
         voiceLayout.setVisibility(View.GONE);
+        ttsTv.setText("");
+        if (ttsHelper!=null) {
+            ttsHelper.stop();
+        }
         if (recording) {
             stopXunfei(false);
         }
@@ -283,14 +287,10 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                         return;
                     }
                     helpTextView.setVisibility(View.GONE);
+                    resultImageView.setVisibility(View.GONE);
                     SmartOrder order = list.get(0);
                     String tts = order.getTts();
-                    if (!TextUtils.isEmpty(tts)) {
-                        ttsTv.setText(tts);
-                        if (playTts) {
-                            ttsHelper.start(0,tts);
-                        }
-                    }
+
                     String ttsm = data.getBak();
                     if (!TextUtils.isEmpty(ttsm)) {
                         String text = getResources().getString(R.string.modify_tts);
@@ -306,19 +306,38 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                         helpTextView.setText(help);
                         helpTextView.setVisibility(View.VISIBLE);
                         voiceLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        String phone = SPUtils.get(LoginActivity.USER_PHONE, "");
-                        int count = SPUtils.get(SHOW_NO_HELP_COUNT + phone, 0);
-                        if (count < 2) {
-                            SPUtils.put(SHOW_NO_HELP_COUNT + phone, count + 1);
-                            voiceLayout.setVisibility(View.VISIBLE);
-                        }
                     }
+                    boolean play = true;
                     if (TextUtils.isEmpty(key)) {
                         requestText.setVisibility(View.GONE);
+                        String phone = SPUtils.get(LoginActivity.USER_PHONE, "");
+                        int count = SPUtils.get(INIT_COUNT + phone, 0);
+                        Log.d(TAG, "onSuccess: count="+count);
+                        if (count < 3) {
+                            SPUtils.put(INIT_COUNT + phone, count + 1);
+                        }else{
+                            play = false;
+                        }
                     } else {
                         requestText.setVisibility(View.VISIBLE);
                     }
+                    if (!TextUtils.isEmpty(tts)) {
+                        ttsTv.setText(tts);
+                        ttsTv.setVisibility(View.VISIBLE);
+                        voiceLayout.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "onSuccess: play="+play);
+                        Log.d(TAG, "onSuccess: playTts="+playTts);
+                        if(play){
+                            if (playTts) {
+                                if("en".equals(order.getTtsType())){
+                                    ttsHelper.startEnglish(0,tts);
+                                }else{
+                                    ttsHelper.startChinese(0,tts);
+                                }
+                            }
+                        }
+                    }
+
                     String imgUrl = order.getImgurl();
                     if (!TextUtils.isEmpty(imgUrl)) {
                         Glide.with(mainActivity).asBitmap().load(imgUrl).into(new SimpleTarget<Bitmap>() {
@@ -354,8 +373,6 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                                 ImagePreviewActivity.startPreview(mainActivity, order.getImgurl());
                             }
                         });
-                    } else {
-                        resultImageView.setVisibility(View.GONE);
                     }
                 } else {
                     mainActivity.showToast(data.getMessage());
@@ -383,6 +400,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 
     private void handleContent(String content) {
         if (voiceLayout.getVisibility() == View.GONE && !TextUtils.isEmpty(content)) {
+            ttsTv.setVisibility(View.GONE);
             voiceLayout.setVisibility(View.VISIBLE);
         }
         content = content.replace("，", "").replace("。", "").replace("！", "").replace("？", "");
@@ -413,7 +431,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
         LinearInterpolator lir = new LinearInterpolator();
         voiceAnim.setInterpolator(lir);
         floatBtn.startAnimation(voiceAnim);
-        if (ttsHelper.isSpeaking()) {
+        if (ttsHelper!=null) {
             ttsHelper.stop();
         }
         recording = true;
@@ -428,6 +446,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 
     private void stop(boolean showDialog) {
         recording = false;
+
 //        tencenRecognize.stop();
         handler.removeMessages(2);
         if (showDialog) {
@@ -594,13 +613,14 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
 
 
     private void startXunfei() {
+
         recording = true;
         ifeyBtn.start();
         handler.removeMessages(2);
         LinearInterpolator lir = new LinearInterpolator();
         voiceAnim.setInterpolator(lir);
         floatBtn.startAnimation(voiceAnim);
-        if (ttsHelper.isSpeaking()) {
+        if (ttsHelper!=null) {
             ttsHelper.stop();
         }
     }

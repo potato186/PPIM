@@ -23,6 +23,7 @@ public interface Constants {
     String BUSER_ASSET="/basset";
     String CODE_URL="/code";
     String GROUP_URL="/group";
+    String GROUP_TAG_URL="/tag";
     String MONEY_URL="/money";
     String FAV="/fav";
     String ORDER="/order";

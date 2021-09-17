@@ -5,32 +5,64 @@
     android:background="@color/white"
     android:orientation="vertical"
     >
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
-        >
+    <RelativeLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/gray_bg_color">
 
         <RelativeLayout
             android:id="@+id/back_btn"
             android:layout_width="@dimen/back_width"
             android:layout_height="match_parent"
-            android:background="@drawable/general_tran_gray_btn_selector"
-            >
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/general_tran_gray_btn_selector">
+
             <TextView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@mipmap/back_icon"
                 android:layout_centerInParent="true"
-                />
+                android:background="@mipmap/back_icon" />
         </RelativeLayout>
-    </LinearLayout>
-    <LinearLayout
+
+        <TextView
+            android:id="@+id/title_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:ems="13"
+            android:layout_toRightOf="@id/back_btn"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="18sp"
+            />
+
+        <RelativeLayout
+            android:id="@+id/menu"
+            android:layout_width="40dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/general_tran_gray_btn_selector">
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/gray_menu" />
+        </RelativeLayout>
+        <EditText
+            android:id="@+id/editTag"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/result_layout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:layout_marginTop="30dp"
         >
@@ -39,20 +71,37 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:background="@mipmap/add_user_icon"
-            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:scaleType="centerCrop"
             />
-        <TextView
-            android:id="@+id/user_name"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textSize="18sp"
-            android:textColor="@color/gray_text333_color"
-            android:layout_marginLeft="15dp"
-            />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/user_icon"
+            android:layout_centerVertical="true"
+            >
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/gray_text333_color"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                />
+            <TextView
+                android:id="@+id/user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/helptext_color"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="15dp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/add"

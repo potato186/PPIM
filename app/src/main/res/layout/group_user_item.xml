@@ -24,6 +24,8 @@
             android:layout_below="@+id/icon"
             android:textColor="@color/gray_text333_color"
             app:layout_constraintTop_toBottomOf="@id/icon"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:layout_marginTop="3dp"
             android:layout_centerHorizontal="true"
             />

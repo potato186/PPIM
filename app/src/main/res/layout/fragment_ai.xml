@@ -56,7 +56,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
         >
 
         <LinearLayout
@@ -96,9 +95,15 @@
 
                 </LinearLayout>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="仿脑物联智能操作系统"
+                    android:text="@string/ai_title"
+                    android:layout_toLeftOf="@+id/close"
+                    android:layout_toRightOf="@+id/menu_layout"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:textSize="18sp"
                     android:textColor="#5b3f74"
                     android:layout_centerInParent="true"
@@ -139,6 +144,7 @@
                         android:padding="8dp"
                         android:textColor="@color/white"
                         android:textSize="16sp"
+                        android:visibility="gone"
                         android:lineSpacingMultiplier="1.2" />
                     <TextView
                         android:id="@+id/tts_modify"
@@ -179,6 +185,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
+                            android:visibility="gone"
                             android:minHeight="100dp"
                             android:minWidth="100dp"
                             android:scaleType="fitXY"

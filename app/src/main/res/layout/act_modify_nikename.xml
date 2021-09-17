@@ -24,37 +24,13 @@
                 android:background="@mipmap/back_icon" />
         </RelativeLayout>
 
-      <!--  <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/modify_name"
-            android:textColor="@color/gray_text333_color"
-            android:textSize="18sp" />
-        <TextView
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/done"
-            android:textSize="18sp"
-            android:textColor="@color/color_999999"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:background="@drawable/background_gray_corner5"
-            />-->
     </RelativeLayout>
 
     <TextView
         android:id="@+id/group_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="我在群里的昵称"
+        android:text="@string/mynike_in_group"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -65,7 +41,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="昵称修改后，只会在此群内显示，群内成员都可以看见。"
+        android:text="@string/modify_nike_in_group_tip"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
