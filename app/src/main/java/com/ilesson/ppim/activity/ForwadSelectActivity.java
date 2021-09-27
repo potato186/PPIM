@@ -1,5 +1,8 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_INFO;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -43,9 +46,6 @@ import io.rong.imlib.model.UserInfo;
 import io.rong.message.FileMessage;
 import io.rong.message.ImageMessage;
 
-import static com.ilesson.ppim.activity.FriendDetailActivity.USER_INFO;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
-
 /**
  * Created by potato on 2020/3/10.
  */
@@ -78,6 +78,7 @@ public class ForwadSelectActivity extends BaseActivity {
     private void search_edit(View v) {
         Intent intent = getIntent();
         intent.setClass(this, SearchActivity.class);
+        intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_FRIENDS);
         startActivity(intent);
     }
 

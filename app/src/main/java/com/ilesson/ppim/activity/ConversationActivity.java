@@ -1,5 +1,31 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.AddressActivity.SET_ADDRESS_SUCCESS;
+import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE;
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
+import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_MEDIUM;
+import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NAME;
+import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NUM;
+import static com.ilesson.ppim.activity.InvoiceActivity.EMAIL_NAME;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_CANCEL;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_COMPANY;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_DATA;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PAPER;
+import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
+import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_MEDIUM;
+import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_NAME;
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
+import static com.ilesson.ppim.activity.PayScoreActivity.PAY_DECS;
+import static com.ilesson.ppim.activity.PayScoreActivity.PAY_MONEY;
+import static com.ilesson.ppim.activity.SettingActivity.XUNFEI;
+import static com.ilesson.ppim.activity.VoiceTxtActivity.CHATMODE;
+import static com.ilesson.ppim.custom.MyExtensionModule.shopGroup;
+import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -46,8 +72,12 @@ import com.iflytek.cloud.SpeechUtility;
 import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.custom.ComposeMessage;
+import com.ilesson.ppim.db.ConversationDao;
+import com.ilesson.ppim.db.GroupUserDao;
+import com.ilesson.ppim.db.PPUserDao;
 import com.ilesson.ppim.entity.AddressInfo;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.ConversationInfo;
 import com.ilesson.ppim.entity.DeleteFriend;
 import com.ilesson.ppim.entity.GroupBase;
 import com.ilesson.ppim.entity.GroupInfo;
@@ -55,10 +85,12 @@ import com.ilesson.ppim.entity.HideProgress;
 import com.ilesson.ppim.entity.InvoiceInfo;
 import com.ilesson.ppim.entity.ModifyGroupName;
 import com.ilesson.ppim.entity.ModifyGroupNike;
+import com.ilesson.ppim.entity.ModifyUserNike;
 import com.ilesson.ppim.entity.NoteInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.PayOrder;
 import com.ilesson.ppim.entity.PaySuccess;
+import com.ilesson.ppim.entity.PublishNote;
 import com.ilesson.ppim.entity.ResetGroupName;
 import com.ilesson.ppim.entity.ShowProgress;
 import com.ilesson.ppim.entity.SmartOrder;
@@ -121,6 +153,7 @@ import io.rong.imkit.mention.RongMentionManager;
 import io.rong.imkit.model.GroupUserInfo;
 import io.rong.imkit.model.UIMessage;
 import io.rong.imkit.widget.provider.MessageItemLongClickAction;
+import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
@@ -130,43 +163,19 @@ import io.rong.message.ImageMessage;
 import io.rong.message.LocationMessage;
 import io.rong.message.TextMessage;
 
-import static com.ilesson.ppim.activity.AddressActivity.SET_ADDRESS_SUCCESS;
-import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
-import static com.ilesson.ppim.activity.ExchangeActivity.SET_ADDRESS_SUCCESS_TO_USE;
-import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
-import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_MEDIUM;
-import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NAME;
-import static com.ilesson.ppim.activity.InvoiceActivity.COMPANY_NUM;
-import static com.ilesson.ppim.activity.InvoiceActivity.EMAIL_NAME;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_CANCEL;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_COMPANY;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_DATA;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_ELECT;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_MODIFY_SUCCESS;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PAPER;
-import static com.ilesson.ppim.activity.InvoiceActivity.INVOICE_PERSON;
-import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_MEDIUM;
-import static com.ilesson.ppim.activity.InvoiceActivity.PERSON_NAME;
-import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
-import static com.ilesson.ppim.activity.PayScoreActivity.PAY_DECS;
-import static com.ilesson.ppim.activity.PayScoreActivity.PAY_MONEY;
-import static com.ilesson.ppim.activity.SettingActivity.XUNFEI;
-import static com.ilesson.ppim.activity.VoiceTxtActivity.CHATMODE;
-import static com.ilesson.ppim.custom.MyExtensionModule.shopGroup;
-import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
-
 @ContentView(R.layout.conversation)
 public class ConversationActivity extends BaseActivity implements RongIM.LocationProvider, RongIM.ConversationBehaviorListener {
     public static String title;
     @ViewInject(R.id.title_name)
     private TextView titleTextView;
-    @ViewInject(R.id.nike_name)
-    private TextView nikeNameTextView;
+    @ViewInject(R.id.note_text)
+    private TextView noteTextView;
     public String groupName;
     public String mTargetId;
     @ViewInject(R.id.menu)
     private View menu;
+    @ViewInject(R.id.note_layout)
+    public View noteLayout;
     @ViewInject(R.id.play_tts)
     public View playView;
     @ViewInject(R.id.shop_car_layout)
@@ -253,7 +262,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private String helpText;
     private int screenWidth;
     boolean isFromPush = false;
-
+    private String groupNote="";
 
     private IMUtils imUtils;
     private ConversationFragment conversationFragment;
@@ -274,7 +283,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private List<InvoiceInfo> invoiceInfos;
     private SmartOrder smartOrder;
     private boolean isOwner;
-
+    private GroupUserDao groupUserDao;
+    private ConversationDao conversationDao;
     public void onEventMainThread(Conversation conversation) {
         if (!isFinishing()) {
             finish();
@@ -309,6 +319,12 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private void shop_car_view(View v) {
         Log.d(TAG, "shop_car_view: ");
         shopCarEvent();
+    }
+
+    @Event(R.id.note_layout)
+    private void noteLayout(View v) {
+        GroupNoteActivity.launch(this,mTargetId,groupNote,isOwner);
+        SPUtils.put(mTargetId+groupNote,"");
     }
 
     @Event(R.id.modify)
@@ -360,12 +376,14 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Event(R.id.menu)
     private void menu(View v) {
         if (mConversationType == Conversation.ConversationType.GROUP) {
+            if(null==groupInfo)return;
             Intent intent = new Intent(this, ChatInfoActivity.class);
             intent.putExtra(ChatInfoActivity.GROUP_ID, mTargetId);
             intent.putExtra(ChatInfoActivity.GROUP_NAME, groupInfo.getName());
             intent.putExtra(ChatInfoActivity.GROUP_ICON, groupIcon);
 //                intent.putExtra(ChatInfoActivity.GROUP_INFO, groupBase);
             intent.putExtra(ChatInfoActivity.NIKE_NAME, nikeName);
+            intent.putExtra(GroupNoteActivity.GROUP_NOTE, groupNote);
             intent.putExtra(ChatInfoActivity.GROUP_TAG, groupInfo.getTag());
             intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
             startActivityForResult(intent, 0);
@@ -382,6 +400,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        groupUserDao = new GroupUserDao();
+        conversationDao = new ConversationDao();
         Log.d(TAG, "onCreate:currentActivity " + getCurrentActivity());
         setCurrentActivity(this);
         EventBus.getDefault().register(this);
@@ -404,6 +424,34 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 if (!aBoolean) {
                     finish();
                 }
+            }
+        });
+        RongIM.getInstance().getConversation(mConversationType, mTargetId, new RongIMClient.ResultCallback<Conversation>() {
+            @Override
+            public void onSuccess(Conversation conversation) {
+                ConversationInfo conversationInfo = new ConversationInfo();
+                conversationInfo.setConversationTitle(title);
+                conversationInfo.setTargetId(mTargetId);
+                conversationInfo.setType(mConversationType.getValue());
+                conversationInfo.setPortraitUrl(conversation.getPortraitUrl());
+                conversationInfo.setDate(System.currentTimeMillis());
+                conversationDao.update(conversationInfo);
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
+        RongIM.getInstance().getLatestMessages(mConversationType, mTargetId, 20, new RongIMClient.ResultCallback<List<Message>>() {
+            @Override
+            public void onSuccess(List<Message> messages) {
+
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
             }
         });
         RongIM.setLocationProvider(this);
@@ -522,16 +570,21 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             @Override
             public void onPressUp(boolean isDrag) {
                 if (!isDrag) {
-                    if (recording) {
-                        stop(false);
-                    } else {
-                        toSpeech();
-                    }
+
                 }
             }
 
             @Override
             public void onPressDown() {
+                if (recording) {
+                    stop(false);
+                } else {
+                    toSpeech();
+                }
+            }
+
+            @Override
+            public void onDoubleClick() {
 
             }
         });
@@ -750,6 +803,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        noteLayout.setVisibility(View.GONE);
         unregisterReceiver(receiver);
         EventBus.getDefault().unregister(this);
         shopGroup = false;
@@ -758,7 +812,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     private String nikeName;
     private String groupIcon;
     private GroupBase groupBase;
-    private GroupInfo groupInfo;
+    private GroupInfo groupInfo=new GroupInfo();
     public void requestGroupInfo(boolean justRefreshName) {
         ///pp/group?action=info&token=%s&group=%s
         String token = SPUtils.get(LoginActivity.LOGIN_TOKEN, "");
@@ -782,27 +836,31 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         }.getType());
                 if (base.getCode() == 0) {
                     groupBase = base.getData();
+                    groupInfo = groupBase.getGroup();
                     List<PPUserInfo> list = groupBase.getMembers();
                     title = groupBase.getGroup().getName();
+                    if(!TextUtils.isEmpty(groupBase.getGroup().getTag())){
+                        title=groupBase.getGroup().getTag();
+                    }
                     groupSize = groupBase.getSize();
                     isOwner = groupBase.isOwner();
-                    nikeName = groupBase.getMy().getName();
-                    groupInfo = groupBase.getGroup();
-                    groupIcon = groupBase.getGroup().getIcon();
+                    nikeName = groupInfo.getTag();
+                    groupIcon = groupInfo.getIcon();
+                    groupNote = groupInfo.getBroadcast();
+                    groupUserDao.update(groupInfo);
+                    if(TextUtils.isEmpty(groupNote)){
+                        noteLayout.setVisibility(View.GONE);
+                    }else{
+                        if(TextUtils.isEmpty(SPUtils.get(mTargetId+groupNote,""))){
+                            noteLayout.setVisibility(View.VISIBLE);
+                            noteTextView.setText(groupNote);
+                            SPUtils.put(mTargetId+groupNote,"");
+                        }else{
+                            noteLayout.setVisibility(View.GONE);
+                        }
+                    }
                     EventBus.getDefault().post(new ResetGroupName(groupInfo.getName()));
                     showTitle();
-                    if(justRefreshName){
-                        return;
-                    }
-                    final List<UserInfo> users = new ArrayList<>();
-                    for (PPUserInfo info : list) {
-                        Uri portraitUri = Uri.parse(info.getIcon());
-                        UserInfo user = new UserInfo(info.getPhone(), info.getName(), portraitUri);
-                        users.add(user);
-                    }
-                    RongIM.getInstance().setGroupMembersProvider((groupId, callback) -> {
-                        callback.onGetGroupMembersResult(users); // 调用 callback 的 onGetGroupMembersResult 回传群组信息
-                    });
                 } else {
                     Toast.makeText(ConversationActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -845,12 +903,35 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         }.getType());
                 if (base.getCode() == 0) {
                     List<PPUserInfo> list = base.getData();
+                    final List<UserInfo> users = new ArrayList<>();
+                    PPUserDao ppUserDao = new PPUserDao();
                     for (PPUserInfo ppUserInfo : list) {
-                        SPUtils.put(ppUserInfo.getPhone(),ppUserInfo.getIcon());
+                        SPUtils.put(ppUserInfo.getPhone()+"icon",ppUserInfo.getIcon());
                         SPUtils.put(ppUserInfo.getPhone()+"name",ppUserInfo.getName());
                         GroupUserInfo groupUserInfo = new GroupUserInfo(mTargetId,ppUserInfo.getPhone(),ppUserInfo.getName());
                         RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
+                        Uri portraitUri = Uri.parse(ppUserInfo.getIcon());
+                        UserInfo user = new UserInfo(ppUserInfo.getPhone(), ppUserInfo.getName(), portraitUri);
+                        users.add(user);
+                        PPUserInfo chenInfo = ppUserDao.getFriendByKey(ppUserInfo.getPhone());
+                        if(null!=chenInfo){
+                            ppUserInfo.setId(chenInfo.getId());
+                            ppUserInfo.setFriend(chenInfo.isFriend());
+                        }
+                        ppUserInfo.setGroupId(mTargetId);
+                        ppUserDao.update(ppUserInfo);
+//                        GroupUser groupUser = new GroupUser();
+//                        groupUser.setGroupId(mTargetId);
+//                        groupUser.setGroupName(title);
+//                        groupUser.setGroupTagName(nikeName);
+//                        groupUser.setUserId(ppUserInfo.getPhone());
+//                        groupUser.setUserIcon(ppUserInfo.getIcon());
+//                        groupUser.setUserName(ppUserInfo.getName());
+//                        groupUserDao.update(groupUser);
                     }
+                    RongIM.getInstance().setGroupMembersProvider((groupId, callback) -> {
+                        callback.onGetGroupMembersResult(users); // 调用 callback 的 onGetGroupMembersResult 回传群组信息
+                    });
                 }
             }
             @Override
@@ -877,15 +958,12 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             return false;
         }
         user.setPhone(userInfo.getUserId());
-        user.setName(userInfo.getName());
+        user.setName(SPUtils.get(userInfo.getUserId()+"name",""));
+        user.setNick(SPUtils.get(userInfo.getUserId()+"nike",""));
         String url = "https://" + uri.getHost() + ":" + uri.getPort() + uri.getPath();
 //                user.setUri(url);
         user.setIcon(url);
-        Intent intent = new Intent(ConversationActivity.this, FriendDetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(FriendDetailActivity.USER_INFO, user);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        FriendDetailActivity.launch(ConversationActivity.this,user);
         return true;
     }
 
@@ -1052,7 +1130,10 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         startActivityForResult(invoiceIntent, 0);
         overridePendingTransition(0, 0);
     }
-
+    public void onEventMainThread(ModifyUserNike var) {
+        PPUserInfo ppUserInfo = var.getPpUserInfo();
+//        showData();
+    }
     public String serverId;
 
     public void getServer() {
@@ -2219,4 +2300,14 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     }
 
     private String trade;
+
+    public void onEventMainThread(PublishNote var) {
+        groupNote = var.getNote();
+        if(TextUtils.isEmpty(var.getNote())){
+            noteLayout.setVisibility(View.GONE);
+        }else{
+            noteLayout.setVisibility(View.VISIBLE);
+            noteTextView.setText(var.getNote());
+        }
+    }
 }

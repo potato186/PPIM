@@ -668,4 +668,40 @@
             android:background="@mipmap/speak0"
             />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/note_layout"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_below="@+id/top_bar"
+        android:background="@color/white"
+        android:visibility="gone"
+        >
+        <ImageView
+            android:id="@+id/note_icon"
+            android:layout_width="20dp"
+            android:layout_height="15dp"
+            android:src="@mipmap/note_icon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"/>
+        <TextView
+            android:id="@+id/note_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/right"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/note_icon"
+            android:layout_marginLeft="5dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            />
+        <TextView
+            android:id="@+id/right"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/right_arrow" />
+    </RelativeLayout>
 </RelativeLayout>

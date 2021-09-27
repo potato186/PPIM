@@ -1,5 +1,15 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.ContactActivity.HAS_MEMBERS;
+import static com.ilesson.ppim.activity.ContactActivity.INVATE_GROUP_TYPE;
+import static com.ilesson.ppim.activity.ContactActivity.REMOVE_GROUP_TYPE;
+import static com.ilesson.ppim.activity.ContactActivity.REMOVE_RESULT;
+import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_GROUP;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,16 +51,6 @@ import java.util.List;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.widget.AsyncImageView;
 import io.rong.imlib.model.Conversation;
-
-import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
-import static com.ilesson.ppim.activity.ContactActivity.HAS_MEMBERS;
-import static com.ilesson.ppim.activity.ContactActivity.INVATE_GROUP_TYPE;
-import static com.ilesson.ppim.activity.ContactActivity.REMOVE_GROUP_TYPE;
-import static com.ilesson.ppim.activity.ContactActivity.REMOVE_RESULT;
-import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_GROUP;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
 
 
 /**
@@ -189,11 +189,7 @@ public class MoreMemberActivity extends BaseActivity{
             PPUserInfo userInfo = datas.get(position);
         }else{
             PPUserInfo userInfo = datas.get(position);
-            intent = new Intent(MoreMemberActivity.this,FriendDetailActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            FriendDetailActivity.launch(MoreMemberActivity.this,userInfo);
         }
 
         Log.d(TAG, "item: "+datas.get(position).getName());

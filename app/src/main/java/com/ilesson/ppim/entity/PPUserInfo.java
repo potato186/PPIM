@@ -3,6 +3,9 @@ package com.ilesson.ppim.entity;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import org.xutils.db.annotation.Column;
+import org.xutils.db.annotation.Table;
+
 import java.io.Serializable;
 
 
@@ -10,25 +13,74 @@ import java.io.Serializable;
  * Created by potato on 2020/3/10.
  */
 
-public class PPUserInfo implements Serializable{
+@Table(name = "PPUserInfo")
+public class PPUserInfo  extends SearchInfo implements Serializable{
+    @Column(name = "id",isId = true)
     private int id;
+    @Column(name = "phone")
     private String phone;
+    @Column(name = "pay")
     private boolean pay;
+    @Column(name = "joined")
     private boolean joined;
+    @Column(name = "isFriend")
+    private boolean isFriend;
+    @Column(name = "token")
     private String token;
+    @Column(name = "name")
     private String name;
+    @Column(name = "nick")
+    private String nick;
+    @Column(name = "icon")
     private String icon;
+    @Column(name = "money")
     private int money;
+    @Column(name = "level")
     private int level;
+    @Column(name = "date")
     private String date;
+    @Column(name = "manager")
     private String manager;
+    private String groupId;
     private double similar;
     private Uri uri;
     public double getSimilar() {
         return similar;
     }
 
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
     public PPUserInfo() {
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
     public int getLevel() {
@@ -89,14 +141,6 @@ public class PPUserInfo implements Serializable{
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getPhone() {

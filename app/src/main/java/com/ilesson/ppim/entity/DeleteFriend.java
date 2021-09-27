@@ -11,17 +11,17 @@ package com.ilesson.ppim.entity;
  * @Version: 1.0
  */
 public class DeleteFriend {
-    private String targetId;
+    private PPUserInfo userInfo;
 
-    public DeleteFriend(String targetId) {
-        this.targetId = targetId;
+    public DeleteFriend(PPUserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
-    public String getTargetId() {
-        return targetId;
+    public PPUserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setTargetId(String targetId) {
-        this.targetId = targetId;
+    public void setUserInfo(PPUserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }

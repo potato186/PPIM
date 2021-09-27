@@ -68,11 +68,18 @@
         />
 
     </android.support.v4.widget.SwipeRefreshLayout>
-    <com.ilesson.ppim.contactview.LetterView
-        android:id="@+id/letter_view"
-        android:layout_width="30dp"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/top"
-        />
+        >
+        <com.ilesson.ppim.contactview.LetterView
+            android:id="@+id/letter_view"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>

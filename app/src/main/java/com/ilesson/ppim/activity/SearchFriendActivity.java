@@ -1,5 +1,7 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -40,8 +42,6 @@ import java.util.List;
 
 import io.rong.imageloader.core.DisplayImageOptions;
 import io.rong.imageloader.core.ImageLoader;
-
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 
 /**
  * Created by potato on 2020/3/10.
@@ -117,12 +117,7 @@ public class SearchFriendActivity extends BaseActivity {
                 if (null == PPUserInfo) {
                     return;
                 }
-                Intent intent = new Intent(SearchFriendActivity.this, FriendDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(FriendDetailActivity.USER_INFO, PPUserInfo);
-                intent.putExtras(bundle);
-                startActivity(intent);
-//                addFriend(PPUserInfo);
+                FriendDetailActivity.launch(SearchFriendActivity.this,PPUserInfo);
             }
         });
     }

@@ -1,5 +1,8 @@
 package com.ilesson.ppim.fragment;
 
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.MainActivity.FRIEND_ACCEPT;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +24,10 @@ import com.ilesson.ppim.contactcard.IContactCardInfoProvider;
 import com.ilesson.ppim.contactview.ContactAdapter;
 import com.ilesson.ppim.contactview.DividerItemDecoration;
 import com.ilesson.ppim.contactview.LetterView;
+import com.ilesson.ppim.db.PPUserDao;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.DeleteFriend;
+import com.ilesson.ppim.entity.ModifyUserNike;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
@@ -44,9 +49,6 @@ import java.util.Map;
 import io.rong.eventbus.EventBus;
 import io.rong.imlib.model.UserInfo;
 
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
-import static com.ilesson.ppim.activity.MainActivity.FRIEND_ACCEPT;
-
 
 /**
  * Created by potato on 2016/4/12.
@@ -67,12 +69,12 @@ public class ContactFragment extends BaseFragment {
     @ViewInject(R.id.swipeLayout)
     private SwipeRefreshLayout swipeLayout;
     private ContactAdapter adapter;
-    public List<PPUserInfo> datas;
+    public List<PPUserInfo> datas = new ArrayList<>();;
     public Map<String, String> friends = new HashMap<>();
     private MainActivity mainActivity;
     private static final String TAG = "ContactFragment";
     private static final String CONTACT_LIST = "contact_listdatas";
-
+    private PPUserDao ppUserDao;
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -80,7 +82,6 @@ public class ContactFragment extends BaseFragment {
         mainActivity = (MainActivity) getActivity();
         StatusBarUtil.setBarPadding(mainActivity,top);
         layoutManager = new LinearLayoutManager(mainActivity);
-        datas = new ArrayList<>();
         contactList.setLayoutManager(layoutManager);
         contactList.addItemDecoration(new DividerItemDecoration(mainActivity, DividerItemDecoration.VERTICAL_LIST));
 
@@ -96,6 +97,12 @@ public class ContactFragment extends BaseFragment {
             }
         });
         Log.d(TAG, "onViewCreated: ");
+        ppUserDao = new PPUserDao();
+        datas.addAll(ppUserDao.getAllFriends());
+        adapter = new ContactAdapter(mainActivity, datas);
+        contactList.setAdapter(adapter);
+        IlessonApp.getInstance().setDatas(datas);
+//        setUsers();
         requestFriendsList(false);
         showUnread();
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -104,8 +111,12 @@ public class ContactFragment extends BaseFragment {
                 requestFriendsList(true);
             }
         });
+
     }
     public void onEventMainThread(PPUserInfo userInfo) {
+        requestFriendsList(true);
+    }
+    public void onEventMainThread(ModifyUserNike userInfo) {
         requestFriendsList(true);
     }
     public void showUnread() {
@@ -152,20 +163,31 @@ public class ContactFragment extends BaseFragment {
 //        }
     }
     public void onEventMainThread(DeleteFriend var) {
-        requestFriendsList(false);
+        ppUserDao.deleteFriend(var.getUserInfo().getPhone());
+        int index=-1;
+        for (int i = 0; i < datas.size(); i++) {
+            if(datas.get(i).getPhone().equals(var.getUserInfo().getPhone())){
+                index = i;
+                break;
+            }
+        }
+        datas.remove(index);
+        adapter = new ContactAdapter(mainActivity, datas);
+        contactList.setAdapter(adapter);
     }
+
     public void requestFriendsList(final boolean update) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.USER_URL);
         params.addParameter("action", "friend");
         String token = SPUtils.get(LOGIN_TOKEN,"");
         params.addParameter("token", token);
         Log.d(TAG, "loadData: " + params.toString());
-        x.http().post(params, new Callback.CacheCallback<String>() {
-            @Override
-            public boolean onCache(String result) {
-                readFriendsJson(result,update);
-                return false;
-            }
+        x.http().post(params, new Callback.CommonCallback<String>() {
+//            @Override
+//            public boolean onCache(String result) {
+//                readFriendsJson(result,update);
+//                return false;
+//            }
 
             @Override
             public void onSuccess(String result) {
@@ -212,8 +234,16 @@ public class ContactFragment extends BaseFragment {
             for (PPUserInfo info : data) {
                 friends.put(info.getPhone(), info.getPhone());
                 SPUtils.put(info.getPhone(), info.getPhone());
+                SPUtils.put(info.getPhone()+"icon",info.getIcon());
+                SPUtils.put(info.getPhone()+"name",info.getName());
                 UserInfo user = new UserInfo(info.getPhone(),info.getName(), Uri.parse(info.getIcon()));
                 users.add(user);
+                info.setFriend(true);
+                PPUserInfo ppUserInfo = ppUserDao.getFriendByKey(info.getPhone());
+                if(null!=ppUserInfo){
+                    info.setId(ppUserInfo.getId());
+                }
+                ppUserDao.update(info);
             }
             if(datas==null){
                 datas = new ArrayList<>();
@@ -224,19 +254,13 @@ public class ContactFragment extends BaseFragment {
             if (null == contactList) {
                 return;
             }
-            if(datas.isEmpty()){
-                letterView.setVisibility(View.GONE);
-                contactList.setVisibility(View.GONE);
-            }else{
-                contactList.setVisibility(View.VISIBLE);
-                letterView.setVisibility(View.VISIBLE);
-            }
-            IlessonApp.getInstance().setDatas(data);
             adapter = new ContactAdapter(mainActivity, datas);
             contactList.setAdapter(adapter);
+            setUsers();
             if(update||!SPUtils.get(CONTACT_LIST,"").equals(json)){
                 new IMUtils().upUser(mainActivity);
             }
+            IlessonApp.getInstance().setDatas(datas);
             SPUtils.put(CONTACT_LIST,json);
             ContactCardContext.getInstance().setContactCardInfoProvider(new IContactCardInfoProvider() {
                 @Override
@@ -250,6 +274,17 @@ public class ContactFragment extends BaseFragment {
                 }
             });
         }
+    }
+    private void setUsers(){
+        if(datas.isEmpty()){
+            letterView.setVisibility(View.GONE);
+            contactList.setVisibility(View.GONE);
+        }else{
+            contactList.setVisibility(View.VISIBLE);
+            letterView.setVisibility(View.VISIBLE);
+        }
+        IlessonApp.getInstance().setDatas(datas);
+       adapter.notifyDataSetChanged();
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {

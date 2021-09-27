@@ -1,5 +1,10 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.ForwadSelectActivity.INTENT_TYPE;
+import static com.ilesson.ppim.activity.ForwadSelectActivity.SEND_FRIEND_CARD;
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_INFO;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,11 +39,6 @@ import java.util.List;
 import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
-
-import static com.ilesson.ppim.activity.ForwadSelectActivity.INTENT_TYPE;
-import static com.ilesson.ppim.activity.ForwadSelectActivity.SEND_FRIEND_CARD;
-import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
-import static com.ilesson.ppim.activity.FriendDetailActivity.USER_INFO;
 
 
 /**
@@ -275,7 +275,7 @@ public class UserInfoSttingActivity extends BaseActivity implements CompoundButt
                         new TypeToken<BaseCode>() {
                         }.getType());
                 if (base.getCode() == 0) {
-                    EventBus.getDefault().post(new DeleteFriend(ppUserInfo.getPhone()));
+                    EventBus.getDefault().post(new DeleteFriend(ppUserInfo));
                     RongIM.getInstance().removeConversation(Conversation.ConversationType.PRIVATE,ppUserInfo.getPhone(),null);
                     finish();
                 } else {

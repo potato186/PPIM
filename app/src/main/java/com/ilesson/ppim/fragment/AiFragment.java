@@ -1,11 +1,14 @@
 package com.ilesson.ppim.fragment;
 
+import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -22,9 +25,12 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,8 +69,6 @@ import java.util.List;
 
 import io.reactivex.functions.Consumer;
 
-import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
-
 @ContentView(R.layout.fragment_ai)
 public class AiFragment extends BaseFragment implements TencenRecognize.OnRecognizeListener {
     private static final String TAG = "AiFragment";
@@ -78,8 +82,14 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     public TextView helpTextView;
     @ViewInject(R.id.tts)
     private TextView ttsTv;
+    @ViewInject(R.id.edittext)
+    private EditText editText;
     @ViewInject(R.id.voice_layout)
     private View voiceLayout;
+    @ViewInject(R.id.edit_layout)
+    private View editLayout;
+//    @ViewInject(R.id.scrollview)
+//    private ScrollView scrollView;
 
     @ViewInject(R.id.result_image)
     private ImageView resultImageView;
@@ -96,6 +106,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mainActivity = (MainActivity) getActivity();
         playTts = SPUtils.get(PLAY_TTS, true);
 //        tencenRecognize = TencenRecognize.getInstance();
@@ -107,19 +118,25 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
         floatBtn.setOnPressListener(new DragView.OnPressListener() {
             @Override
             public void onPressUp(boolean isDrag) {
-                if (!isDrag) {
-                    if (recording) {
-                        stopXunfei(false);
-//                        stop(false);
-                    } else {
-                        toSpeech();
-                    }
-                }
+
             }
 
             @Override
             public void onPressDown() {
+                editLayout.setVisibility(View.GONE);
+                    if (recording) {
+                        stopXunfei(false);
+                    } else {
+                        toSpeech();
+                    }
+            }
 
+            @Override
+            public void onDoubleClick() {
+                canShow=true;
+                editLayout.setVisibility(View.VISIBLE);
+                editText.requestFocus();
+                PPScreenUtils.showInput(editText);
             }
         });
         floatBtn.setOnLocationListener(new DragView.OnLocationListener() {
@@ -132,8 +149,34 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
         });
         handler.sendEmptyMessageDelayed(0, 200);
         initXunfeiSpeech();
+        setListenerToRootView();
     }
+    private int diff;
+    private void setListenerToRootView() {
+        final View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
 
+                int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
+                if(diff==heightDiff){
+                    return;
+                }
+                diff = heightDiff;
+                Log.d(TAG, "onGlobalLayout: "+heightDiff);
+                if (heightDiff > PPScreenUtils.getScreenHeight(getActivity()) / 3) { // if more than 100 pixels, its probably a keyboard...
+                    if(!canShow){
+                        PPScreenUtils.hideShowKeyboard(mainActivity);
+                    }
+                    setEditLayout(heightDiff);
+                } else {
+                    editLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
     private void initTts() {
         ttsHelper = new TTSHelper(mainActivity);
         ttsHelper.setOnTTSFinish(new TTSHelper.OnTTSFinish() {
@@ -251,6 +294,23 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     @Event(value = R.id.voice_layout)
     private void voice_layout(View v) {
         closeVoice();
+        if(editLayout.getVisibility()==View.VISIBLE)
+        PPScreenUtils.hideShowKeyboard(mainActivity);
+    }
+    private boolean inputType;
+    private boolean canShow;
+    @Event(value = R.id.confirm)
+    private void confirm(View v) {
+        String text = editText.getText().toString();
+        if(!TextUtils.isEmpty(text)){
+            inputType = true;
+            floatBtn.requestFocus();
+            editText.clearFocus();
+            if (ttsHelper!=null) {
+                ttsHelper.stop();
+            }
+            handleContent(text);
+        }
     }
 
     @Event(value = R.id.play_tts)
@@ -262,8 +322,15 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
     private void close(View v) {
         closeVoice();
     }
+    @Event(value = R.id.ai_layout)
+    private void ai_layout(View v) {
+        closeVoice();
+        if(editLayout.getVisibility()==View.VISIBLE)
+        PPScreenUtils.hideShowKeyboard(mainActivity);
+    }
 
     public void request(String key) {
+
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.TALK);
         if (TextUtils.isEmpty(key)) {
             params.addParameter("action", "init");
@@ -272,6 +339,9 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
             params.addParameter("key", key);
         }
         Log.d(TAG, "loadData: " + params.toString());
+        if(inputType){
+            mainActivity.showProgress();
+        }
         x.http().post(params, new Callback.CommonCallback<String>() {
             @SuppressLint("StringFormatMatches")
             @Override
@@ -285,6 +355,11 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                     List<SmartOrder> list = data.getData();
                     if (list.isEmpty()) {
                         return;
+                    }
+                    if(inputType){
+                        editText.setText("");
+                        editText.clearFocus();
+                        canShow = false;
                     }
                     helpTextView.setVisibility(View.GONE);
                     resultImageView.setVisibility(View.GONE);
@@ -393,6 +468,9 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
             public void onFinished() {
                 floatBtn.setBackgroundResource(imgs[0]);
                 floatBtn.clearAnimation();
+                if(inputType){
+                    mainActivity.hideProgress();
+                }
 //                setVoiceBtnLocation();
             }
         });
@@ -512,6 +590,8 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                 stop(TextUtils.isEmpty(content) ? false : true);
             }else if (msg.what == 4) {
                 stop(false);
+            }else if (msg.what == 5) {
+                PPScreenUtils.hideShowKeyboard(mainActivity);
             }
         }
     };
@@ -533,7 +613,11 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
         floatBtn.setLayoutParams(layoutParams);
         floatBtn.setVisibility(View.VISIBLE);
     }
-
+    private void setEditLayout(int margin){
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) editLayout.getLayoutParams();
+        layoutParams.bottomMargin=margin-mainActivity.bottomHeight-PPScreenUtils.getStatusBarHeight(mainActivity);
+        editLayout.setLayoutParams(layoutParams);
+    }
     @Override
     public void onFinish(String content) {
         if (TextUtils.isEmpty(content)) {
@@ -582,6 +666,7 @@ public class AiFragment extends BaseFragment implements TencenRecognize.OnRecogn
                 if (TextUtils.isEmpty(content)) {
                     return;
                 }
+                inputType=false;
                 content = content.toLowerCase();
                 handleContent(content);
                 stopXunfei(true);

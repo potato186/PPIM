@@ -1,5 +1,21 @@
 package com.ilesson.ppim.utils;
 
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.LoginActivity.NAME_SYMBL;
+import static com.ilesson.ppim.activity.LoginActivity.REAL_NAME;
+import static com.ilesson.ppim.activity.LoginActivity.TOKEN;
+import static com.ilesson.ppim.activity.LoginActivity.USER_ICON;
+import static com.ilesson.ppim.activity.LoginActivity.USER_MONEY;
+import static com.ilesson.ppim.activity.LoginActivity.USER_NAME;
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
+import static com.ilesson.ppim.activity.MainActivity.GROUP_TYPE;
+import static com.ilesson.ppim.activity.MainActivity.PERSON_TYPE;
+import static com.ilesson.ppim.activity.UserDetailActivity.BIRTH;
+import static com.ilesson.ppim.activity.UserDetailActivity.SEX;
+import static com.ilesson.ppim.fragment.FundFragment.FUND_HAD_LOAD;
+import static com.ilesson.ppim.fragment.FundFragment.FUND_NOT_ACTIVED;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -42,22 +58,6 @@ import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.TextMessage;
-
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
-import static com.ilesson.ppim.activity.LoginActivity.NAME_SYMBL;
-import static com.ilesson.ppim.activity.LoginActivity.REAL_NAME;
-import static com.ilesson.ppim.activity.LoginActivity.TOKEN;
-import static com.ilesson.ppim.activity.LoginActivity.USER_ICON;
-import static com.ilesson.ppim.activity.LoginActivity.USER_MONEY;
-import static com.ilesson.ppim.activity.LoginActivity.USER_NAME;
-import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
-import static com.ilesson.ppim.activity.MainActivity.GROUP_TYPE;
-import static com.ilesson.ppim.activity.MainActivity.PERSON_TYPE;
-import static com.ilesson.ppim.activity.UserDetailActivity.BIRTH;
-import static com.ilesson.ppim.activity.UserDetailActivity.SEX;
-import static com.ilesson.ppim.fragment.FundFragment.FUND_HAD_LOAD;
-import static com.ilesson.ppim.fragment.FundFragment.FUND_NOT_ACTIVED;
 
 /**
  * Created by potato on 2020/3/10.
@@ -160,7 +160,8 @@ public class IMUtils {
                     GroupInfo info = base.getData();
 //                    String test = "https://pp.fangnaokeji.com:9443/pp/images/demo/shop_01.png";
 //                    Group group = new Group(userId, info.getName(), Uri.parse(test));
-                    Group group = new Group(userId, info.getName(), Uri.parse(info.getIcon()));
+                    String name = TextUtils.isEmpty(info.getTag())?info.getName():info.getTag();
+                    Group group = new Group(userId, name, Uri.parse(info.getIcon()));
                     RongIM.getInstance().refreshGroupInfoCache(group);
                     if(null!=onQueryInfoListener){
                         onQueryInfoListener.onResult(info.getSize(),info.getName());
@@ -199,9 +200,11 @@ public class IMUtils {
                         }.getType());
                 if (base.getCode() == 0) {
                     RongUserInfo info = base.getData();
-                    UserInfo userInfo = new UserInfo(userId, info.getName(), Uri.parse(info.getIcon()));
+                    String name = TextUtils.isEmpty(info.getNick())?info.getName():info.getNick();
+                    UserInfo userInfo = new UserInfo(userId, name, Uri.parse(info.getIcon()));
                     SPUtils.put(userId,info.getIcon());
                     SPUtils.put(userId+"name",info.getName());
+                    SPUtils.put(userId+"nike",info.getNick());
                     RongIM.getInstance().refreshUserInfoCache(userInfo);
                 } else {
                 }

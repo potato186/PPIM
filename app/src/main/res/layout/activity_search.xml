@@ -69,64 +69,15 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/search_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="7dp"
-        android:background="@android:color/white"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:background="@mipmap/add_user_icon" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:text="@string/search_tip"
-            android:textColor="@color/gray_text333_color"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/search_key"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/theme_color"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/result_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="7dp"
-        android:background="@android:color/white"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/user_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:background="@mipmap/add_user_icon" />
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/gray_text333_color"
-            android:textSize="18sp" />
-    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/empty"
+        android:text="@string/search_empty_tips"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp"
+        android:visibility="gone"
+        />
 
     <ListView
         android:id="@+id/search_listiview"
@@ -140,9 +91,16 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:background="@color/white"
+        android:id="@+id/all_search"
+        android:visibility="gone"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:id="@+id/chat_record"
+        android:visibility="gone"
         />
     <TextView
         android:id="@+id/no_user"

@@ -1,17 +1,49 @@
 package com.ilesson.ppim.entity;
 
+import com.lidroid.xutils.db.annotation.Foreign;
+import com.lidroid.xutils.db.annotation.Id;
+
+import org.xutils.db.annotation.Column;
+import org.xutils.db.annotation.Table;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by potato on 2020/4/23.
  */
 
-public class GroupInfo implements Serializable {
+@Table(name = "GroupInfo")
+public class GroupInfo extends SearchInfo implements Serializable {
+    @Id(column = "id")
     private String id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "icon")
     private String icon;
+    @Column(name = "tag")
     private String tag;
+    private String broadcast;
+    private String userName;
+    @Column(name = "size")
     private int size;
+    @Foreign(foreign = "groupId", column = "groupId")
+    private List<PPUserInfo> users;
+    public String getBroadcast() {
+        return broadcast;
+    }
+
+    public void setBroadcast(String broadcast) {
+        this.broadcast = broadcast;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getTag() {
         return tag;
@@ -51,5 +83,13 @@ public class GroupInfo implements Serializable {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public List<PPUserInfo> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<PPUserInfo> users) {
+        this.users = users;
     }
 }

@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.utils.PPScreenUtils;
 
 public class LetterView extends LinearLayout {
     private Context mContext;
@@ -25,7 +26,7 @@ public class LetterView extends LinearLayout {
     }
 
     private void initView() {
-        addView(buildImageLayout());
+//        addView(buildImageLayout());
 
         for (char i = 'A'; i <= 'Z'; i++) {
             final String character = i + "";
@@ -38,13 +39,12 @@ public class LetterView extends LinearLayout {
     }
 
     private TextView buildTextLayout(final String character) {
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1);
-
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,1);
         TextView tv = new TextView(mContext);
         tv.setLayoutParams(layoutParams);
         tv.setGravity(Gravity.CENTER);
         tv.setClickable(true);
-
+        tv.setTextSize(10);
         tv.setText(character);
 
         tv.setOnClickListener(new OnClickListener() {
@@ -59,7 +59,7 @@ public class LetterView extends LinearLayout {
     }
 
     private ImageView buildImageLayout() {
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, PPScreenUtils.dip2px(mContext,10));
 
         ImageView iv = new ImageView(mContext);
         iv.setLayoutParams(layoutParams);

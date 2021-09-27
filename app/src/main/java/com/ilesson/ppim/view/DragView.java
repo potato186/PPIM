@@ -3,6 +3,8 @@ package com.ilesson.ppim.view;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -103,7 +105,19 @@ public class DragView extends ImageView {
     public void setLocation(int left,int top){
         this.layout(left,top,left+width,top+height);
     }
-
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what==0){
+                onPressListener.onPressDown();
+                doubleClick = false;
+                clickOne=0;
+            }
+        }
+    };
+    private long clickOne;
+    private boolean doubleClick=true;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
@@ -114,7 +128,16 @@ public class DragView extends ImageView {
                     downX = event.getX();
                     downY = event.getY();
                     if(null!=onPressListener&&!isDrag){
-                        onPressListener.onPressDown();
+                        if(clickOne==0){
+                            clickOne=System.currentTimeMillis();
+                            handler.sendEmptyMessageDelayed(0,500);
+                            doubleClick = false;
+                        }else{
+                            handler.removeMessages(0);
+                            onPressListener.onDoubleClick();
+                            clickOne=0;
+                            doubleClick = true;
+                        }
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
@@ -124,6 +147,8 @@ public class DragView extends ImageView {
                     int l,r,t,b;
                     //当水平或者垂直滑动距离大于10,才算拖动事件
                     if (Math.abs(xDistance) >30 ||Math.abs(yDistance)>30) {
+                        handler.removeMessages(0);
+                        clickOne=0;
                         Log.v("kid","Drag");
                         isDrag=true;
                          l = (int) (getLeft() + xDistance);
@@ -156,9 +181,9 @@ public class DragView extends ImageView {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    if(null!=onPressListener){
-                        onPressListener.onPressUp(isDrag);
-                    }
+//                    if(null!=onPressListener&&!doubleClick){
+//                        onPressListener.onPressUp(isDrag);
+//                    }
                     setPressed(false);
                     break;
                 case MotionEvent.ACTION_CANCEL:
@@ -185,6 +210,7 @@ public class DragView extends ImageView {
     public interface OnPressListener{
         void onPressUp(boolean isDrag);
         void onPressDown();
+        void onDoubleClick();
     }
     private OnPressListener onPressListener;
 

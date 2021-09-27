@@ -1,5 +1,11 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.PayScoreActivity.QR_PAY;
+import static com.ilesson.ppim.activity.PayScoreActivity.TARGET_ID;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,6 +23,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,12 +76,6 @@ import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 
-import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_PAY;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
-import static com.ilesson.ppim.activity.PayScoreActivity.QR_PAY;
-import static com.ilesson.ppim.activity.PayScoreActivity.TARGET_ID;
-
 /**
  * Created by potato on 2020/3/5.
  */
@@ -125,6 +126,8 @@ public class MainActivity extends BaseActivity {
     private View item_c;
     @ViewInject(R.id.item_d)
     private View item_d;
+    @ViewInject(R.id.bottom_layout)
+    private View bottomLayout;
 
     @ViewInject(R.id.text1)
     private TextView text1;
@@ -159,7 +162,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         StatusBarUtil.fullScreen(this);
-//        setStatusBarLightMode(this,true);
+
         initStatusBar();
         token = SPUtils.get(LOGIN_TOKEN, "");
         String phone = SPUtils.get(LoginActivity.USER_PHONE,"");
@@ -277,9 +280,15 @@ public class MainActivity extends BaseActivity {
 //                setSelection(4);
             }
         });
+        bottomLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                bottomHeight = bottomLayout.getMeasuredHeight();
+            }
+        });
     }
 
-
+    public int bottomHeight;
     @Override
     public void onResume() {
         super.onResume();
@@ -351,11 +360,11 @@ public class MainActivity extends BaseActivity {
     public int unAcceptFriends = SPUtils.get(FRIEND_ACCEPT, 0);
 
     public void onEventMainThread(FriendRequest message) {
-        if (!contactFragment.friends.containsKey(message.getId())) {
+//        if (!contactFragment.friends.containsKey(message.getId())) {
             unAcceptFriends++;
             SPUtils.put(FRIEND_ACCEPT, unAcceptFriends);
             showUnreadRequestNewFriends();
-        }
+//        }
     }
     public void onEventMainThread(FriendAccept friendAccept) {
         contactFragment.requestFriendsList(true);
@@ -528,7 +537,9 @@ public class MainActivity extends BaseActivity {
 
 //    @Event(value = R.id.search)
 public void search() {
-        startActivity(new Intent(this, SearchActivity.class));
+        Intent intent= new Intent(this, SearchActivity.class);
+    intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_ALL);
+        startActivity(intent);
     }
 
     @Override
@@ -634,18 +645,28 @@ public void search() {
 
     private long mPressedTime = 0;
 
+//    @Override
+//    public void onBackPressed() {
+//        long mNowTime = System.currentTimeMillis();//获取第一次按键时间
+//        if ((mNowTime - mPressedTime) > 2000) {//比较两次按键时间差
+//            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+//            mPressedTime = mNowTime;
+//        } else {//退出程序
+//            this.finish();
+////            System.exit(0);
+//        }
+//    }
     @Override
-    public void onBackPressed() {
-        long mNowTime = System.currentTimeMillis();//获取第一次按键时间
-        if ((mNowTime - mPressedTime) > 2000) {//比较两次按键时间差
-            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
-            mPressedTime = mNowTime;
-        } else {//退出程序
-            this.finish();
-//            System.exit(0);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+            return true;
         }
+        return super.onKeyDown(keyCode, event);
     }
-
 
     private static final String USER_MARKET_LEVEL="user_market_level";
     public int level=0;

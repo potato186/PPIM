@@ -1,5 +1,19 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.ContactActivity.HAS_MEMBERS;
+import static com.ilesson.ppim.activity.ContactActivity.INVATE_GROUP_TYPE;
+import static com.ilesson.ppim.activity.ContactActivity.REMOVE_GROUP_TYPE;
+import static com.ilesson.ppim.activity.ContactActivity.REMOVE_RESULT;
+import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_CONTENT;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_GROUP;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_NIKE_IN_GROUP;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
+import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
+import static com.ilesson.ppim.activity.MoreMemberActivity.GROUP_MEMBER;
+import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +33,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.db.GroupUserDao;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.FreshConversation;
 import com.ilesson.ppim.entity.ModifyGroupNike;
 import com.ilesson.ppim.entity.PPUserInfo;
+import com.ilesson.ppim.entity.PublishNote;
 import com.ilesson.ppim.entity.ResetGroupName;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.IMUtils;
@@ -50,20 +66,6 @@ import io.rong.imkit.widget.AsyncImageView;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 
-import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
-import static com.ilesson.ppim.activity.ContactActivity.HAS_MEMBERS;
-import static com.ilesson.ppim.activity.ContactActivity.INVATE_GROUP_TYPE;
-import static com.ilesson.ppim.activity.ContactActivity.REMOVE_GROUP_TYPE;
-import static com.ilesson.ppim.activity.ContactActivity.REMOVE_RESULT;
-import static com.ilesson.ppim.activity.ContactActivity.SELECT_ACTION;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_CONTENT;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_GROUP;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_NIKE_IN_GROUP;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_RESULT;
-import static com.ilesson.ppim.activity.ModifyNameActivity.MODIFY_TYPE;
-import static com.ilesson.ppim.activity.MoreMemberActivity.GROUP_MEMBER;
-import static com.ilesson.ppim.view.SwitchButton.PLAY_TTS;
-
 
 /**
  * Created by potato on 2019/4/9.
@@ -80,6 +82,8 @@ public class ChatInfoActivity extends BaseActivity{
     private TextView groupNameTextView;
     @ViewInject(R.id.tag_name)
     private TextView tagNameTextview;
+    @ViewInject(R.id.group_note)
+    private TextView groupNoteView;
     @ViewInject(R.id.nike_name)
     private TextView nikeNameView;
     @ViewInject(R.id.delete)
@@ -110,6 +114,7 @@ public class ChatInfoActivity extends BaseActivity{
     private boolean modifyed;
     private PPUserInfo addUser,deleteUser;
     private String groupIcon;
+    private String groupNote;
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -130,7 +135,8 @@ public class ChatInfoActivity extends BaseActivity{
                 shopList.setVisibility(View.VISIBLE);
             }
         }
-
+        groupNote = getIntent().getStringExtra(GroupNoteActivity.GROUP_NOTE);
+        showGroupNote(groupNote);
         nikeNameView.setText(nikeName);
         groupNameTextView.setText(groupName);
         if(!TextUtils.isEmpty(groupTag)){
@@ -266,6 +272,7 @@ public class ChatInfoActivity extends BaseActivity{
         bundle.putSerializable(ConversationActivity.CONVERSATION_TYPE, Conversation.ConversationType.GROUP);
         intent.putExtras(bundle);
         intent.putExtra(ConversationActivity.TARGET_ID,groupId);
+        intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_RECORD_WITH_GARGET);
         intent.putExtra(ConversationActivity.TARGET_NAME, groupName);
         startActivity(intent);
     }
@@ -299,7 +306,7 @@ public class ChatInfoActivity extends BaseActivity{
     }
     @Event(R.id.nike_layout)
     private void nike_layout(View view){
-        Intent intent = new Intent(ChatInfoActivity.this,ModifyNikeNameActivity.class);
+        Intent intent = new Intent(ChatInfoActivity.this, ModifyGroupUserNikeNameActivity.class);
         intent.putExtra(GROUP_ID, groupId);
         intent.putExtra(GROUP_ICON, groupIcon);
         intent.putExtra(MODIFY_TYPE, MODIFY_NIKE_IN_GROUP);
@@ -315,6 +322,11 @@ public class ChatInfoActivity extends BaseActivity{
     @Event(R.id.delete)
     private void delete(View view){
         showDeleteDialog();
+    }
+
+    @Event(R.id.group_note_layout)
+    private void noteLayout(View v) {
+        GroupNoteActivity.launch(this,groupId,groupNote,isOwner);
     }
     @Override
     public void onBackPressed() {
@@ -386,6 +398,7 @@ public class ChatInfoActivity extends BaseActivity{
         view.findViewById(R.id.right_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new GroupUserDao().deleteGroup(groupId);
                 exitGroup();
                 dialog.dismiss();
             }
@@ -573,6 +586,17 @@ public class ChatInfoActivity extends BaseActivity{
         titleTextView.setText(text);
     }
 
+    public void onEventMainThread(PublishNote var) {
+        showGroupNote(var.getNote());
+    }
+    private void showGroupNote(String note){
+        if(TextUtils.isEmpty(note)){
+            groupNoteView.setVisibility(View.GONE);
+        }else{
+            groupNoteView.setVisibility(View.VISIBLE);
+            groupNoteView.setText(note);
+        }
+    }
     public void onEventMainThread(ModifyGroupNike var) {
         groupTag = var.getNikeName();
         tagNameTextview.setVisibility(View.VISIBLE);
@@ -674,11 +698,7 @@ public class ChatInfoActivity extends BaseActivity{
                             return;
                         }else{
                             PPUserInfo userInfo = datas.get(position);
-                            intent = new Intent(ChatInfoActivity.this,FriendDetailActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
+                            FriendDetailActivity.launch(ChatInfoActivity.this,userInfo);
                         }
                     }
                 });

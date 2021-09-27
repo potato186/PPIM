@@ -1,10 +1,13 @@
 package com.ilesson.ppim.contactview;
 
+import static com.ilesson.ppim.activity.PayScoreActivity.QR_PAY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import io.rong.eventbus.EventBus;
-import io.rong.imkit.RongIM;
-import io.rong.imlib.model.Conversation;
-
-import static com.ilesson.ppim.activity.PayScoreActivity.QR_PAY;
 
 public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private LayoutInflater mLayoutInflater;
@@ -49,10 +46,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mLayoutInflater = LayoutInflater.from(context);
         mContactNames = contactNames;
         handleContact();
-        selects = new ArrayList<>();
-        for (int i = 0; i < 100000; i++){
-            isSelected.put(i, false);
-        }
     }
     private boolean onlyTrans;
     public void setOnlyTrans(boolean value){
@@ -96,7 +89,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }
                 }
             }
-
+            selects = new ArrayList<>();
+            for (int j = 0; j < resultList.size()*2; j++){
+                isSelected.put(j, false);
+            }
             resultList.add(new Contact(map.get(name), ITEM_TYPE.ITEM_TYPE_CONTACT.ordinal()));
         }
     }
@@ -110,18 +106,25 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    private static final String TAG = "ContactAdapter";
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        PPUserInfo userInfo = resultList.get(position).getUserInfo();
         if (holder instanceof CharacterHolder) {
-            ((CharacterHolder) holder).mTextView.setText(resultList.get(position).getUserInfo().getName());
+            ((CharacterHolder) holder).mTextView.setText(userInfo.getName());
         } else if (holder instanceof ContactHolder) {
-            ((ContactHolder) holder).mTextView.setText(resultList.get(position).getUserInfo().getName());
+            if(TextUtils.isEmpty(userInfo.getNick())){
+                ((ContactHolder) holder).mTextView.setText(userInfo.getName());
+            }else{
+                ((ContactHolder) holder).mTextView.setText(userInfo.getNick());
+            }
 //            DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
 //            builder.showImageOnLoading(R.mipmap.default_icon)
 //                    .cacheInMemory(true).cacheOnDisk(true);
 //            ImageLoader.getInstance().displayImage(resultList.get(position).getUserInfo().getIcon(), ((ContactHolder) holder).imageView,
 //                    builder.build());
-            Glide.with(mContext).load(resultList.get(position).getUserInfo().getIcon()).into(((ContactHolder) holder).imageView);
+            Glide.with(mContext).load(userInfo.getIcon()).into(((ContactHolder) holder).imageView);
+            Log.d(TAG, "onBindViewHolder: "+userInfo.getName()+"  icon="+userInfo.getIcon());
             ((ContactHolder) holder).checkBox.setBackgroundResource(isSelected.get(position)?R.mipmap.checked:R.mipmap.unselect);
         }
     }
@@ -192,8 +195,9 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         intent.putExtras(bundle);
                         mContext.startActivity(intent);
                     }else{
-                        EventBus.getDefault().post(new Conversation());
-                        RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.PRIVATE,info.getPhone(),info.getName());
+//                        EventBus.getDefault().post(new Conversation());
+//                        RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.PRIVATE,info.getPhone(),info.getName());
+                        FriendDetailActivity.launch(mContext,info);
                     }
                 }
             });

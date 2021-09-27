@@ -1,5 +1,9 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +19,7 @@ import com.ilesson.ppim.IlessonApp;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
 import com.ilesson.ppim.entity.DeleteFriend;
+import com.ilesson.ppim.entity.ModifyUserNike;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.RongUserInfo;
 import com.ilesson.ppim.utils.Constants;
@@ -33,9 +38,6 @@ import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
 
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
-import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
-
 /**
  * Created by potato on 2020/3/10.
  */
@@ -46,10 +48,14 @@ public class FriendDetailActivity extends BaseActivity {
     private CircleImageView iconView;
     @ViewInject(R.id.user_name)
     private TextView nameView;
+    @ViewInject(R.id.usertag_name)
+    private TextView usertagView;
     @ViewInject(R.id.add)
     private TextView addView;
     @ViewInject(R.id.user_id)
     private TextView userIdView;
+    @ViewInject(R.id.menu)
+    private View menu;
     private String token;
     public static final String USER_INFO="user_info";
     public static final String USER_ID="user_id";
@@ -75,6 +81,7 @@ public class FriendDetailActivity extends BaseActivity {
         }
 
     }
+
     private void showData(){
         if(null==ppUserInfo){
             return;
@@ -84,8 +91,20 @@ public class FriendDetailActivity extends BaseActivity {
         }else{
             Glide.with(this).load(ppUserInfo.getUri()).into(iconView);
         }
+        String tagName = ppUserInfo.getNick();
+        if(TextUtils.isEmpty(tagName)){
+            usertagView.setVisibility(View.GONE);
+            nameView.setTextSize(16);
+            nameView.setTextColor(getResources().getColor(R.color.gray_text333_color));
+            nameView.setText(ppUserInfo.getName());
+        }else {
+            usertagView.setVisibility(View.VISIBLE);
+            usertagView.setText(tagName);
+            nameView.setTextSize(14);
+            nameView.setTextColor(getResources().getColor(R.color.helptext_color));
+            nameView.setText(String.format(getResources().getString(R.string.pp_nike),ppUserInfo.getName()));
+        }
         userIdView.setText(String.format(getResources().getString(R.string.pp_number),ppUserInfo.getPhone()));
-        nameView.setText(ppUserInfo.getName());
         imUtils.setOnAddListener(new IMUtils.OnAddListener() {
             @Override
             public void onFinished() {
@@ -106,6 +125,7 @@ public class FriendDetailActivity extends BaseActivity {
         friend = IlessonApp.getInstance().getUserByPhone(ppUserInfo.getPhone());
         if(TextUtils.isEmpty(friend)&&!ppUserInfo.getPhone().equals(SPUtils.get(USER_PHONE,""))){
             addView.setText(R.string.add_to_contact);
+            menu.setVisibility(View.GONE);
         }else{
             addView.setText(R.string.send_msg);
         }
@@ -163,6 +183,10 @@ public class FriendDetailActivity extends BaseActivity {
     @Event(value = R.id.back_btn)
     private void back_btn(View view) {
         finish();
+    }
+    @Event(value = R.id.tag_layout)
+    private void tag_layout(View view) {
+        ModifyNikeNameActivity.launch(this,ppUserInfo);
     }
     @Event(value = R.id.menu)
     private void menu(View view) {
@@ -240,9 +264,20 @@ public class FriendDetailActivity extends BaseActivity {
     public void onEventMainThread(DeleteFriend var) {
         finish();
     }
+    public void onEventMainThread(ModifyUserNike var) {
+        ppUserInfo = var.getPpUserInfo();
+        showData();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+    public static void launch(Context context,PPUserInfo ppUserInfo){
+        Intent intent = new Intent(context, FriendDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FriendDetailActivity.USER_INFO, ppUserInfo);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

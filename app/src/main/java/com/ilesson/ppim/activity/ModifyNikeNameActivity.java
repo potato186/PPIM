@@ -1,6 +1,13 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.ChatInfoActivity.NIKE_NAME;
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_INFO;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -16,6 +23,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.ModifyUserNike;
+import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.view.RoundImageView;
@@ -27,14 +36,9 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
-import io.rong.imkit.model.GroupUserInfo;
-
-import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
-import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ICON;
-import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
-import static com.ilesson.ppim.activity.ChatInfoActivity.NIKE_NAME;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
+import io.rong.imlib.model.UserInfo;
 
 
 /**
@@ -59,21 +63,21 @@ public class ModifyNikeNameActivity extends BaseActivity {
     public static final String MODIFY_TYPE = "modify_type";
     public static final String MODIFY_RESULT = "modify_result";
     private int type;
-    private String groupId;
-    private String realName;
-    private String nameSymbl;
-
+    private PPUserInfo ppUserInfo;
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setStatusBarLightMode(this, true);
-        String name = getIntent().getStringExtra(MODIFY_CONTENT);
-        groupId = getIntent().getStringExtra(GROUP_ID);
-        String groupIcon = getIntent().getStringExtra(GROUP_ICON);
-        Glide.with(getApplicationContext()).load(groupIcon).into(iconView);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        ppUserInfo = (PPUserInfo) bundle.getSerializable(USER_INFO);
+        String name = ppUserInfo.getNick();
+        Glide.with(getApplicationContext()).load(ppUserInfo.getIcon()).into(iconView);
         saveBtn.setEnabled(false);
-        nikeEdit.setText(name);
-        nikeEdit.setSelection(name.length());
+        if (!TextUtils.isEmpty(name)) {
+            nikeEdit.setText(name);
+            nikeEdit.setSelection(name.length());
+        }
         nikeEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -111,11 +115,11 @@ public class ModifyNikeNameActivity extends BaseActivity {
     private static final String TAG = "ModifyNikeNameActivity";
 
     private void modifyGroupUserNike(String name) {
-        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
+        RequestParams params = new RequestParams(Constants.BASE_URL + Constants.USER_URL);
         String token = SPUtils.get(LOGIN_TOKEN, "");
         params.addParameter("token", token);
-        params.addParameter("action", "modify_my_name");
-        params.addParameter("group", groupId);
+        params.addParameter("action", "friend_modify");
+        params.addParameter("target", ppUserInfo.getPhone());
         params.addParameter("name", name);
         showProgress();
         Log.d(TAG, "loadData: " + params.toString());
@@ -132,8 +136,11 @@ public class ModifyNikeNameActivity extends BaseActivity {
                     intent.putExtra(MODIFY_RESULT, name);
                     SPUtils.put(NIKE_NAME, name);
                     setResult(MODIFY_SUCCESS, intent);
-                    GroupUserInfo groupUserInfo = new GroupUserInfo(groupId,SPUtils.get(LoginActivity.USER_PHONE, ""),name);
-                    RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
+                    ppUserInfo.setNick(name);
+                    UserInfo userInfo = new UserInfo(ppUserInfo.getPhone(), name, Uri.parse(ppUserInfo.getIcon()));
+                    SPUtils.put(ppUserInfo.getPhone()+"name",name);
+                    EventBus.getDefault().post(new ModifyUserNike(ppUserInfo));
+                    RongIM.getInstance().refreshUserInfoCache(userInfo);
                     finish();
                 } else {
                     Toast.makeText(ModifyNikeNameActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
@@ -159,7 +166,13 @@ public class ModifyNikeNameActivity extends BaseActivity {
             }
         });
     }
-
+    public static void launch(Context context, PPUserInfo ppUserInfo){
+        Intent intent = new Intent(context, ModifyNikeNameActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(FriendDetailActivity.USER_INFO, ppUserInfo);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
     @Event(R.id.back_btn)
     private void back_btn(View view) {
         finish();

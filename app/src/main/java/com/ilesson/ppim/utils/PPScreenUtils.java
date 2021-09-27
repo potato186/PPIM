@@ -3,9 +3,12 @@ package com.ilesson.ppim.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import java.lang.reflect.Field;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Created by dee on 15/11/19.
@@ -18,21 +21,25 @@ public class PPScreenUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
     public static int getScreenWidth(Context context) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         return localDisplayMetrics.widthPixels;
     }
+
     public static int getScreenHeight(Context context) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         return localDisplayMetrics.heightPixels - getStatusBarHeight(context);
     }
+
     public static int px2sp(Context context, float pxValue) {
         float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
-    public static int getStatusBarHeight(Context context){
+
+    public static int getStatusBarHeight(Context context) {
         Class<?> c = null;
         Object obj = null;
         Field field = null;
@@ -48,9 +55,15 @@ public class PPScreenUtils {
         }
         return statusBarHeight;
     }
+
     public static void hideShowKeyboard(Context context) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE); //得到InputMethodManager的实例
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE); //得到InputMethodManager的实例
         if (imm.isActive()) {//如果开启
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);//关闭软键盘，开启方法相同，这个方法是切换开启与关闭状态的
         }
-    }}
+    }
+    public static void showInput(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+    }
+}

@@ -101,12 +101,12 @@
                     android:ems="10"
                     android:textColor="@color/color_666666"
                     android:textSize="16sp" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gray_theme"
                     android:layout_alignParentBottom="true"
-                    />
+                    android:background="@color/gray_theme" />
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/code_layout"
@@ -151,6 +151,58 @@
                     />
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/group_note_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/white_gray_btn_selector">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="30dp"
+                    android:layout_centerVertical="true"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    >
+                    <TextView
+                        android:id="@+id/group_note_lable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/group_note"
+                        android:textColor="@color/gray_text333_color"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/group_note"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_666666"
+                        android:visibility="gone"
+                        android:maxLines="3"
+                        android:ellipsize="end"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/right_arrow" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_theme" />
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/message_disturb_layout"
                 android:layout_width="match_parent"

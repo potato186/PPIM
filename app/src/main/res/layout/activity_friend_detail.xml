@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
     <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
@@ -71,7 +71,6 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:background="@mipmap/add_user_icon"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:scaleType="centerCrop"
             />
@@ -80,8 +79,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_toRightOf="@+id/user_icon"
-            android:layout_centerVertical="true"
             >
+            <TextView
+                android:id="@+id/usertag_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/gray_text333_color"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                />
             <TextView
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
@@ -102,7 +109,60 @@
                 />
         </LinearLayout>
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/gray_theme"
+        />
+    <RelativeLayout
+        android:id="@+id/tag_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="50dp"
+        android:paddingLeft="15dp"
+        android:background="@drawable/white_gray_btn_selector">
 
+        <TextView
+            android:id="@+id/tag_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:maxWidth="150dp"
+            android:text="@string/user_tag_name"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/right_arrow" />
+        <TextView
+            android:id="@+id/tag_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:layout_toRightOf="@+id/tag_lable"
+            android:layout_marginLeft="5dp"
+            android:singleLine="true"
+            android:gravity="center_vertical|right"
+            android:ems="10"
+            android:textColor="@color/color_666666"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:background="@color/gray_theme"
+        />
     <TextView
         android:id="@+id/add"
         android:layout_width="match_parent"

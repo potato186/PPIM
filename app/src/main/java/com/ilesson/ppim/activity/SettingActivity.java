@@ -14,10 +14,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.db.DatabaseManager;
 import com.ilesson.ppim.utils.IMUtils;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.SetFont;
 
+import org.xutils.ex.DbException;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
@@ -59,6 +62,10 @@ public class SettingActivity extends BaseActivity{
     @Event(R.id.loginout_view)
     private void loginout(View view){
         showQuitDialog();
+    }
+    @Event(R.id.blacklist)
+    private void blacklist(View view){
+        startActivity(new Intent(this,BlackListActivity.class));
     }
     @Event(R.id.back_btn)
     private void back_btn(View view){
@@ -125,11 +132,20 @@ public class SettingActivity extends BaseActivity{
                 new IMUtils().resetUserInfo();
                 dialog.dismiss();
                 RongIM.getInstance().disconnect();
+                try {
+                    DatabaseManager.getInstance().dropDb();
+                } catch (DbException e) {
+                    e.printStackTrace();
+                }
                 setResult(LOGIN_OUT,new Intent());
                 finish();
             }
         });
         dialog.show();
+    }
+
+    public void onEventMainThread(SetFont event) {
+        finish();
     }
     private class CountryAdapter extends BaseAdapter {
 

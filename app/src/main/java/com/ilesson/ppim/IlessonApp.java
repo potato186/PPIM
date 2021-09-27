@@ -90,6 +90,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
         changeFontSize();
         fontScale = getFontIndex();
     }
+
     public static Context getContext() {
         return ilessonApp.getApplicationContext();
     }
@@ -188,11 +189,7 @@ public class IlessonApp extends MultiDexApplication implements Application.Activ
                 userInfo.setPhone(content.getId());
                 userInfo.setName(content.getName());
                 userInfo.setIcon(content.getImgUrl());
-                Intent intent = new Intent(getContext(), FriendDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(FriendDetailActivity.USER_INFO, userInfo);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                FriendDetailActivity.launch(getContext(),userInfo);
             }
         }));
         RongIM.registerMessageTemplate(new RedBackItemProvider());

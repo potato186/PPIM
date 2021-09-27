@@ -1,12 +1,9 @@
 package com.ilesson.ppim.activity;
 
-import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ICON;
-import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
-import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_NAME;
-import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +16,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.entity.BaseCode;
-import com.ilesson.ppim.entity.ModifyGroupNike;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.SPUtils;
 import com.ilesson.ppim.view.RoundImageView;
@@ -31,14 +27,21 @@ import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import io.rong.eventbus.EventBus;
+import io.rong.imkit.RongIM;
+import io.rong.imkit.model.GroupUserInfo;
+
+import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ICON;
+import static com.ilesson.ppim.activity.ChatInfoActivity.GROUP_ID;
+import static com.ilesson.ppim.activity.ChatInfoActivity.NIKE_NAME;
+import static com.ilesson.ppim.activity.LoginActivity.LOGIN_TOKEN;
 
 
 /**
  * Created by potato on 2019/4/9.
  */
-@ContentView(R.layout.act_modify_group_tag_name)
-public class ModifyGroupTagNameActivity extends BaseActivity {
+@ContentView(R.layout.act_modify_group_user_nikename)
+public class ModifyGroupUserNikeNameActivity extends BaseActivity {
     @ViewInject(R.id.save)
     private TextView saveBtn;
     //    @ViewInject(R.id.group_name)
@@ -57,23 +60,20 @@ public class ModifyGroupTagNameActivity extends BaseActivity {
     public static final String MODIFY_RESULT = "modify_result";
     private int type;
     private String groupId;
-    private String nikeName;
+    private String realName;
     private String nameSymbl;
 
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setStatusBarLightMode(this, true);
+        String name = getIntent().getStringExtra(MODIFY_CONTENT);
         groupId = getIntent().getStringExtra(GROUP_ID);
-        nikeName = getIntent().getStringExtra(GROUP_NAME);
-        if(null==nikeName){
-            nikeName="";
-        }
         String groupIcon = getIntent().getStringExtra(GROUP_ICON);
         Glide.with(getApplicationContext()).load(groupIcon).into(iconView);
         saveBtn.setEnabled(false);
-        nikeEdit.setText(nikeName);
-        nikeEdit.setSelection(nikeName.length());
+        nikeEdit.setText(name);
+        nikeEdit.setSelection(name.length());
         nikeEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -87,7 +87,7 @@ public class ModifyGroupTagNameActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().equals(nikeName)) {
+                if (s.length() == 0) {
                     saveBtn.setTextColor(getResources().getColor(R.color.color_999999));
                     saveBtn.setBackgroundResource(R.drawable.background_gray_corner20);
                 } else {
@@ -102,6 +102,9 @@ public class ModifyGroupTagNameActivity extends BaseActivity {
     @Event(R.id.save)
     private void save(View view) {
         String name = nikeEdit.getText().toString().trim();
+        if (TextUtils.isEmpty(name)) {
+            return;
+        }
         modifyGroupUserNike(name);
     }
 
@@ -110,10 +113,10 @@ public class ModifyGroupTagNameActivity extends BaseActivity {
     private void modifyGroupUserNike(String name) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.GROUP_URL);
         String token = SPUtils.get(LOGIN_TOKEN, "");
-        params.addParameter("action", "tag");
         params.addParameter("token", token);
+        params.addParameter("action", "modify_my_name");
         params.addParameter("group", groupId);
-        params.addParameter("tag", name);
+        params.addParameter("name", name);
         showProgress();
         Log.d(TAG, "loadData: " + params.toString());
         x.http().post(params, new Callback.CommonCallback<String>() {
@@ -125,11 +128,15 @@ public class ModifyGroupTagNameActivity extends BaseActivity {
                         new TypeToken<BaseCode>() {
                         }.getType());
                 if (base.getCode() == 0) {
-//                    RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
-                    EventBus.getDefault().post(new ModifyGroupNike(name));
+                    Intent intent = new Intent();
+                    intent.putExtra(MODIFY_RESULT, name);
+                    SPUtils.put(NIKE_NAME, name);
+                    setResult(MODIFY_SUCCESS, intent);
+                    GroupUserInfo groupUserInfo = new GroupUserInfo(groupId,SPUtils.get(LoginActivity.USER_PHONE, ""),name);
+                    RongIM.getInstance().refreshGroupUserInfoCache(groupUserInfo);
                     finish();
                 } else {
-                    Toast.makeText(ModifyGroupTagNameActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ModifyGroupUserNikeNameActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 

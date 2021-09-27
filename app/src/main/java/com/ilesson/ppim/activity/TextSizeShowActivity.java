@@ -2,7 +2,6 @@ package com.ilesson.ppim.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -112,13 +111,14 @@ public class TextSizeShowActivity extends BaseActivity {
         SPUtils.put(FONT_INDEX,fontSliderBar.getCurrentIndex());
         //通知主页面重启
         EventBus.getDefault().post(new SetFont());
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                hideMyDialog();
-                finish();
-            }
-        }, 2000);
+        finish();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                hideMyDialog();
+//                finish();
+//            }
+//        }, 2000);
     }
 
 

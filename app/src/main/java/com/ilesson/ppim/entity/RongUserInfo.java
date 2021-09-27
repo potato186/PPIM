@@ -1,7 +1,5 @@
 package com.ilesson.ppim.entity;
 
-import java.io.Serializable;
-
 /**
  * Created by potato on 2020/3/10.
  */
@@ -9,8 +7,17 @@ import java.io.Serializable;
 public class RongUserInfo {
     private String id;
     private String name;
+    private String nick;
     private String icon;
     private String extra;
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
 
     public String getId() {
         return id;

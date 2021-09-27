@@ -18,6 +18,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.main"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
             >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -100,6 +101,7 @@
             android:launchMode="singleTop"/>
         <activity android:name=".activity.WaresLogistcDetailctivity" />
         <activity android:name=".activity.ExchangeInfoActivity" />
+        <activity android:name=".activity.BlackListActivity" />
         <activity android:name=".activity.CustomerActivity" />
         <activity android:name=".activity.ModifyFontActivity" />
         <activity android:name=".activity.SelectAddFriendActivity" />
@@ -196,7 +198,7 @@
             android:name=".activity.AboutActivity"
             android:theme="@style/AppTheme.white" />
         <activity
-            android:name=".activity.ModifyNikeNameActivity"
+            android:name=".activity.ModifyGroupUserNikeNameActivity"
             android:theme="@style/AppTheme.white" />
         <activity
             android:name=".activity.ModifyGroupTagNameActivity"
@@ -253,6 +255,9 @@
             android:name=".activity.ModifyNameActivity"
             android:theme="@style/AppTheme.white" />
         <activity
+            android:name=".activity.GroupNoteActivity"
+            android:theme="@style/AppTheme.gary" />
+        <activity
             android:name=".activity.AvatarActivity"
             android:theme="@style/AppTheme.blk" />
         <activity
@@ -264,6 +269,8 @@
             />
         <activity android:name=".activity.FriendDetailActivity"
             android:theme="@style/AppTheme.gary"/>
+        <activity android:name=".activity.ModifyNikeNameActivity"
+            android:theme="@style/AppTheme.white"/>
         <activity android:name=".activity.UserInfoSttingActivity"
             android:theme="@style/AppTheme.gary"/>
         <activity android:name=".activity.UserSttingActivity"
