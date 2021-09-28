@@ -19,18 +19,6 @@ public class ConversationDao {
         dbManager = DatabaseManager.getInstance();
     }
 
-    public List<ConversationInfo> getAllUserData(){
-
-        List<ConversationInfo> allDevices = new ArrayList<>();
-        try{
-            allDevices = dbManager.selector(ConversationInfo.class).findAll();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return allDevices;
-    }
-
     public List<ConversationInfo> getConversations(){
         List<ConversationInfo> datas = new ArrayList<>();
         try{
@@ -40,9 +28,9 @@ public class ConversationDao {
         }
         return datas;
     }
-    public List<ConversationInfo> getConversations(String key){
-
-    }
+//    public List<ConversationInfo> getConversations(String key){
+//
+//    }
     public void deleteGroup(String groupId){
         try {
             dbManager.delete(ConversationInfo.class, WhereBuilder.b("groupId",

@@ -538,7 +538,7 @@ public class MainActivity extends BaseActivity {
 //    @Event(value = R.id.search)
 public void search() {
         Intent intent= new Intent(this, SearchActivity.class);
-    intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_ALL);
+        intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_ALL);
         startActivity(intent);
     }
 

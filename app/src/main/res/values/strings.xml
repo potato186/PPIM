@@ -11,6 +11,7 @@
     <string name="create_group">创建群</string>
     <string name="add_friend">添加好友</string>
     <string name="blockchain_group">区块链群</string>
+    <string name="group">群聊</string>
     <string name="request_group">发起群聊</string>
     <string name="nike_in_group">我在群里的昵称</string>
     <string name="please_edit_note">请编辑群公告</string>
@@ -20,6 +21,7 @@
     <string name="mynike_in_group">我在群里的昵称</string>
     <string name="modify_nike_in_group_tip">昵称修改后，只会在此群内显示，群内成员都可以看见。</string>
     <string name="select_friends">选择联系人</string>
+    <string name="contact_friends">联系人</string>
     <string name="pp_trans">PP转消费积分</string>
     <string name="phone_num">手机号</string>
     <string name="quantity">数量</string>
@@ -133,6 +135,7 @@
     <string name="voice_switch">语言播报</string>
     <string name="message_disturb">消息免打扰</string>
     <string name="search_record">查找聊天记录</string>
+    <string name="chat_record">聊天记录</string>
     <string name="message_top">消息置顶</string>
     <string name="recommend">推荐给好友</string>
     <string name="add_blacklist">加入黑名单</string>
@@ -176,6 +179,10 @@
     <string name="redpacket_tip">提示:积分红包一经发出不可撤回</string>
     <string name="pp_redpacket_num">红包个数</string>
     <string name="all_members">本群共(%1$d)人</string>
+    <string name="user_nick">昵称:%1$s</string>
+    <string name="group_contain">包含:%1$s</string>
+    <string name="group_nick">群聊名:%1$s</string>
+    <string name="search_more">更多%1$s</string>
     <string name="splited">已领取</string>
     <string name="collect">收藏</string>
     <string name="try_to_say">试试这样说:</string>

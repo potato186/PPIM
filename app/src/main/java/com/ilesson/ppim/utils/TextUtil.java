@@ -3,7 +3,9 @@ package com.ilesson.ppim.utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
 import com.ilesson.ppim.R;
@@ -14,6 +16,13 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 
 public class TextUtil {
+
+    public static SpannableString getKeyWordsColorString(Context context,String source,String keyWords){
+        SpannableString spannableString = new SpannableString(source);
+        int start = source.indexOf(keyWords);
+        spannableString.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.theme_color)), start, start+keyWords.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
+    }
 
     public static SpannableStringBuilder getFei(Context context,int price){
         String text = String.format(context.getResources().getString(R.string.all_fee),BigDecimalUtil.format(Double.valueOf((double)price/100))+"");

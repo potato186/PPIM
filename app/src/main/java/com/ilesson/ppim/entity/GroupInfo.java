@@ -1,7 +1,6 @@
 package com.ilesson.ppim.entity;
 
 import com.lidroid.xutils.db.annotation.Foreign;
-import com.lidroid.xutils.db.annotation.Id;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @Table(name = "GroupInfo")
 public class GroupInfo extends SearchInfo implements Serializable {
-    @Id(column = "id")
+    @Column(name = "id",isId = true)
     private String id;
     @Column(name = "name")
     private String name;

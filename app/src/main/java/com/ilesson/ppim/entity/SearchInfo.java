@@ -13,13 +13,5 @@ import java.io.Serializable;
  * @Version: 1.0
  */
 public class SearchInfo implements Serializable {
-    private int searchType;
 
-    public int getSearchType() {
-        return searchType;
-    }
-
-    public void setSearchType(int searchType) {
-        this.searchType = searchType;
-    }
 }

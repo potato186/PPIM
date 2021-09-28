@@ -256,7 +256,8 @@
             android:theme="@style/AppTheme.white" />
         <activity
             android:name=".activity.GroupNoteActivity"
-            android:theme="@style/AppTheme.gary" />
+            android:theme="@style/AppTheme.gary"
+            tools:ignore="MissingClass" />
         <activity
             android:name=".activity.AvatarActivity"
             android:theme="@style/AppTheme.blk" />

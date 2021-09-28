@@ -1,8 +1,9 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.IlessonApp.FONT_INDEX;
+
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,8 +20,6 @@ import org.xutils.view.annotation.ViewInject;
 
 import io.rong.eventbus.EventBus;
 
-import static com.ilesson.ppim.IlessonApp.FONT_INDEX;
-
 
 /**
  * Created by zsj on 2017/9/11.
@@ -36,6 +35,8 @@ public class TextSizeShowActivity extends BaseActivity {
     TextView tvContent2;
     @ViewInject(R.id.tv_chatcontent3)
     TextView tvContent3;
+    @ViewInject(R.id.save)
+    TextView saveBtn;
     @ViewInject(R.id.iv_userhead)
     ImageView ivUserhead;
     private float textsize1, textsize2, textsize3;
@@ -43,16 +44,16 @@ public class TextSizeShowActivity extends BaseActivity {
     private int currentIndex;
     private boolean isClickable = true;
     public static final float FONT_SCALE = 0.12f;
+    @Event(R.id.save)
+    private void save(View view){
+        SPUtils.put(FONT_INDEX,fontSliderBar.getCurrentIndex());
+        //通知主页面重启
+        EventBus.getDefault().post(new SetFont());
+        finish();
+    }
     @Event(R.id.back_btn)
     private void back(View view){
-        if (fontSliderBar.getCurrentIndex() != currentIndex) {
-            if (isClickable) {
-                isClickable = false;
-                refresh();
-            }
-        } else {
             finish();
-        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,13 @@ public class TextSizeShowActivity extends BaseActivity {
                         index = index - 1;
                         float textSizef = 1 + index * FONT_SCALE;
                         setTextSize(textSizef);
+                        if (currentIndex != fontSliderBar.getCurrentIndex()) {
+                            saveBtn.setBackgroundResource(R.drawable.theme_gray_corer5_btn_selector);
+                            saveBtn.setEnabled(true);
+                        }else{
+                            saveBtn.setBackgroundResource(R.drawable.background_gray_corner5);
+                            saveBtn.setEnabled(false);
+                        }
                     }
                 }).setThumbIndex(currentIndex).withAnimation(false).applay();
     }
@@ -90,36 +98,33 @@ public class TextSizeShowActivity extends BaseActivity {
         tvContent3.setTextSize(PPScreenUtils.px2sp(TextSizeShowActivity.this, textsize3 * textSize));
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (currentIndex != fontSliderBar.getCurrentIndex()) {
-                if (isClickable) {
-                    isClickable = false;
-                    refresh();
-                }
-            } else {
-                finish();
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void refresh() {
-        //存储标尺的下标
-        SPUtils.put(FONT_INDEX,fontSliderBar.getCurrentIndex());
-        //通知主页面重启
-        EventBus.getDefault().post(new SetFont());
-        finish();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-////                hideMyDialog();
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            if (currentIndex != fontSliderBar.getCurrentIndex()) {
+//                if (isClickable) {
+//                    isClickable = false;
+//                    refresh();
+//                }
+//            } else {
 //                finish();
 //            }
-//        }, 2000);
-    }
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+//
+//    private void refresh() {
+//        //存储标尺的下标
+//
+////        new Handler().postDelayed(new Runnable() {
+////            @Override
+////            public void run() {
+//////                hideMyDialog();
+////                finish();
+////            }
+////        }, 2000);
+//    }
 
 
 }

@@ -26,7 +26,9 @@ public class GroupUserDao {
 
         List<GroupInfo> allDevices = new ArrayList<>();
         try{
-            allDevices = dbManager.selector(GroupInfo.class).findAll();
+            List<GroupInfo> datas = dbManager.selector(GroupInfo.class).findAll();
+            return datas==null?allDevices:datas;
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -35,13 +37,13 @@ public class GroupUserDao {
     }
 
     public List<GroupInfo> getGroupByKey(String key){
-        List<GroupInfo> datas = new ArrayList<>();
         try{
-            datas = dbManager.selector(GroupInfo.class).where("name", "like", "%"+key+"%").or("tag", "like", "%"+key+"%").findAll();
+            List<GroupInfo> datas = dbManager.selector(GroupInfo.class).where("name", "like", "%"+key+"%").or("tag", "like", "%"+key+"%").findAll();
+            return datas==null?new ArrayList<GroupInfo>():datas;
         }catch (Exception e){
             e.printStackTrace();
         }
-        return datas;
+        return null;
     }
 
     public List<GroupInfo> searchByKey(String key){
@@ -54,6 +56,7 @@ public class GroupUserDao {
         for (GroupInfo groupInfo : all) {
             if(null==map.get(groupInfo.getId())){
                 List<PPUserInfo> userInfos = groupInfo.getUsers();
+
                 for (PPUserInfo userInfo : userInfos) {
                     if(userInfo.getName().contains(key)){
                         groupInfo.setUserName(userInfo.getName());

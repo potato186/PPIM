@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:layout_width="match_parent"
@@ -12,15 +11,18 @@
         android:textSize="12sp"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
+        android:layout_marginLeft="10dp"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray_theme"
+        android:layout_marginLeft="10dp"
         />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:id="@+id/recylerview"
         />
     <RelativeLayout
@@ -28,6 +30,7 @@
         android:layout_height="wrap_content"
         android:minHeight="40dp"
         android:id="@+id/more_layout"
+        android:layout_marginLeft="10dp"
         >
         <ImageView
             android:layout_width="20dp"
@@ -52,5 +55,9 @@
             android:layout_marginRight="10dp"
             android:background="@mipmap/right_arrow" />
     </RelativeLayout>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/gray_theme"
+        />
 </LinearLayout>

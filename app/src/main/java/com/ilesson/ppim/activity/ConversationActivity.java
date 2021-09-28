@@ -429,6 +429,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         RongIM.getInstance().getConversation(mConversationType, mTargetId, new RongIMClient.ResultCallback<Conversation>() {
             @Override
             public void onSuccess(Conversation conversation) {
+                if(null==conversation)return;
                 ConversationInfo conversationInfo = new ConversationInfo();
                 conversationInfo.setConversationTitle(title);
                 conversationInfo.setTargetId(mTargetId);
@@ -854,7 +855,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         if(TextUtils.isEmpty(SPUtils.get(mTargetId+groupNote,""))){
                             noteLayout.setVisibility(View.VISIBLE);
                             noteTextView.setText(groupNote);
-                            SPUtils.put(mTargetId+groupNote,"");
+                            SPUtils.put(mTargetId+groupNote,groupNote);
                         }else{
                             noteLayout.setVisibility(View.GONE);
                         }
@@ -920,14 +921,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         }
                         ppUserInfo.setGroupId(mTargetId);
                         ppUserDao.update(ppUserInfo);
-//                        GroupUser groupUser = new GroupUser();
-//                        groupUser.setGroupId(mTargetId);
-//                        groupUser.setGroupName(title);
-//                        groupUser.setGroupTagName(nikeName);
-//                        groupUser.setUserId(ppUserInfo.getPhone());
-//                        groupUser.setUserIcon(ppUserInfo.getIcon());
-//                        groupUser.setUserName(ppUserInfo.getName());
-//                        groupUserDao.update(groupUser);
                     }
                     RongIM.getInstance().setGroupMembersProvider((groupId, callback) -> {
                         callback.onGetGroupMembersResult(users); // 调用 callback 的 onGetGroupMembersResult 回传群组信息

@@ -31,18 +31,20 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.adapter.AllSearchAdapter;
 import com.ilesson.ppim.adapter.RecordAdapter;
 import com.ilesson.ppim.db.ConversationDao;
 import com.ilesson.ppim.db.GroupUserDao;
 import com.ilesson.ppim.db.PPUserDao;
+import com.ilesson.ppim.entity.AllSearchInfo;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.ConversationInfo;
 import com.ilesson.ppim.entity.GroupInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.SearchInfo;
 import com.ilesson.ppim.utils.Constants;
 import com.ilesson.ppim.utils.MyFileUtils;
 import com.ilesson.ppim.utils.SPUtils;
-import com.ilesson.ppim.utils.Similarity;
 
 import org.xutils.common.Callback;
 import org.xutils.common.util.FileUtil;
@@ -56,10 +58,9 @@ import org.xutils.x;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.rong.eventbus.EventBus;
 import io.rong.imageloader.core.DisplayImageOptions;
@@ -83,10 +84,6 @@ public class SearchActivity extends BaseActivity {
     private EditText searchEdit;
     @ViewInject(R.id.close)
     private View close;
-    @ViewInject(R.id.user_icon)
-    private ImageView userIcon;
-    @ViewInject(R.id.user_name)
-    private TextView userName;
     @ViewInject(R.id.no_user)
     private TextView noUser;
     @ViewInject(R.id.empty)
@@ -95,9 +92,13 @@ public class SearchActivity extends BaseActivity {
     private ListView listView;
     @ViewInject(R.id.chat_record)
     private RecyclerView chatRecordRecyclerView;
+    @ViewInject(R.id.all_search)
+    private RecyclerView allSearchRecyclerView;
     private List<PPUserInfo> allFriends;
+    private List<AllSearchInfo> allSearchInfos;
     private List<PPUserInfo> searchFriends;
     private List<List<SearchInfo>> searchInfos;
+    private AllSearchAdapter allSearchAdapter;
     private String token;
     private MessageContent messageContent;
     private boolean otherFile;
@@ -117,7 +118,9 @@ public class SearchActivity extends BaseActivity {
     public static final int SEARCH_RECORD_IN_ALL_CONVERSATIONS=3;
     public static final int SEARCH_RECORD_WITH_GARGET=4;
     public static final int SEARCH_ALL=5;
+    public static final int SEARCH_RECORD_STEP=6;
     public static final String SEARCH_TYPE="search_type";
+    public static final String SEARCH_KEY="search_key";
 
     private int searchType;
     private Handler handler = new Handler(){
@@ -135,17 +138,44 @@ public class SearchActivity extends BaseActivity {
                     searchConversations();
                     break;
                 case SEARCH_RECORD_WITH_GARGET:
-                    searchChatRecord();
+                    searchChatRecord(conversationType,targetId,searchKey,false);
                     break;
                 case SEARCH_ALL:
                     searchAll();
                     break;
+                case SEARCH_RECORD_STEP:
+                    String targetId = (String) msg.obj;
+                    if(null!=converMap.get(targetId)){
+                        conversationInfos.add(converMap.get(targetId));
+                    }
+                    if(conversationInfos.size()>3){
+                        stopSearchRecord = true;
+                        checkChildList(conversationInfos,getString(R.string.chat_record));
+                    }
+                    break;
             }
         }
     };
-
+    private boolean stopSearchRecord;
+    private List<ConversationInfo> conversationInfos;
+    private Map<String,ConversationInfo> converMap;
     private void searchConversations() {
         conversationDao = new ConversationDao();
+        conversationInfos = new ArrayList<>();
+        List<ConversationInfo> datas = conversationDao.getConversations();
+        converMap = new HashMap<>();
+        if(null!=datas&&datas.size()>0){
+            for (ConversationInfo data : datas) {
+                converMap.put(data.getTargetId(),data);
+                if(stopSearchRecord){
+                    return;
+                }
+                searchChatRecord(Conversation.ConversationType.setValue(data.getType()),data.getTargetId(),searchKey,true);
+            }
+            if(!stopSearchRecord){
+                checkChildList(conversationInfos,getString(R.string.chat_record));
+            }
+        }
     }
     private List<GroupInfo> groupInfos;
     private void searchGroups() {
@@ -154,21 +184,30 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void searchAll() {
+        allSearchInfos = new ArrayList<>();
         searchFriends();
-        if(null!=searchFriends&&searchFriends.size()>0){
-            if(searchFriends.size()>3){
-                searchInfos.addAll((Collection<? extends List<SearchInfo>>) searchFriends.subList(0,3));
-            }else{
-                searchInfos.addAll((Collection<? extends List<SearchInfo>>) searchFriends);
-            }
-        }
+        checkChildList(searchFriends,getString(R.string.contact_friends));
         searchGroups();
-        if(null!=groupInfos&&groupInfos.size()>0){
-            if(groupInfos.size()>3){
-                searchInfos.addAll((Collection<? extends List<SearchInfo>>) groupInfos.subList(0,3));
+        checkChildList(groupInfos,getString(R.string.group));
+//        searchConversations();
+        allSearchAdapter = new AllSearchAdapter(this,allSearchInfos,searchKey);
+        allSearchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        allSearchRecyclerView.setAdapter(allSearchAdapter);
+        allSearchRecyclerView.setVisibility(View.VISIBLE);
+    }
+    private void checkChildList(List<? extends SearchInfo> lists,String type){
+
+        if(null!=lists&&lists.size()>0){
+            AllSearchInfo allSearchInfo = new AllSearchInfo();
+            allSearchInfo.setSearchType(type);
+            if(lists.size()>3){
+//                searchInfos.add();
+                allSearchInfo.setSearchInfos((List<SearchInfo>) lists.subList(0,4));
             }else{
-                searchInfos.addAll((Collection<? extends List<SearchInfo>>) groupInfos);
+//                searchInfos.add((List<SearchInfo>) lists);
+                allSearchInfo.setSearchInfos((List<SearchInfo>) lists);
             }
+            allSearchInfos.add(allSearchInfo);
         }
     }
     private String searchKey;
@@ -257,7 +296,10 @@ public class SearchActivity extends BaseActivity {
         initData();
     }
 
-    private void searchChatRecord(){
+    private void searchChatRecord(Conversation.ConversationType conversationType,String targetId,String searchKey,boolean check){
+        if(stopSearchRecord){
+            return;
+        }
         RongIMClient.getInstance().searchMessages(conversationType, targetId, searchKey, 0, 0, new RongIMClient.ResultCallback<List<Message>>() {
             /**
              * 成功回调
@@ -265,6 +307,16 @@ public class SearchActivity extends BaseActivity {
              */
             @Override
             public void onSuccess(List<Message> messages) {
+                if(check){
+                    if(messages==null||messages.size()==0){
+                    }else {
+                        android.os.Message msg = android.os.Message.obtain();
+                        msg.what=SEARCH_RECORD_STEP;
+                        msg.obj=targetId;
+                        handler.sendMessage(msg);
+                    }
+                    return;
+                }
                 if(messages==null||messages.size()==0){
                     emptyText.setVisibility(View.VISIBLE);
                     emptyText.setText(String.format(getResources().getString(R.string.search_empty_tips),searchKey));
@@ -316,6 +368,7 @@ public class SearchActivity extends BaseActivity {
             }
         }
         searchType = intent.getIntExtra(SEARCH_TYPE,0);
+        searchKey = intent.getStringExtra(SEARCH_KEY);
         ppUserDao = new PPUserDao();
         allFriends.addAll(ppUserDao.getAllFriends());
 //        requestFriendsList();
@@ -345,37 +398,39 @@ public class SearchActivity extends BaseActivity {
 ///pp/user?action=query&token=%s&target=%s
     private static final String TAG = "SearchFriendActivity";
     private void searchFriends() {
-        String searchKey = searchEdit.getText().toString();
-        searchFriends.clear();
-        for(PPUserInfo info:allFriends){
-            double s1 = Similarity.SimilarDegree(info.getName(),searchKey);
-            double s2 = Similarity.SimilarDegree(info.getPhone(),searchKey);
-            if(!info.getName().contains(searchKey)&&!info.getPhone().contains(searchKey)){
-                continue;
-            }
-            info.setSimilar(s1<s2?s2:s1);
-            if(info.getSimilar()>0){
-                searchFriends.add(info);
-            }
-        }
-        Collections.sort(searchFriends, new Comparator<PPUserInfo>() {
-
-            @Override
-            public int compare(PPUserInfo t1, PPUserInfo t2) {
-                // TODO Auto-generated method stub
-                if (t1.getSimilar()> t2.getSimilar()) {
-                    return 1;
-                }
-                if (t1.getSimilar() <t2.getSimilar()) {
-                    return -1;
-                }
-                return 0;
-            }
-        });
-        if(searchType==SEARCH_FRIENDS){
-            adapter.notifyDataSetChanged();
-            listView.setVisibility(View.VISIBLE);
-        }
+        PPUserDao ppUserDao = new PPUserDao();
+        searchFriends=ppUserDao.getFriendsByKey(searchKey);
+//        String searchKey = searchEdit.getText().toString();
+//        searchFriends.clear();
+//        for(PPUserInfo info:allFriends){
+//            double s1 = Similarity.SimilarDegree(info.getName(),searchKey);
+//            double s2 = Similarity.SimilarDegree(info.getPhone(),searchKey);
+//            if(!info.getName().contains(searchKey)&&!info.getPhone().contains(searchKey)){
+//                continue;
+//            }
+//            info.setSimilar(s1<s2?s2:s1);
+//            if(info.getSimilar()>0){
+//                searchFriends.add(info);
+//            }
+//        }
+//        Collections.sort(searchFriends, new Comparator<PPUserInfo>() {
+//
+//            @Override
+//            public int compare(PPUserInfo t1, PPUserInfo t2) {
+//                // TODO Auto-generated method stub
+//                if (t1.getSimilar()> t2.getSimilar()) {
+//                    return 1;
+//                }
+//                if (t1.getSimilar() <t2.getSimilar()) {
+//                    return -1;
+//                }
+//                return 0;
+//            }
+//        });
+//        if(searchType==SEARCH_FRIENDS){
+//            adapter.notifyDataSetChanged();
+//            listView.setVisibility(View.VISIBLE);
+//        }
     }
 
     BaseAdapter adapter = new BaseAdapter() {
@@ -542,5 +597,10 @@ public class SearchActivity extends BaseActivity {
 
             }
         });
+    }
+    public static void launch(Context context,int searchType,String searchKey){
+        Intent intent = new Intent(context,SearchActivity.class);
+        intent.putExtra(SEARCH_TYPE,searchType);
+        intent.putExtra(SEARCH_KEY,searchKey);
     }
 }

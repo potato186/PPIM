@@ -1,5 +1,7 @@
 package com.ilesson.ppim.custom;
 
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
+
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -29,8 +31,6 @@ import io.rong.imkit.model.UIMessage;
 import io.rong.imkit.widget.provider.IContainerItemProvider;
 import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Message;
-
-import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
 
 /**
  * Created by potato on 2020/3/12.
@@ -154,8 +154,5 @@ public class OrderNotifyItemProvider extends IContainerItemProvider.MessageProvi
 
     @Override
     public void onItemClick(View view, int i, OrderConfirmMessage OrderConfirmMessage, UIMessage uiMessage) {
-//        Intent intent = new Intent(view.getContext(), ShopSearchActivity.class);
-//        intent.putExtra(GROUP_ID,uiMessage.getTargetId());
-//        view.getContext().startActivity(intent);
     }
 }

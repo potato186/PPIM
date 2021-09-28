@@ -47,7 +47,7 @@ public class PPUserDao {
         List<PPUserInfo> datas = new ArrayList<>();
         try{
             datas = dbManager.selector(PPUserInfo.class).where("isFriend",
-                    "=", true).and("name", "like", "%"+key+"%").findAll();
+                    "=", true).and("name", "like", "%"+key+"%").or("nick", "like", "%"+key+"%").or("phone", "like", "%"+key+"%").findAll();
             if(null==datas){
                 datas = new ArrayList<>();
             }

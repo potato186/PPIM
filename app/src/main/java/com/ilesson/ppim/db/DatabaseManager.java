@@ -9,7 +9,7 @@ public class DatabaseManager {
     private DbManager.DaoConfig daoConfig;
     private static DbManager dbManager;
     private final String DB_NAME = "pp_im.db";
-    private final int DB_VERSION = 1;
+    private final int DB_VERSION = 2;
 
     private DatabaseManager() {
 
