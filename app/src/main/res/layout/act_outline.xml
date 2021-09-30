@@ -48,7 +48,7 @@
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/top_bar"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="25dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         >
@@ -119,16 +119,16 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/gray_bg_color"
-                    android:layout_alignParentBottom="true"/>
             </RelativeLayout>
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_bg_color" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
+            android:minHeight="55dp"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
             >
@@ -142,29 +142,33 @@
                 />
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp">
+
                 <EditText
                     android:id="@+id/compose_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:textSize="16sp"
-                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                    android:textColor="@color/gray_text333_color"
-                    android:hint="@string/hint_title"
                     android:layout_centerVertical="true"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/gray_bg_color"
-                    android:layout_alignParentBottom="true"/>
+                    android:paddingRight="10dp"
+                    android:background="@null"
+                    android:hint="@string/hint_title"
+                    android:textColor="@color/gray_text333_color"
+                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+                    android:textSize="16sp" />
+
+
             </RelativeLayout>
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_bg_color" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content"
+            android:minHeight="55dp"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
             >
@@ -178,41 +182,44 @@
                 />
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="20dp">
+
                 <EditText
                     android:id="@+id/charno"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:textSize="16sp"
-                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                    android:textColor="@color/gray_text333_color"
-                    android:hint="@string/hint_num"
-                    android:inputType="number"
                     android:layout_centerVertical="true"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/gray_bg_color"
-                    android:layout_alignParentBottom="true"/>
+                    android:paddingRight="10dp"
+                    android:background="@null"
+                    android:hint="@string/hint_num"
+                    android:textColor="@color/gray_text333_color"
+                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+                    android:textSize="16sp" />
+
             </RelativeLayout>
+
+
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_bg_color" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/confirm"
         android:layout_width="160dp"
         android:layout_height="42dp"
         android:layout_below="@+id/content_layout"
-        android:text="@string/start_compose"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/general_red_theme_corner5_selector"
-        />
+        android:gravity="center"
+        android:text="@string/start_compose"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
     <TextView
         android:id="@+id/cancel"
         android:layout_width="160dp"
@@ -231,7 +238,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true"
         >
         <TextView
@@ -247,6 +254,7 @@
             android:layout_height="20dp"
             android:background="@color/theme_color"
             android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
             />
         <TextView
             android:layout_width="wrap_content"

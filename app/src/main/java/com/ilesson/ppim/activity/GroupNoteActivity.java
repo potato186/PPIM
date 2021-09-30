@@ -44,8 +44,6 @@ import io.rong.eventbus.EventBus;
 public class GroupNoteActivity extends BaseActivity {
     @ViewInject(R.id.save)
     private TextView saveBtn;
-    @ViewInject(R.id.group_name)
-    private TextView groupName;
     @ViewInject(R.id.title)
     private TextView title;
     @ViewInject(R.id.note_text)
@@ -72,6 +70,7 @@ public class GroupNoteActivity extends BaseActivity {
         type = getIntent().getIntExtra(MODIFY_TYPE, 0);
         groupId = getIntent().getStringExtra(GROUP_ID);
         groupNote = getIntent().getStringExtra(GROUP_NOTE);
+        saveBtn.setEnabled(false);
         isOwner = getIntent().getBooleanExtra(ChatInfoActivity.ISOWNER, false);
         if(null== groupNote){
             groupNote ="";
@@ -82,6 +81,9 @@ public class GroupNoteActivity extends BaseActivity {
             noteEdit.setVisibility(View.VISIBLE);
             noteText.setVisibility(View.GONE);
             noteEdit.setSelection(groupNote.length());
+        }else{
+            noteEdit.setVisibility(View.GONE);
+            noteText.setVisibility(View.VISIBLE);
         }
         noteEdit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -118,6 +120,9 @@ public class GroupNoteActivity extends BaseActivity {
     @Event(R.id.save)
     private void save(View view) {
         String name = noteEdit.getText().toString().trim();
+        if(name.equals(groupNote)){
+            return;
+        }
 //        if (TextUtils.isEmpty(name)) {
 //            return;
 //        }
@@ -146,6 +151,7 @@ public class GroupNoteActivity extends BaseActivity {
                 if (base.getCode() == 0) {
                     StringBuilder stringBuilder = new StringBuilder(getResources().getString(R.string.group_note));
                     stringBuilder.append("\n").append(note);
+                    if(!TextUtils.isEmpty(note))
                     new IMUtils().sendTextMsg(groupId,stringBuilder.toString());
                     EventBus.getDefault().post(new PublishNote(note));
                     finish();

@@ -102,23 +102,26 @@
                 />
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
+                android:minHeight="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/background_gray_edge_white_corner10"
                 >
-            <EditText
-                android:id="@+id/post_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/hint_logist_name_tip"
-                android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                android:background="@null"
-                android:layout_marginLeft="10dp"
-                android:gravity="center_vertical"
-                android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/post_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="@string/hint_logist_name_tip"
+                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+                    android:textSize="16sp" />
             </RelativeLayout>
             <TextView
                 android:layout_width="wrap_content"
@@ -130,7 +133,8 @@
                 />
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
+                android:minHeight="45dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -144,6 +148,7 @@
                     android:hint="@string/hint_logist_num_tip"
                     android:textCursorDrawable="@drawable/rc_shape_cursor_color"
                     android:background="@null"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical"
                     android:textSize="16sp" />

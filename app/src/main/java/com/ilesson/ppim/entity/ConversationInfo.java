@@ -13,7 +13,7 @@ import org.xutils.db.annotation.Table;
  * @UpdateRemark: 更新说明
  * @Version: 1.0
  */
-@Table(name = "PPUserInfo")
+@Table(name = "ConversationInfo")
 public class ConversationInfo extends SearchInfo{
     @Column(name = "targetId",isId = true)
     public String targetId;

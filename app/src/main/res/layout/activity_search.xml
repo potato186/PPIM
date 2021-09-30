@@ -10,6 +10,7 @@
         android:layout_height="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp">
 
         <RelativeLayout
@@ -39,13 +40,12 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
                     android:background="@null"
-                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
-                    android:textColor="@color/grey_text_color"
-                    android:singleLine="true"
                     android:imeOptions="actionSearch"
                     android:lines="1"
-                    android:textSize="18sp">
-                </EditText>
+                    android:singleLine="true"
+                    android:textColor="@color/grey_text_color"
+                    android:textCursorDrawable="@drawable/rc_shape_cursor_color"
+                    android:textSize="18sp"></EditText>
             </LinearLayout>
 
             <TextView
@@ -88,17 +88,43 @@
         android:divider="@color/gray_bg_color"
         android:dividerHeight="0.5dp"
         android:visibility="gone" />
+    <LinearLayout
+        android:id="@+id/search_type_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/type_name"
+            android:textSize="12sp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_theme"
+            android:layout_marginLeft="10dp"
+            />
+
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:id="@+id/all_search"
-        android:visibility="gone"
         />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:id="@+id/chat_record"
         android:visibility="gone"
         />

@@ -36,6 +36,14 @@ public class GroupUserDao {
         return allDevices;
     }
 
+    public GroupInfo getGroupById(String groupId){
+        try{
+            return dbManager.selector(GroupInfo.class).where("name", "=", groupId).findFirst();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     public List<GroupInfo> getGroupByKey(String key){
         try{
             List<GroupInfo> datas = dbManager.selector(GroupInfo.class).where("name", "like", "%"+key+"%").or("tag", "like", "%"+key+"%").findAll();
@@ -55,12 +63,16 @@ public class GroupUserDao {
         }
         for (GroupInfo groupInfo : all) {
             if(null==map.get(groupInfo.getId())){
-                List<PPUserInfo> userInfos = groupInfo.getUsers();
+//                PPUserInfo userInfo = groupInfo.getUserInfo();
+//                if(null!=userInfo&&userInfo.getName().contains(key)){
+//                    groups.add(groupInfo);
+//                }
+                List<PPUserInfo> userInfos = groupInfo.getPpUserInfos();
+                if(null==userInfos)continue;
+                for (PPUserInfo info : userInfos) {
+                    if(info.getName().contains(key)){
+                        groupInfo.setUserName(info.getName());
 
-                for (PPUserInfo userInfo : userInfos) {
-                    if(userInfo.getName().contains(key)){
-                        groupInfo.setUserName(userInfo.getName());
-                        groups.add(groupInfo);
                         break;
                     }
                 }

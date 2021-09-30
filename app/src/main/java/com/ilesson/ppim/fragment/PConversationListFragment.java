@@ -1242,6 +1242,11 @@ public class PConversationListFragment extends UriFragment implements AdapterVie
 
             data.setUnReadMessageCount(0);
             if(data.getConversationTargetId().contains("market")){
+                MainActivity activity = (MainActivity) getActivity();
+                if(activity.level!=2){
+                    activity.setSelection(3);
+                    return;
+                }
                 MyExtensionModule.shopGroup = true;
             }else{
                 MyExtensionModule.shopGroup = false;

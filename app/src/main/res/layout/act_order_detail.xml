@@ -321,13 +321,14 @@
                     android:layout_marginTop="5dp"
                     android:textSize="16sp"
                     />
+
                 <include
+                    layout="@layout/invoice_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="15dp"
                     android:layout_below="@+id/invoice_type"
-                    layout="@layout/invoice_item"/>
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical" />
             </RelativeLayout>
             <TextView
                 android:layout_width="match_parent"
@@ -355,6 +356,7 @@
                 android:id="@+id/call_server"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="@dimen/buttom_max_width"
                 android:text="@string/call_server"
                 android:textSize="16sp"
                 android:background="@drawable/general_gray_edge_white_corner20_selector"
@@ -369,6 +371,7 @@
                 android:id="@+id/check_logistc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="@dimen/buttom_max_width"
                 android:text="@string/check_logistc"
                 android:textSize="16sp"
                 android:background="@drawable/general_gray_edge_white_corner20_selector"
@@ -384,6 +387,7 @@
                 android:id="@+id/topost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="@dimen/buttom_max_width"
                 android:text="@string/to_post"
                 android:textSize="16sp"
                 android:background="@drawable/general_red_theme_corner20_selector"

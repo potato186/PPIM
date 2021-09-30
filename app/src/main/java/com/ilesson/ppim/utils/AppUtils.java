@@ -1,5 +1,7 @@
 package com.ilesson.ppim.utils;
 
+import static android.content.Context.ACTIVITY_SERVICE;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -15,8 +17,6 @@ import com.ilesson.ppim.BuildConfig;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import static android.content.Context.ACTIVITY_SERVICE;
 
 /**
  * Created by potato on 2017/3/28.
@@ -113,7 +113,7 @@ public class AppUtils {
         }
     }
     public static String getDate(String date){
-        SimpleDateFormat format0 = new SimpleDateFormat("yyyy/MM/dd HH:mm EEEE", Locale.CHINA);
+        SimpleDateFormat format0 = new SimpleDateFormat("yyyy/MM/dd", Locale.CHINA);
         String time = format0.format(Long.valueOf(date));
         return time;
     }

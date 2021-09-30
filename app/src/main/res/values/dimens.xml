@@ -10,12 +10,12 @@
     <dimen name="note_type_item_height">20dp</dimen>
     <dimen name="setting_margintop">8dp</dimen>
     <dimen name="contactcard_dimen_size_3">3dp</dimen>
-    <dimen name="text_size_m">20dp</dimen>
-    <dimen name="text_size_s">16dp</dimen>
+    <dimen name="text_size_m">20sp</dimen>
+    <dimen name="text_size_s">16sp</dimen>
     <dimen name="button_height">48dp</dimen>
 
-    <dimen name="text_size_16">16dp</dimen>
-    <dimen name="text_size_18">18dp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
     <dimen name="registe_text_minwidth">85dp</dimen>
     <dimen name="registe_text_size">16sp</dimen>
     <dimen name="registe_text_hint_size">14sp</dimen>
@@ -41,6 +41,7 @@
     <dimen name="margin_layout">16dp</dimen>
     <dimen name="big_image_size">74dp</dimen>
 
+    <dimen name="buttom_max_width">110dp</dimen>
     <dimen name="switch_width">22dp</dimen>
     <dimen name="middle_text_size">17sp</dimen>
     <dimen name="small_text_size">15sp</dimen>

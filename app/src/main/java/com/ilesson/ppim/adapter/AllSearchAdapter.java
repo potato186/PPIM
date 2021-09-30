@@ -1,6 +1,7 @@
 package com.ilesson.ppim.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.ilesson.ppim.R;
 import com.ilesson.ppim.activity.NoteActivity;
+import com.ilesson.ppim.activity.SearchActivity;
 import com.ilesson.ppim.entity.AllSearchInfo;
 import com.ilesson.ppim.entity.SearchInfo;
 import com.ilesson.ppim.utils.PPScreenUtils;
@@ -75,15 +77,26 @@ public class AllSearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ViewHolder viewHolder = (ViewHolder) holder;
         AllSearchInfo allSearchInfo = resultList.get(position);
         List<SearchInfo> searchInfos = allSearchInfo.getSearchInfos();
+        List<SearchInfo> datas = new ArrayList<>();
         if (searchInfos.size()>3) {
             viewHolder.moreLayout.setVisibility(View.VISIBLE);
-            searchInfos.remove(searchInfos.size()-1);
+            datas.addAll(searchInfos.subList(0,3));
+            viewHolder.moreLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, SearchActivity.class);
+                    intent.putExtra(SearchActivity.SEARCH_KEY,keyWords);
+                    intent.putExtra(SearchActivity.SEARCH_TYPE_NAME,allSearchInfo.getSearchType());
+                    mContext.startActivity(intent);
+                }
+            });
         }else{
+            datas.addAll(searchInfos);
             viewHolder.moreLayout.setVisibility(View.GONE);
         }
         viewHolder.moreView.setText(String.format(mContext.getString(R.string.search_more),allSearchInfo.getSearchType()));
         viewHolder.titleView.setText(allSearchInfo.getSearchType());
-        SearchItemAdapter adapter = new SearchItemAdapter(mContext,allSearchInfo.getSearchInfos(),keyWords);
+        SearchItemAdapter adapter = new SearchItemAdapter(mContext,datas,keyWords);
         viewHolder.recyclerview.setLayoutManager(new LinearLayoutManager(mContext));
         viewHolder.recyclerview.setAdapter(adapter);
     }

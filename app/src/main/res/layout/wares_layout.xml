@@ -17,9 +17,10 @@
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/wares_img"
             android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/unit_layout"
             android:textColor="@color/gray_text333_color"
             android:layout_marginTop="5dp"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
         <TextView
             android:id="@+id/wares_info"
             android:layout_width="match_parent"
@@ -30,11 +31,12 @@
             android:layout_below="@+id/wares_name"
             android:textColor="@color/second_blk_text"
             android:layout_marginTop="5dp"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
         <LinearLayout
             android:id="@+id/unit_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="70dp"
             android:layout_alignParentRight="true"
             android:layout_marginTop="5dp"
             android:orientation="horizontal">
@@ -44,13 +46,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/gray_text333_color"
-                android:textSize="16sp" />
+                android:text="¥299.00"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/wares_quantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray_text333_color"
+                android:visibility="gone"
                 android:textSize="14sp" />
 
         </LinearLayout>

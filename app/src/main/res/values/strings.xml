@@ -224,7 +224,7 @@
     <string name="least_exchange_num">最少兑换%1$d%2$s</string>
     <string name="exchange_detail">您已兑换%1$s（%2$s）%3$d%4$s</string>
     <string name="all_exchange_score">合计:%1$d积分</string>
-    <string name="has_score">当前拥有:%1$d积分</string>
+    <string name="has_score">%1$d积分</string>
     <string name="all_exchange_rmb">合计:%1$d</string>
     <string name="all_format_rmb">合计:¥%1$s</string>
     <string name="all_pay_score">实付:%1$d积分</string>

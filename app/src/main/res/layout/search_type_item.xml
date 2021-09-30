@@ -31,13 +31,19 @@
         android:minHeight="40dp"
         android:id="@+id/more_layout"
         android:layout_marginLeft="10dp"
+        android:background="@drawable/general_listitem_selector"
         >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_theme"
+            android:layout_alignParentTop="true"
+            />
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@mipmap/search_icon"
             android:layout_centerVertical="true"
-            />
+            android:src="@mipmap/search_icon" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

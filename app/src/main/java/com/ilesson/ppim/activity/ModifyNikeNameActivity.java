@@ -64,6 +64,7 @@ public class ModifyNikeNameActivity extends BaseActivity {
     public static final String MODIFY_RESULT = "modify_result";
     private int type;
     private PPUserInfo ppUserInfo;
+    private String nickName;
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
@@ -71,12 +72,12 @@ public class ModifyNikeNameActivity extends BaseActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         ppUserInfo = (PPUserInfo) bundle.getSerializable(USER_INFO);
-        String name = ppUserInfo.getNick();
+        nickName = ppUserInfo.getNick();
         Glide.with(getApplicationContext()).load(ppUserInfo.getIcon()).into(iconView);
         saveBtn.setEnabled(false);
-        if (!TextUtils.isEmpty(name)) {
-            nikeEdit.setText(name);
-            nikeEdit.setSelection(name.length());
+        if (!TextUtils.isEmpty(nickName)) {
+            nikeEdit.setText(nickName);
+            nikeEdit.setSelection(nickName.length());
         }
         nikeEdit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,13 +92,14 @@ public class ModifyNikeNameActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
+                if (s.toString().equals(nickName)) {
                     saveBtn.setTextColor(getResources().getColor(R.color.color_999999));
                     saveBtn.setBackgroundResource(R.drawable.background_gray_corner20);
+                    saveBtn.setEnabled(false);
                 } else {
-                    saveBtn.setEnabled(true);
                     saveBtn.setTextColor(getResources().getColor(R.color.white));
                     saveBtn.setBackgroundResource(R.drawable.background_theme_corner20);
+                    saveBtn.setEnabled(true);
                 }
             }
         });
@@ -106,9 +108,12 @@ public class ModifyNikeNameActivity extends BaseActivity {
     @Event(R.id.save)
     private void save(View view) {
         String name = nikeEdit.getText().toString().trim();
-        if (TextUtils.isEmpty(name)) {
+        if(name.equals(nickName)){
             return;
         }
+//        if (TextUtils.isEmpty(name)) {
+//            return;
+//        }
         modifyGroupUserNike(name);
     }
 

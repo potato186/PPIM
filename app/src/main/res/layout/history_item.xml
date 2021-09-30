@@ -81,7 +81,7 @@
             android:textSize="14sp"
             android:textColor="@color/gray_text_color"
             android:text="90字"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             />
         <TextView
             android:id="@+id/date"
@@ -90,7 +90,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
             android:textColor="@color/gray_text_color"
-            android:textSize="12dp"
+            android:textSize="12sp"
             />
     </LinearLayout>
 </LinearLayout>

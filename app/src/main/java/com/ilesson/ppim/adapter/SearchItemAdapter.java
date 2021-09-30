@@ -1,6 +1,7 @@
 package com.ilesson.ppim.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ilesson.ppim.R;
+import com.ilesson.ppim.activity.ConversationActivity;
 import com.ilesson.ppim.activity.NoteActivity;
+import com.ilesson.ppim.activity.SearchActivity;
+import com.ilesson.ppim.entity.ConversationInfo;
 import com.ilesson.ppim.entity.GroupInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.SearchInfo;
@@ -103,7 +107,7 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if(name.contains(keyWords)){
                 if(TextUtils.isEmpty(tagName)){
                     viewHolder.messageView.setVisibility(View.GONE);
-                    viewHolder.titleView.setText(TextUtil.getSpecialText(mContext,name,keyWords));
+                    viewHolder.titleView.setText(TextUtil.getKeyWordsColorString(mContext,name,keyWords));
                 }else{
                     viewHolder.titleView.setText(tagName);
                     viewHolder.messageView.setVisibility(View.VISIBLE);
@@ -112,7 +116,7 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
             else if(tagName.contains(keyWords)){
                 viewHolder.messageView.setVisibility(View.GONE);
-                viewHolder.titleView.setText(TextUtil.getSpecialText(mContext,tagName,keyWords));
+                viewHolder.titleView.setText(TextUtil.getKeyWordsColorString(mContext,tagName,keyWords));
             }else{
                 viewHolder.messageView.setVisibility(View.VISIBLE);
                 viewHolder.messageView.setText(TextUtil.getKeyWordsColorString(mContext,String.format(mContext.getString(R.string.pp_number),userInfo.getPhone()),keyWords));
@@ -129,13 +133,14 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             GroupInfo groupInfo = (GroupInfo) searchInfo;
             String name = groupInfo.getName();
             String tagName = groupInfo.getTag();
+            Glide.with(mContext).load(groupInfo.getIcon()).into(viewHolder.imageView);
             if(null==tagName){
                 tagName="";
             }
             if(name.contains(keyWords)){
                 if(TextUtils.isEmpty(tagName)){
                     viewHolder.messageView.setVisibility(View.GONE);
-                    viewHolder.titleView.setText(TextUtil.getSpecialText(mContext,name,keyWords));
+                    viewHolder.titleView.setText(TextUtil.getKeyWordsColorString(mContext,name,keyWords));
                 }else{
                     viewHolder.titleView.setText(tagName);
                     viewHolder.messageView.setVisibility(View.VISIBLE);
@@ -144,7 +149,7 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
             else if(tagName.contains(keyWords)){
                 viewHolder.messageView.setVisibility(View.GONE);
-                viewHolder.titleView.setText(TextUtil.getSpecialText(mContext,tagName,keyWords));
+                viewHolder.titleView.setText(TextUtil.getKeyWordsColorString(mContext,tagName,keyWords));
             }else{
                 viewHolder.messageView.setVisibility(View.VISIBLE);
                 viewHolder.messageView.setText(TextUtil.getKeyWordsColorString(mContext,String.format(mContext.getString(R.string.group_contain),groupInfo.getUserName()),keyWords));
@@ -154,6 +159,24 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     viewHolder.titleView.setText(tagName);
                 }
             }
+            viewHolder.itemView.setOnClickListener(v -> {
+                RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.GROUP,groupInfo.getId(),viewHolder.titleView.getText().toString());
+            });
+        }else if(searchInfo instanceof ConversationInfo){
+            ConversationInfo conversationInfo = (ConversationInfo) searchInfo;
+            String name = conversationInfo.getConversationTitle();
+            viewHolder.messageView.setVisibility(View.GONE);
+            Glide.with(mContext).load(conversationInfo.getPortraitUrl()).into(viewHolder.imageView);
+            viewHolder.titleView.setText(name);
+            viewHolder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(mContext, SearchActivity.class);
+                intent.putExtra(ConversationActivity.CONVERSATION_TYPE, conversationInfo.getType());
+                intent.putExtra(ConversationActivity.TARGET_ID,conversationInfo.getTargetId());
+                intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_RECORD_WITH_GARGET);
+                intent.putExtra(SearchActivity.SEARCH_KEY,keyWords);
+                intent.putExtra(ConversationActivity.TARGET_NAME, name);
+                mContext.startActivity(intent);
+            });
         }
     }
 

@@ -35,7 +35,9 @@ import com.ilesson.ppim.activity.WaresOrderDetailctivity;
 import com.ilesson.ppim.custom.RedPacketMessage;
 import com.ilesson.ppim.custom.TransactionMessage;
 import com.ilesson.ppim.custom.TransferMessage;
+import com.ilesson.ppim.db.ConversationDao;
 import com.ilesson.ppim.entity.BaseCode;
+import com.ilesson.ppim.entity.ConversationInfo;
 import com.ilesson.ppim.entity.GroupInfo;
 import com.ilesson.ppim.entity.PPUserInfo;
 import com.ilesson.ppim.entity.RongUserInfo;
@@ -58,6 +60,7 @@ import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.UserInfo;
 import io.rong.message.TextMessage;
+import io.rong.push.RongPushClient;
 
 /**
  * Created by potato on 2020/3/10.
@@ -205,6 +208,13 @@ public class IMUtils {
                     SPUtils.put(userId,info.getIcon());
                     SPUtils.put(userId+"name",info.getName());
                     SPUtils.put(userId+"nike",info.getNick());
+                    ConversationInfo conversationInfo = new ConversationInfo();
+                    conversationInfo.setConversationTitle(name);
+                    conversationInfo.setTargetId(userId);
+                    conversationInfo.setType(RongPushClient.ConversationType.PRIVATE.getValue());
+                    conversationInfo.setPortraitUrl(info.getIcon());
+                    conversationInfo.setDate(System.currentTimeMillis());
+                    new ConversationDao().update(conversationInfo);
                     RongIM.getInstance().refreshUserInfoCache(userInfo);
                 } else {
                 }

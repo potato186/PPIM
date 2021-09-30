@@ -556,7 +556,11 @@ public void search() {
             String targetId = result.substring(result.lastIndexOf("=") + 1);
             if (result.contains("a=g")) {
                 String name = SPUtils.get(LoginActivity.USER_PHONE, "");
-                imUtils.requestGroupChat(token, targetId, name, "");
+                if (level!=2) {
+                    setSelection(3);
+                }else{
+                    imUtils.requestGroupChat(token, targetId, name, "");
+                }
                 return;
             }
             if (result.contains("a=p")) {

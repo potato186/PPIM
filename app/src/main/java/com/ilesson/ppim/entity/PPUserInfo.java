@@ -3,6 +3,8 @@ package com.ilesson.ppim.entity;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.lidroid.xutils.db.annotation.Foreign;
+
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
 
@@ -15,9 +17,9 @@ import java.io.Serializable;
 
 @Table(name = "PPUserInfo")
 public class PPUserInfo  extends SearchInfo implements Serializable{
-    @Column(name = "id",isId = true)
-    private int id;
-    @Column(name = "phone")
+//    @Column(name = "id",isId = true)
+//    private int id;
+    @Column(name = "phone",isId = true)
     private String phone;
     @Column(name = "pay")
     private boolean pay;
@@ -41,6 +43,7 @@ public class PPUserInfo  extends SearchInfo implements Serializable{
     private String date;
     @Column(name = "manager")
     private String manager;
+    @Foreign(column = "groupId", foreign = "userId")
     private String groupId;
     private double similar;
     private Uri uri;
@@ -52,13 +55,13 @@ public class PPUserInfo  extends SearchInfo implements Serializable{
         return isFriend;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
 
     public void setFriend(boolean friend) {
         isFriend = friend;

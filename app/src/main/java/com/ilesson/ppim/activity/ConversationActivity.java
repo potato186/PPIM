@@ -324,7 +324,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     @Event(R.id.note_layout)
     private void noteLayout(View v) {
         GroupNoteActivity.launch(this,mTargetId,groupNote,isOwner);
-        SPUtils.put(mTargetId+groupNote,"");
+        SPUtils.put(mTargetId+groupNote,groupNote);
+        noteLayout.setVisibility(View.GONE);
     }
 
     @Event(R.id.modify)
@@ -387,6 +388,8 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             intent.putExtra(ChatInfoActivity.GROUP_TAG, groupInfo.getTag());
             intent.putExtra(ChatInfoActivity.ISOWNER, isOwner);
             startActivityForResult(intent, 0);
+            if(!TextUtils.isEmpty(groupNote))
+            SPUtils.put(mTargetId+groupNote,groupNote);
         } else {
             Intent intent = new Intent(this, UserSttingActivity.class);
             intent.putExtra(USER_ID, mTargetId);
@@ -424,24 +427,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                 if (!aBoolean) {
                     finish();
                 }
-            }
-        });
-        RongIM.getInstance().getConversation(mConversationType, mTargetId, new RongIMClient.ResultCallback<Conversation>() {
-            @Override
-            public void onSuccess(Conversation conversation) {
-                if(null==conversation)return;
-                ConversationInfo conversationInfo = new ConversationInfo();
-                conversationInfo.setConversationTitle(title);
-                conversationInfo.setTargetId(mTargetId);
-                conversationInfo.setType(mConversationType.getValue());
-                conversationInfo.setPortraitUrl(conversation.getPortraitUrl());
-                conversationInfo.setDate(System.currentTimeMillis());
-                conversationDao.update(conversationInfo);
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-
             }
         });
         RongIM.getInstance().getLatestMessages(mConversationType, mTargetId, 20, new RongIMClient.ResultCallback<List<Message>>() {
@@ -765,7 +750,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             }
             requestGroupInfo(false);
 //            imUtils.searchGroupUserInfo();
-            requestAllGroupUsers();
+//            requestAllGroupUsers();
         } else {
             titleTextView.setText(title);
             imUtils.searchUserInfo(token, mTargetId);
@@ -849,6 +834,13 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     groupIcon = groupInfo.getIcon();
                     groupNote = groupInfo.getBroadcast();
                     groupUserDao.update(groupInfo);
+                    ConversationInfo conversationInfo = new ConversationInfo();
+                    conversationInfo.setConversationTitle(title);
+                    conversationInfo.setTargetId(mTargetId);
+                    conversationInfo.setType(mConversationType.getValue());
+                    conversationInfo.setPortraitUrl(groupIcon);
+                    conversationInfo.setDate(System.currentTimeMillis());
+                    conversationDao.update(conversationInfo);
                     if(TextUtils.isEmpty(groupNote)){
                         noteLayout.setVisibility(View.GONE);
                     }else{
@@ -862,6 +854,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                     }
                     EventBus.getDefault().post(new ResetGroupName(groupInfo.getName()));
                     showTitle();
+                    requestAllGroupUsers();
                 } else {
                     Toast.makeText(ConversationActivity.this, base.getMessage(), Toast.LENGTH_LONG).show();
                 }
@@ -914,13 +907,30 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                         Uri portraitUri = Uri.parse(ppUserInfo.getIcon());
                         UserInfo user = new UserInfo(ppUserInfo.getPhone(), ppUserInfo.getName(), portraitUri);
                         users.add(user);
-                        PPUserInfo chenInfo = ppUserDao.getFriendByKey(ppUserInfo.getPhone());
-                        if(null!=chenInfo){
-                            ppUserInfo.setId(chenInfo.getId());
-                            ppUserInfo.setFriend(chenInfo.isFriend());
-                        }
-                        ppUserInfo.setGroupId(mTargetId);
+//                        if(!ppUserInfo.getPhone().equals(phone)) {
+//                            PPUserInfo chenInfo = ppUserDao.getFriendByKey(ppUserInfo.getPhone());
+//                            if (null != chenInfo) {
+//                                ppUserInfo.setId(chenInfo.getId());
+//                                ppUserInfo.setFriend(chenInfo.isFriend());
+//                            }
+//                            ppUserInfo.setGroupId(mTargetId);
+//                            ppUserDao.update(ppUserInfo);
+//                        }
                         ppUserDao.update(ppUserInfo);
+//                        if(null==groupInfo&&groupInfo.getName()!=null){
+//                            groupInfo = groupUserDao.getGroupById(mTargetId);
+//                        }
+//                        if(null!=groupInfo&&groupInfo.getName()!=null){
+//                            groupInfo.setUserInfo(ppUserInfo);
+//                            groupUserDao.update(groupInfo);
+//                        }
+                    }
+                    if(null==groupInfo||groupInfo.getName()==null){
+                        groupInfo = groupUserDao.getGroupById(mTargetId);
+                    }
+                    if(null!=groupInfo&&groupInfo.getName()!=null){
+                        groupInfo.setPpUserInfos(list);
+                        groupUserDao.update(groupInfo);
                     }
                     RongIM.getInstance().setGroupMembersProvider((groupId, callback) -> {
                         callback.onGetGroupMembersResult(users); // 调用 callback 的 onGetGroupMembersResult 回传群组信息
@@ -1544,9 +1554,9 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
                                 Glide.with(ConversationActivity.this).load(order.getImgurl()).into(roundImageView);
                             }
                             waresIntroView.setVisibility(View.VISIBLE);
-                            if (!TextUtils.isEmpty(order.getSubUnit())) {
-                                waresQuantity.setText("/" + order.getSubUnit());
-                            }
+//                            if (!TextUtils.isEmpty(order.getSubUnit())) {
+//                                waresQuantity.setText();
+//                            }
                             if (!TextUtils.isEmpty(order.getSubName())) {
                                 waresName.setText(order.getSubName());
                             }
@@ -1569,7 +1579,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
 //                                allPrice.setVisibility(View.VISIBLE);
 //                            }
                             if (order.getSubPrice() >= 0) {
-                                unitPrice.setText(getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100));
+                                String uprice=getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100);
+                                if (!TextUtils.isEmpty(order.getSubUnit())) {
+                                    uprice+="/" + order.getSubUnit();
+                                }
+                                unitPrice.setText(uprice);
                                 unitPrice.setVisibility(View.VISIBLE);
                             }
 //                            showContent(order);
@@ -1649,9 +1663,7 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
         waresIntroView.setVisibility(View.VISIBLE);
         shopCarNum.setVisibility(View.VISIBLE);
         shopCarView.setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(order.getSubUnit())) {
-            waresQuantity.setText("/" + order.getSubUnit());
-        }
+
         if (!TextUtils.isEmpty(order.getSubName())) {
             waresName.setText(order.getSubName());
         }
@@ -1675,7 +1687,11 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             allPrice.setVisibility(View.VISIBLE);
         }
         if (order.getSubPrice() >= 0) {
-            unitPrice.setText(getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100));
+            String price=getResources().getString(R.string.rmb) + BigDecimalUtil.format(Double.valueOf(order.getSubPrice()) / 100);
+            if (!TextUtils.isEmpty(order.getSubUnit())) {
+                price+="/" + order.getSubUnit();
+            }
+            unitPrice.setText(price);
             unitPrice.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(order.getAddress())) {
@@ -2217,12 +2233,12 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
     public void onEventMainThread(HideProgress hideProgress) {
         hideProgress();
     }
-
+//    private String phone;
     private void loadOrder(String id, int type) {
         RequestParams params = new RequestParams(Constants.BASE_URL + Constants.ORDER);
         params.addParameter("action", "info");
         params.addParameter("oid", id);
-        String phone = SPUtils.get(USER_PHONE, "");
+        phone = SPUtils.get(USER_PHONE, "");
         params.addParameter("phone", phone);
         Log.d(TAG, "loadData: " + params.toString());
         showProgress();
@@ -2302,5 +2318,6 @@ public class ConversationActivity extends BaseActivity implements RongIM.Locatio
             noteLayout.setVisibility(View.VISIBLE);
             noteTextView.setText(var.getNote());
         }
+        SPUtils.put(mTargetId+groupNote,groupNote);
     }
 }

@@ -239,10 +239,10 @@ public class ContactFragment extends BaseFragment {
                 UserInfo user = new UserInfo(info.getPhone(),info.getName(), Uri.parse(info.getIcon()));
                 users.add(user);
                 info.setFriend(true);
-                PPUserInfo ppUserInfo = ppUserDao.getFriendByKey(info.getPhone());
-                if(null!=ppUserInfo){
-                    info.setId(ppUserInfo.getId());
-                }
+//                PPUserInfo ppUserInfo = ppUserDao.getFriendByKey(info.getPhone());
+//                if(null!=ppUserInfo){
+//                    info.setId(ppUserInfo.getId());
+//                }
                 ppUserDao.update(info);
             }
             if(datas==null){

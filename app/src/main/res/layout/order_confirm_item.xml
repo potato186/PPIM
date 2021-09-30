@@ -3,68 +3,72 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <RelativeLayout
+        android:id="@+id/layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/layout"
-        android:padding="10dp"
-        >
+        android:padding="10dp">
+
         <TextView
+            android:id="@+id/tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/order_tips"
             android:textColor="@color/gray_text333_color"
-            android:textSize="18sp"
-            android:id="@+id/tip"
-            />
+            android:textSize="18sp" />
+        <RelativeLayout
+            android:id="@+id/wares_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tip"
+            >
         <com.ilesson.ppim.view.RoundImageView
+            android:id="@+id/wares_img"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:id="@+id/wares_img"
-            android:layout_below="@+id/tip"
             android:layout_marginTop="15dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/logo"
-            />
+            android:src="@mipmap/logo" />
+
         <TextView
+            android:id="@+id/wares_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/wares_name"
-            android:maxEms="10"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:textColor="@color/gray_text333_color"
-            android:textSize="17sp"
             android:layout_marginLeft="10dp"
-            android:layout_below="@+id/tip"
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@+id/wares_img"
-            />
+            android:ellipsize="end"
+            android:maxEms="10"
+            android:maxLines="2"
+            android:textColor="@color/gray_text333_color"
+            android:textSize="17sp" />
+
         <TextView
+            android:id="@+id/wares_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/wares_quantity"
-            android:textSize="16sp"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/wares_img"
             android:layout_below="@+id/wares_name"
-            android:text="@string/order_confirm_num"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
-            />
-
+            android:layout_toRightOf="@+id/wares_img"
+            android:text="@string/order_confirm_num"
+            android:textSize="14sp" />
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/address_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_below="@+id/wares_layout"
             android:layout_marginTop="15dp"
-            android:layout_below="@+id/wares_img"
-            >
+            android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 >
+
                 <TextView
                     android:id="@+id/order_num_name"
                     android:layout_width="55dp"
@@ -77,14 +81,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/order_num_name"
-                    android:textSize="14sp"
-                    />
+                    android:textSize="14sp" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                >
+                android:layout_marginTop="3dp">
+
                 <TextView
                     android:id="@+id/phone"
                     android:layout_width="55dp"
@@ -97,21 +101,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/phone"
-                    android:textSize="14sp"
-                    />
+                    android:textSize="14sp" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                >
+                android:layout_marginTop="3dp">
+
                 <TextView
                     android:id="@+id/address"
                     android:layout_width="55dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/address"
                     android:lineSpacingMultiplier="1.2"
+                    android:text="@string/address"
                     android:textSize="14sp" />
 
                 <TextView
@@ -119,44 +122,43 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/address"
-                    android:textSize="14sp"
-                    />
+                    android:textSize="14sp" />
             </RelativeLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_below="@+id/address_layout"
             android:layout_centerHorizontal="true"
-            >
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/call_server"
                 android:layout_width="95dp"
                 android:layout_height="wrap_content"
-                android:text="@string/call_server"
-                android:textSize="16sp"
+                android:layout_marginTop="13dp"
                 android:background="@drawable/general_gray_edge_white_corner20_selector"
-                android:textColor="@color/black"
+                android:gravity="center"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
-                android:layout_marginTop="13dp"
-                android:gravity="center"
-                />
+                android:text="@string/call_server"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/confirm"
                 android:layout_width="95dp"
                 android:layout_height="wrap_content"
-                android:text="@string/confirm"
                 android:layout_marginLeft="20dp"
-                android:textSize="16sp"
+                android:layout_marginTop="13dp"
                 android:background="@drawable/general_red_theme_corner20_selector"
-                android:textColor="@color/white"
+                android:gravity="center"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
-                android:layout_marginTop="13dp"
-                android:gravity="center"
-                />
+                android:text="@string/confirm"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
         </LinearLayout>
 

@@ -1,5 +1,8 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
+import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,9 +37,6 @@ import io.rong.eventbus.EventBus;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
-
-import static com.ilesson.ppim.activity.AvatarActivity.MODIFY_SUCCESS;
-import static com.ilesson.ppim.activity.FriendDetailActivity.USER_ID;
 
 
 /**
@@ -153,9 +153,8 @@ public class UserSttingActivity extends BaseActivity {
     @Event(R.id.search_record)
     private void search_record(View view){
         Intent intent = new Intent(this,SearchActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ConversationActivity.CONVERSATION_TYPE, Conversation.ConversationType.PRIVATE);
-        intent.putExtras(bundle);
+        intent.putExtra(ConversationActivity.CONVERSATION_TYPE, Conversation.ConversationType.PRIVATE.getValue());
+        intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_RECORD_WITH_GARGET);
         intent.putExtra(ConversationActivity.TARGET_ID,targetId);
 //        intent.putExtra(ConversationActivity.TARGET_NAME,name);
         startActivity(intent);

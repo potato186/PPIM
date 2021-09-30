@@ -269,8 +269,7 @@ public class ChatInfoActivity extends BaseActivity{
     private void search_record(View view){
         Intent intent = new Intent(this,SearchActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ConversationActivity.CONVERSATION_TYPE, Conversation.ConversationType.GROUP);
-        intent.putExtras(bundle);
+        intent.putExtra(ConversationActivity.CONVERSATION_TYPE, Conversation.ConversationType.GROUP.getValue());
         intent.putExtra(ConversationActivity.TARGET_ID,groupId);
         intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_RECORD_WITH_GARGET);
         intent.putExtra(ConversationActivity.TARGET_NAME, groupName);

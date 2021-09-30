@@ -3,6 +3,7 @@ package com.ilesson.ppim.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ilesson.ppim.R;
-import com.ilesson.ppim.activity.ConversationActivity;
 import com.ilesson.ppim.activity.NoteActivity;
 import com.ilesson.ppim.utils.Dateuitls;
 import com.ilesson.ppim.utils.PPScreenUtils;
 import com.ilesson.ppim.utils.SPUtils;
+import com.ilesson.ppim.utils.TextUtil;
 import com.ilesson.ppim.view.CircleImageView;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private NoteActivity noteActivity;
     private List<EditText> editTexts = new ArrayList<>();
     private int screenWidth;
-    private String targetName;
+    private String keyWords;
 
 //    public enum ITEM_TYPE {
 //        ITEM_TYPE_TEXT,
@@ -48,13 +49,17 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //        ITEM_TYPE_VOICE
 //    }
 
+    public void setKeyWords(String keyWords) {
+        this.keyWords = keyWords;
+    }
+
     public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }
 
-    public RecordAdapter(Context context, List<Message> datas,String targetName) {
+    public RecordAdapter(Context context, List<Message> datas,String keyWords) {
         mContext = context;
-        this.targetName = targetName;
+        this.keyWords = keyWords;
         mLayoutInflater = LayoutInflater.from(context);
         resultList = datas;
         editIndex = resultList.size();
@@ -93,14 +98,22 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             TextMessage textMessage = (TextMessage) message.getContent();
             Uri uri = RongContext.getInstance().getConversationTemplate(message.getConversationType().getName()).getPortraitUri(message.getSenderUserId());
             Glide.with(mContext).load(SPUtils.get(message.getSenderUserId()+"icon","")).into(viewHolder.imageView);
-            String title = RongContext.getInstance().getConversationTemplate(message.getConversationType().getName()).getTitle(message.getSenderUserId());
-            viewHolder.titleView.setText(SPUtils.get(message.getSenderUserId()+"name",""));
+            String name = SPUtils.get(message.getSenderUserId()+"name","");
+            String tagName = SPUtils.get(message.getSenderUserId()+"nick","");
+            String title = TextUtils.isEmpty(tagName)?name:name;
+            viewHolder.titleView.setText(title);
             viewHolder.messageView.setText(textMessage.getContent());
+            viewHolder.messageView.setText(TextUtil.getKeyWordsColorString(mContext,textMessage.getContent(),keyWords));
             viewHolder.timeView.setText(Dateuitls.QQFormatTime(message.getSentTime()));
+            if(position>=resultList.size()-1){
+                viewHolder.tagLine.setVisibility(View.GONE);
+            }else {
+                viewHolder.tagLine.setVisibility(View.VISIBLE);
+            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RongIM.getInstance().startConversation(mContext,message.getConversationType(),message.getTargetId(), ConversationActivity.title,message.getSentTime());
+                    RongIM.getInstance().startConversation(mContext,message.getConversationType(),message.getTargetId(), title,message.getSentTime());
                 }
             });
         }
@@ -122,12 +135,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView messageView;
         TextView timeView;
         CircleImageView imageView;
+        View tagLine;
         ViewHolder(View view) {
             super(view);
             timeView = view.findViewById(R.id.time);
             titleView = view.findViewById(R.id.title);
             messageView = view.findViewById(R.id.message);
             imageView = view.findViewById(R.id.icon);
+            tagLine = view.findViewById(R.id.tag_line);
         }
     }
 

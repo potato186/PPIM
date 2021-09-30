@@ -1,5 +1,8 @@
 package com.ilesson.ppim.activity;
 
+import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
+import static com.ilesson.ppim.activity.ScoreDetailActivity.SCORE_INFO;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -47,9 +50,6 @@ import java.util.List;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
-
-import static com.ilesson.ppim.activity.LoginActivity.USER_PHONE;
-import static com.ilesson.ppim.activity.ScoreDetailActivity.SCORE_INFO;
 
 /**
  * Created by potato on 2020/3/10.
@@ -189,8 +189,8 @@ public class ExchangeServerActivity extends BaseActivity {
                 SpannableStringBuilder style = new SpannableStringBuilder(text);
                 int length = String.valueOf(scoreInfo.getValue()).length();
                 style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.second_blk_text)), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_text_color)), 5, 5+length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                style.setSpan(new RelativeSizeSpan(1.2f), 5, 5+length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                style.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.theme_text_color)), 0, 0+length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                style.setSpan(new RelativeSizeSpan(1.2f), 0, 0+length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 hasScore.setText(style);
                 Glide.with(ExchangeServerActivity.this).asBitmap().load(produce.getImageIntro()).into(new SimpleTarget<Bitmap>() {
                     @Override

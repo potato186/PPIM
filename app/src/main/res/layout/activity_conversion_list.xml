@@ -61,6 +61,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@+id/cancel"
+        android:visibility="gone"
         android:background="@drawable/background_standard_white_corner5">
 
         <LinearLayout

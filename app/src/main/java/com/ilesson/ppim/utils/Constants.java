@@ -11,6 +11,7 @@ public interface Constants {
 //    String AI_URL="https://aiibt.net/pigai.php";
     String AI_URL="http://www.xn--gmq6f129l.net/api20.php";
     String FAV_URL="http://192.168.2.192:8080/favourite/";
+    String NEW_SERVER_URL = "http://pp.aiibt.net:8080/";
     String OCR_BASE="http://bang.aiibt.net";
     String USER_URL="/user";
     String UPDATE_URL="/update";

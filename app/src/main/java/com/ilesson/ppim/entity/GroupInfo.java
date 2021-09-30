@@ -1,6 +1,6 @@
 package com.ilesson.ppim.entity;
 
-import com.lidroid.xutils.db.annotation.Foreign;
+import com.lidroid.xutils.db.annotation.Finder;
 
 import org.xutils.db.annotation.Column;
 import org.xutils.db.annotation.Table;
@@ -26,8 +26,8 @@ public class GroupInfo extends SearchInfo implements Serializable {
     private String userName;
     @Column(name = "size")
     private int size;
-    @Foreign(foreign = "groupId", column = "groupId")
-    private List<PPUserInfo> users;
+    @Finder(valueColumn = "userId", targetColumn = "groupId")
+    private List<PPUserInfo> ppUserInfos;
     public String getBroadcast() {
         return broadcast;
     }
@@ -84,11 +84,11 @@ public class GroupInfo extends SearchInfo implements Serializable {
         this.size = size;
     }
 
-    public List<PPUserInfo> getUsers() {
-        return users;
+    public List<PPUserInfo> getPpUserInfos() {
+        return ppUserInfos;
     }
 
-    public void setUsers(List<PPUserInfo> users) {
-        this.users = users;
+    public void setPpUserInfos(List<PPUserInfo> ppUserInfos) {
+        this.ppUserInfos = ppUserInfos;
     }
 }

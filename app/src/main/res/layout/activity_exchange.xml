@@ -86,63 +86,62 @@
                         android:textSize="@dimen/text_size_16"
                         />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/address_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toLeftOf="@+id/arrow"
                     android:layout_marginTop="15dp"
-                    >
+                    android:layout_toLeftOf="@+id/arrow">
 
                     <TextView
                         android:id="@+id/tag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/home"
-                        android:paddingTop="3dp"
-                        android:paddingBottom="3dp"
-                        android:paddingRight="10dp"
-                        android:paddingLeft="10dp"
-                        android:gravity="center"
-                        android:textColor="@color/white"
                         android:background="@drawable/background_theme_corner5"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="3dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="3dp"
+                        android:text="@string/home"
+                        android:textColor="@color/white"
                         android:textSize="16sp" />
+
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_below="@+id/tag"
-                        android:layout_marginTop="5dp"
-                        >
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="5dp">
+
                         <TextView
                             android:id="@+id/user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
-                            android:textSize="@dimen/text_size_16"
+                            android:layout_alignParentTop="true"
                             android:textColor="@color/gray_text333_color"
-                            />
+                            android:textSize="@dimen/text_size_16" />
+
                         <TextView
+                            android:id="@+id/phone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
                             android:layout_alignParentTop="true"
-                            android:id="@+id/phone"
+                            android:layout_marginLeft="10dp"
                             android:layout_toRightOf="@+id/user_name"
                             android:textColor="@color/gray_text333_color"
-                            android:textSize="@dimen/text_size_16"
-                            />
+                            android:textSize="@dimen/text_size_16" />
 
                         <TextView
                             android:id="@+id/address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/user_name"
-                            android:textSize="@dimen/text_size_16"
                             android:layout_marginTop="5dp"
                             android:textColor="@color/gray_text333_color"
-                            />
+                            android:textSize="@dimen/text_size_16" />
                     </RelativeLayout>
 
                 </RelativeLayout>

@@ -75,11 +75,11 @@ public class ForwadSelectActivity extends BaseActivity {
     }
 
     @Event(R.id.search_edit)
-    private void search_edit(View v) {
+    private void searchEdit(View v) {
         Intent intent = getIntent();
         intent.setClass(this, SearchActivity.class);
         intent.putExtra(SearchActivity.SEARCH_TYPE,SearchActivity.SEARCH_FRIENDS);
-        startActivity(intent);
+//        startActivity(intent);
     }
 
     @Override
