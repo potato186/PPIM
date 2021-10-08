@@ -1,0 +1,15 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.lidroid.xutils" >
+4
+5    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+5-->D:\workspace\PPIM\library_xutils\AndroidManifest.xml:5:5-81
+5-->D:\workspace\PPIM\library_xutils\AndroidManifest.xml:5:22-78
+6    <uses-permission android:name="android.permission.INTERNET" />
+6-->D:\workspace\PPIM\library_xutils\AndroidManifest.xml:6:5-67
+6-->D:\workspace\PPIM\library_xutils\AndroidManifest.xml:6:22-64
+7
+8    <application />
+8-->D:\workspace\PPIM\library_xutils\AndroidManifest.xml:4:5-19
+9
+10</manifest>

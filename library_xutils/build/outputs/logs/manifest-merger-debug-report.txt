@@ -1,0 +1,21 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:2:1-7:12
+	package
+		ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:3:11-39
+		INJECTED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml
+		INJECTED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:2:11-69
+application
+ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:4:5-19
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:5:5-81
+	android:name
+		ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:5:22-78
+uses-permission#android.permission.INTERNET
+ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:6:5-67
+	android:name
+		ADDED from D:\workspace\PPIM\library_xutils\AndroidManifest.xml:6:22-64

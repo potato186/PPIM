@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.devio.takephoto">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application android:allowBackup="true"
+        xmlns:tools="http://schemas.android.com/tools">
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <provider
+            android:name=".app.PhotoFileProvider"
+            android:authorities="${applicationId}.PhotoFileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource" />
+        </provider>
+    </application>
+</manifest>
